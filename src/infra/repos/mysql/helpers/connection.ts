@@ -1,5 +1,6 @@
 import { ConnectionNotFoundError } from '@/infra/repos/mysql/helpers';
 import { DataSource, Repository, ObjectLiteral, ObjectType } from 'typeorm';
+import { env } from '@/main/config/env'
 
 export type GenericType <T = any> = T
 export class MySQLConnection {
@@ -9,12 +10,8 @@ export class MySQLConnection {
   private constructor() {
     this.dataSource = new DataSource({
       type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'developer0101',
-      password: 'developer0101',
-      database: 'pontaltech',
-      entities: [`${process.cwd()}/src/infra/repos/mysql/entities/index.{js,ts}`],
+      ...env.database.mysql,
+      entities: [`${process.cwd()}/${process.env.TS_NODE_DEV === undefined ? 'dist' : 'src'}/infra/repos/mysql/entities/index.{js,ts}`],
       logging: false,
       synchronize: true,
       

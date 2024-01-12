@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  pontal-rcs-mysql-api:
+    restart: always
+    build:
+      context: ./
+    container_name: pontal-rcs-mysql-api
+    entrypoint: npm start
+    networks:
+      - pontal_network
+    volumes:
+      - .:/usr/src/app
+    tty: true
+    ports:
+      - "7000:4000"
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+          cpus: '0.3'
+        limits:
+          memory: 512M
+          cpus: '1'
+
+networks:
+  pontal_network:
+    external: true

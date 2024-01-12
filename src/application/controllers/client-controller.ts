@@ -8,7 +8,7 @@ type Model = { id?: number, name?: string }
 export class ClientController  extends Controller {
   constructor (private readonly clientRepo: MySQLClientRepository) {super()}
 
-  override async perform ({ id }: HttpRequest): Promise<HttpResponse<Model>> {
+  override async getClient ({ id }: HttpRequest): Promise<HttpResponse<Model>> {
     const client = await this.clientRepo.getById({ id })
     if(client == undefined) return notFound({})
     return ok({ id: client.id, name: client.name })

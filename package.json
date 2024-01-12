@@ -1,5 +1,5 @@
 {
-  "name": "pontal-rcs-mysql-api",
+  "name": "pontaltech-rcs-api-client-pointer",
   "version": "0.0.1",
   "description": "Api responsável por acessar a base de dados MySQL da Pontaltech",
   "license": "GPL-3.0-or-later",

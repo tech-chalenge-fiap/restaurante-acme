@@ -3,9 +3,9 @@ import { RequestHandler } from 'express';
 
 type Adapter = (controller: Controller) => RequestHandler;
 
-export const adaptExpressGetRoute: Adapter = controller => async (req, res) => {
+export const adaptExpressGetClientRoute: Adapter = controller => async (req, res) => {
   const { query, locals } = req;
-  const { statusCode, data } = await controller.handleGet({
+  const { statusCode, data } = await controller.handleGetClient({
     ...locals,
     ...query
   });

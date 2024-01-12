@@ -13,7 +13,7 @@ services:
       - .:/usr/src/app
     tty: true
     ports:
-      - "7000:4000"
+      - "4080:4080"
     env_file:
       - .env
     deploy:

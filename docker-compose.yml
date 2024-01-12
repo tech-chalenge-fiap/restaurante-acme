@@ -1,11 +1,11 @@
 version: "3"
 
 services:
-  pontal-rcs-mysql-api:
+  pontaltech-rcs-api-client-pointer:
     restart: always
     build:
       context: ./
-    container_name: pontal-rcs-mysql-api
+    container_name: pontaltech-rcs-api-client-pointer
     entrypoint: npm start
     networks:
       - pontal_network

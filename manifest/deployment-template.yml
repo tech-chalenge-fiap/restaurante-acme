@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "pontaltech-rcs-api-client-pointer"
+  namespace: rcs
+  name: pontaltech-rcs-api-client-pointer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pontaltech-rcs-api-client-pointer
+  template:
+    metadata:
+      labels:
+        app: pontaltech-rcs-api-client-pointer
+    spec:
+      containers:
+        - name: pontaltech-rcs-api-client-pointer
+          image: 755221085978.dkr.ecr.sa-east-1.amazonaws.com/pontaltech-rcs-api-client-pointer:$BITBUCKET_COMMIT
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: ${REQUEST_MEMORY}
+              cpu: ${REQUEST_CPU}
+            limits:
+              memory: ${LIMITS_MEMORY}
+              cpu: ${LIMITS_CPU}
+          envFrom:
+          - secretRef:
+              name: pontaltech-rcs-api-client-pointer
+      nodeSelector:
+        alpha.eksctl.io/nodegroup-name: ${NODE_GROUP}
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: $BITBUCKET_REPO_SLUG
+  namespace: rcs
+spec:
+  refreshInterval: 10m
+  secretStoreRef:
+    name: cluster-secrets
+    kind: ClusterSecretStore
+  data:
+  dataFrom:
+  - extract:
+      key: $NAMESPACE/$BITBUCKET_REPO_SLUG

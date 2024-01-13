@@ -58,6 +58,7 @@
     "mysql2": "^3.7.0",
     "reflect-metadata": "^0.2.1",
     "rimraf": "^5.0.5",
-    "typeorm": "^0.3.19"
+    "typeorm": "^0.3.19",
+    "winston": "^3.11.0"
   }
 }

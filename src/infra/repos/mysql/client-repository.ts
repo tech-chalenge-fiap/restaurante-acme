@@ -1,10 +1,10 @@
-import { MySQLClient } from '@/infra/repos/mysql/entities'
+import { Client } from '@/infra/repos/mysql/entities'
 import { MySQLRepository } from '@/infra/repos/mysql/repository'
 import { LoadClient } from '@/domain/contracts/repos'
 
-export class MySQLClientRepository extends MySQLRepository implements LoadClient {
+export class ClientRepository extends MySQLRepository implements LoadClient {
   async getById ({ id }: LoadClient.Input): Promise<LoadClient.Output> {
-    const clientRepo = this.getRepository(MySQLClient)
+    const clientRepo = this.getRepository(Client)
     const client = await clientRepo.findOne({ where: { id } })
     if (client !== null) {
       return {

@@ -6,4 +6,4 @@ export class ConnectionNotFoundError extends Error {
       this.name = 'ConnectionNotFoundError'
       logger.error(`[${this.name}] ${this.message}`)
     }
-  }
+}

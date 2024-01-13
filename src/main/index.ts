@@ -1,7 +1,6 @@
 import './config/module-alias'
 import { env } from '@/main/config/env'
 import { app } from '@/main/config/app'
-
 import { logger } from '@/infra/helpers'
 
 import 'reflect-metadata';

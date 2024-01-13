@@ -1,8 +1,8 @@
-export interface LoadClient {
-  getById: (input: LoadClient.Input) => Promise<LoadClient.Output>
+export interface Client {
+  getById: (input: Client.Input) => Promise<Client.Output>
 }
 
-export namespace LoadClient {
+export namespace Client {
   export type Input = { id: number }
   export type Output = undefined | {
     id?: number

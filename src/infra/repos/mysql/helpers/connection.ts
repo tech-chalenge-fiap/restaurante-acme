@@ -1,6 +1,8 @@
-import { ConnectionNotFoundError } from '@/infra/repos/mysql/helpers';
+import { ConnectionNotFoundError } from '@/infra/errors';
 import { DataSource, Repository, ObjectLiteral, ObjectType } from 'typeorm';
 import { env } from '@/main/config/env'
+
+import { logger } from '@/infra/helpers'
 
 export type GenericType <T = any> = T
 export class MySQLConnection {
@@ -28,7 +30,7 @@ export class MySQLConnection {
   public async initialize(): Promise<void> {
     if (this.dataSource) {
       await this.dataSource.initialize();
-      console.log("MySQL Connection has already been created")
+      logger.success("MySQL Connection has already been created")
     } else {
       throw new ConnectionNotFoundError();
     }
@@ -45,7 +47,7 @@ export class MySQLConnection {
   public async disconnect(): Promise<void> {
     if (this.dataSource) {
       await this.dataSource.destroy()
-      console.log("Disconnected from MySQL");
+      logger.warn("Disconnected from MySQL");
     } else {
       throw new ConnectionNotFoundError();
     }

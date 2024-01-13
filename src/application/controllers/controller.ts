@@ -7,7 +7,6 @@ export abstract class Controller {
     try {
         return await this.getClient(httpRequest)
       } catch (error) {
-        console.log(error)
         return serverError(error)
       }
   }

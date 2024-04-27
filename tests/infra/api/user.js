@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, fail, sleep } from "k6";
 
-export const getClient = () => {
+export const getUser = () => {
     const headers = { 'Authorization': '' }
     let res = http.get('http://localhost:4080/api/clients/?id=10016', { headers: headers })
 

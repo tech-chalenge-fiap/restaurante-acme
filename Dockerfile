@@ -1,7 +1,7 @@
 FROM node:alpine as ts-compiler
 WORKDIR /usr/app
 COPY package*.json ./
-COPY ecosystem.config*.cjs ./
+# COPY ecosystem.config*.cjs ./
 COPY tsconfig*.json ./
 RUN npm install
 COPY . ./

@@ -3,48 +3,102 @@ kind: Deployment
 metadata:
   annotations:
     reloader.stakater.com/auto: "true"
-    secret.reloader.stakater.com/reload: "pontaltech-rcs-api-client-pointer"
+    secret.reloader.stakater.com/reload: $APP_NAME
   namespace: rcs
-  name: pontaltech-rcs-api-client-pointer
+  name: $APP_NAME
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pontaltech-rcs-api-client-pointer
+      app: $APP_NAME
   template:
     metadata:
       labels:
-        app: pontaltech-rcs-api-client-pointer
+        app: $APP_NAME
     spec:
       containers:
-        - name: pontaltech-rcs-api-client-pointer
-          image: 755221085978.dkr.ecr.sa-east-1.amazonaws.com/pontaltech-rcs-api-client-pointer:$BITBUCKET_COMMIT
+        - name: $APP_NAME
+          image: $DOCKER_ECR_REPO_URL/$DOCKER_IMAGE_NAME:$BITBUCKET_COMMIT
           imagePullPolicy: IfNotPresent
+          ports:
+           - containerPort: 4080
+             protocol: TCP
           resources:
             requests:
-              memory: ${REQUEST_MEMORY}
-              cpu: ${REQUEST_CPU}
+              memory: ${LIMITS_MEMORY}
+              cpu: ${LIMITS_CPU}
             limits:
               memory: ${LIMITS_MEMORY}
               cpu: ${LIMITS_CPU}
           envFrom:
           - secretRef:
-              name: pontaltech-rcs-api-client-pointer
+              name: $APP_NAME
+          readinessProbe:
+            httpGet:
+                path: /v1/api/healthcheck
+                port: 4080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+                path: /v1/api/healthcheck
+                port: 4080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 20
       nodeSelector:
-        alpha.eksctl.io/nodegroup-name: ${NODE_GROUP}
-
+        alpha.eksctl.io/nodegroup-name: pontaltech-eks-staging-fortaleza
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: rcs
+  name: $APP_NAME-svc
+spec:
+  ports:
+    - port: 4080
+      targetPort: 4080
+      protocol: TCP
+  type: ClusterIP
+  selector:
+    app: $APP_NAME
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/cors-allow-methods: GET, POST, PATCH, DELETE, PUT, OPTIONS
+    nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 30m
+  namespace: rcs
+  name: $APP_NAME-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: $APP_NAME.stage.pontaltech.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: $APP_NAME-svc
+            port:
+              number: 4080
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: $BITBUCKET_REPO_SLUG
+  name: $APP_NAME
   namespace: rcs
 spec:
-  refreshInterval: 10m
+  refreshInterval: 1m
   secretStoreRef:
     name: cluster-secrets
     kind: ClusterSecretStore
   data:
   dataFrom:
   - extract:
-      key: $NAMESPACE/$BITBUCKET_REPO_SLUG
+      key: rcs/$APP_NAME

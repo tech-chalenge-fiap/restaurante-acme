@@ -7,3 +7,12 @@ export class ConnectionNotFoundError extends Error {
       logger.error(`[${this.name}] ${this.message}`)
     }
 }
+
+
+export class EntityError extends Error {
+  constructor (error: string) {
+    super(error)
+    this.name = 'EntityError'
+    logger.error(`[${this.name}] ${this.message}`)
+  }
+}

@@ -1,8 +1,15 @@
 import './config/module-alias'
 import { env } from '@/main/config/env'
-import { app } from '@/main/config/app'
 import { logger } from '@/infra/helpers'
+import { MySQLConnection } from '@/infra/repos/mysql/helpers'
 
-import 'reflect-metadata';
+import 'reflect-metadata'
 
-app.listen(env.port, () => logger.success(`Server running at http://localhost:${env.port}`))
+MySQLConnection.getInstance().initialize()
+  .then(async () => {
+    const { app } = await import('@/main/config/app')
+    app.listen(env.port, () => logger.log(`Server running at http://localhost:${env.port}`))
+  })
+  .catch((error) => {
+    logger.error(error.message)
+  })

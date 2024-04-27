@@ -1,22 +1,25 @@
 import { forbidden, HttpResponse, ok } from '@/application/helpers'
-import { RequiredString } from '@/application/validation'
 import { Middleware } from '@/application/middlewares'
 import { env } from '@/main/config/env'
 import { logger } from '@/infra/helpers'
+import { Validator } from '@/application/validation'
+import { TokenHandler } from '@/infra/gateways'
 
 type HttpRequest = { authorization?: string, ip?: string }
+type AuthorizationRequest = { authorization?: string, ip?: string }
 type Model = Error | { apiName: string }
-type Authorize = (input: { token: string }) => Promise<string>
+
 
 export class AuthenticationMiddleware implements Middleware {
-  constructor (private readonly authorize: Authorize) {}
+  constructor (private readonly tokenHandler: TokenHandler, private readonly validator: Validator) {}
 
   async handle ({ authorization, ip }: HttpRequest): Promise<HttpResponse<Model>> {
     try {
-      if (
-        !this.validateAuthorization({ authorization }) ||
-        !this.validateIp({ ip })) return forbidden()
-        const apiName = await this.authorize({ token: authorization! })
+      const checkIpAuthorization = env.checkIpAuthorization
+      if(checkIpAuthorization && !this.validateIp({ ip })) return forbidden()
+      if (!this.validateAuthorization({ authorization })) return forbidden()
+        const authorize = this.tokenHandler.validate.bind(this.tokenHandler)
+        const apiName = await authorize({ token: authorization! })
         return ok({ apiName })
     } catch (error) {
       logger.warn(error instanceof Error ? error.message : 'unknown error')
@@ -24,17 +27,18 @@ export class AuthenticationMiddleware implements Middleware {
     }
   }
 
-  private validateAuthorization ({ authorization }: HttpRequest): boolean {
-    const error = new RequiredString(authorization!, 'authorization').validate()
-    const valid = error === undefined
-    if (!valid) throw new Error(`Unknown Authorization: ${authorization}`)
-    return valid
+  private async validateAuthorization ({ authorization }: AuthorizationRequest): Promise<boolean> {
+    const auth = this.tokenHandler.authorization()
+    auth.token = authorization ?? ''
+    const errors = await this.validator.validate(auth)
+    if (errors.length === 0) return true
+    return false
   }
 
   private validateIp ({ ip }: HttpRequest): boolean {
     const whitelist = env.whitelistIps?.split(',') ?? []
     const valid = whitelist.includes(ip!)
-    if (!valid) throw new Error(`Unknown IP: ${ip}`)
+    if (!valid) throw new Error(`Ip not allowed: ${ip}`)
     return valid
   }
 }

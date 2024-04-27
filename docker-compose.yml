@@ -1,11 +1,11 @@
 version: "3"
 
 services:
-  pontaltech-rcs-api-client-pointer:
+  facilita-neuro-api:
     restart: always
     build:
       context: ./
-    container_name: pontaltech-rcs-api-client-pointer
+    container_name: facilita-neuro-api
     entrypoint: npm start
     networks:
       - pontal_network

@@ -1,11 +1,11 @@
-import { getClient }from "./clients.js";
+import { getUser }from "./user.js";
 import { group } from 'k6';
 
 
 export default() =>{
 
-  group('Endpoint Get Client - API k6', () => {
-    getClient();
+  group('Endpoint Get User - API k6', () => {
+    getUser();
   });
 
 }

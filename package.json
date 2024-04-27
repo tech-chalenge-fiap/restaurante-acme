@@ -1,7 +1,7 @@
 {
-  "name": "pontaltech-rcs-api-client-pointer",
+  "name": "facilita-neuro-api",
   "version": "0.0.1",
-  "description": "Api responsável por acessar a base de dados MySQL da Pontaltech",
+  "description": "Api responsável por acessar a base de dados MySQL da Oakbit",
   "license": "GPL-3.0-or-later",
   "keywords": [
     "clean architecture",
@@ -37,11 +37,13 @@
     "test:k6": "k6 run --vus 100 --duration 30s ./tests/infra/api/load-test-metrics.js"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/module-alias": "^2.0.4",
+    "@types/uuid": "^9.0.8",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
     "ts-node-dev": "^2.0.0"
@@ -51,6 +53,9 @@
   },
   "dependencies": {
     "@types/k6": "^0.48.0",
+    "bcrypt": "^5.1.1",
+    "brazilian-class-validator": "^0.1.6",
+    "class-validator": "^0.14.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -62,6 +67,7 @@
     "reflect-metadata": "^0.2.1",
     "rimraf": "^5.0.5",
     "typeorm": "^0.3.19",
+    "uuid": "^9.0.1",
     "winston": "^3.11.0"
   }
 }

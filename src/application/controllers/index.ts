@@ -1,2 +1,3 @@
-export * from './controller'
-export * from './client-controller'
+export * from './user-controller'
+export * from './patient-controller'
+export * from './test-controller'

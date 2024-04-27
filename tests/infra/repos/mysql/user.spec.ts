@@ -1,16 +1,16 @@
-import { ClientRepository } from '@/infra/repos/mysql'
-import { ClientEntity } from '@/infra/repos/mysql/entities'
+import { UserRepository } from '@/infra/repos/mysql'
+import { UserEntity } from '@/infra/repos/mysql/entities'
 import { MySQLConnection, GenericType } from '@/infra/repos/mysql/helpers'
 import { MySQLRepository } from '@/infra/repos/mysql/repository'
 
 import { Repository } from 'typeorm'
 
 jest.setTimeout(36000)
-describe('ClientRepository', () => {
-  let sut: ClientRepository
+describe('UserRepository', () => {
+  let sut: UserRepository
   let mysql: MySQLConnection
   let connection: GenericType
-  let clientRepo: Repository<ClientEntity>
+  let clientRepo: Repository<UserEntity>
 
   beforeAll(async () => {
     mysql = MySQLConnection.getInstance()
@@ -18,7 +18,7 @@ describe('ClientRepository', () => {
   })
 
   beforeEach(() => {
-    sut = new ClientRepository(connection)
+    sut = new UserRepository(connection)
   })
 
   it('should extend MySQLRepository', async () => {
@@ -26,8 +26,8 @@ describe('ClientRepository', () => {
   })
 
   it('should return if client exists exists', async () => {
-    clientRepo = sut.getRepository(ClientEntity)
-    const client = await sut.getById({ id: 1 })
+    clientRepo = sut.getRepository(UserEntity)
+    const client = await sut.findOne({ id: 1 })
     expect(client?.id).toEqual(1)
   })
 })

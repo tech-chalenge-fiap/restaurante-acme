@@ -25,6 +25,10 @@ export class TestEntity {
   @MaxLength(255, { message: 'O nome historico ter  no máximo 255 caracteres' })
   name!: string;
 
+  @Column({ name: 'descricao' })
+  @MaxLength(2500, { message: 'O nome historico ter  no máximo 2500 caracteres' })
+  description!: string;
+
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
   createdAt!: Date;
 

@@ -42,7 +42,9 @@ export class UserController {
     if (userData.password) {
       userData.password = await this.tokenHandler.encrypt(userData.password)
     }
-    userData.userId = this.tokenHandler.generateUuid()
+
+    if(!userData.userId) userData.userId = this.tokenHandler.generateUuid()
+    
     const user = await this.userRepo.insert(userData)
     if (user === undefined) return badRequest(new Error('Cant insert user'))
     return ok({ userId: user.userId, name: user.name })

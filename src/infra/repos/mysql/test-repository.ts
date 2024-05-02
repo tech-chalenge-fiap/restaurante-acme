@@ -72,7 +72,7 @@ export class TestRepository extends MySQLRepository implements Test {
   async saveCategory(testCategoryData: TestCategory.InsertInput): Promise<TestCategory.InsertOutput> {
     try {
       const testRepo = this.getRepository(TestCategoryEntity)
-      const test = await testRepo.save(testCategoryData)
+      const test = await testRepo.insert(testCategoryData)
       if (test !== null) {
         return {
           testCategoryId: testCategoryData.testCategoryId

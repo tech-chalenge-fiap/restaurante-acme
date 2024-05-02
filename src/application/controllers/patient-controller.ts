@@ -59,10 +59,11 @@ export class PatientController {
   }
 
   async createPatient(patientData: Patient.InsertInput): Promise<HttpResponse<Patient.InsertOutput | Error>> {
-    patientData.patientId = this.tokenHandler.generateUuid()
-    const patient = await this.patientRepo.save(patientData)
+    if(!patientData.patientId) patientData.patientId = this.tokenHandler.generateUuid()
+  
+    const patient = await this.patientRepo.insert(patientData)
     if (patient === undefined) return badRequest(new Error('Cant insert patient'))
-    return ok({ patientId: patient.patientId, name: patientData.name })
+    return ok({ patientId: patient.patientId, name: patient.name })
   }
 
 }

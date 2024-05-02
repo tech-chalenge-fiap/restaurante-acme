@@ -1,6 +1,6 @@
 export interface TestCategory {
   find: () => Promise<TestCategory.FindOutput>
-  save: (input: TestCategory.InsertInput) => Promise<TestCategory.InsertOutput>
+  insert: (input: TestCategory.InsertInput) => Promise<TestCategory.InsertOutput>
 }
 
 export namespace TestCategory {
@@ -10,6 +10,7 @@ export namespace TestCategory {
     id?: number
     testCategoryId: string
     name: string 
+    description?: string 
     tests?: GenericType[]
   }
 
@@ -17,6 +18,7 @@ export namespace TestCategory {
     id?: number
     testCategoryId: string
     name: string 
+    description?: string 
     tests?: GenericType[]
   }
   
@@ -25,6 +27,7 @@ export namespace TestCategory {
     id?: number
     testCategoryId: string
     name?: string
+    description?: string 
     tests?: GenericType[]
   }
 }

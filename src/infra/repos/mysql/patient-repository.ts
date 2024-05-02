@@ -15,13 +15,14 @@ export class PatientRepository extends MySQLRepository implements Patient {
     if (patient !== null) return patient
   }
 
-  async save(patientData: Patient.InsertInput): Promise<Patient.InsertOutput> {
+  async insert(patientData: Patient.InsertInput): Promise<Patient.InsertOutput> {
     try {
       const patientRepo = this.getRepository(PatientEntity)
-      const patient = await patientRepo.save(patientData)
-      if (patient !== null) {
+      const patient = await patientRepo.insert(patientData)
+      if (patient.raw.insertId) {
         return {
-          patientId: patientData.patientId
+          patientId: patientData.patientId,
+          name: patientData.name
         }
       }
     } catch (error: any) {

@@ -4,7 +4,7 @@ A api utiliza uma API Key para autenticação através do cabeçalho User, é es
 
 Exemplo de solicitação com chave de API no cabeçalho User:
 ```http
-GET /api/clients HTTP/1.1
+GET /api/user HTTP/1.1
 Host: api.example.com
 Authorization: <chave_de_api>
 ```
@@ -20,7 +20,7 @@ Authorization: <chave_de_api>
 
 #### Obter informações do cliente por ID
 
-Endpoint: `http://localhost:4080/api/clients/`
+Endpoint: `http://localhost:4080/api/user/`
 
 #### Requisição
 
@@ -33,7 +33,7 @@ Endpoint: `http://localhost:4080/api/clients/`
 Exemplo de solicitação:
 
 ```http
-GET /api/clients/?id=10016 HTTP/1.1
+GET /api/user/?userId=uuidv4 HTTP/1.1
 Host: api.example.com
 Authorization: <chave_de_api>
 ```

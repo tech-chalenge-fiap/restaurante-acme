@@ -4,7 +4,8 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  PrimaryColumn
 } from 'typeorm';
 import { IsEmail, IsNotEmpty, Length, IsEnum, IsDateString, IsBoolean, IsMobilePhone } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,7 +17,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
 
-  @Column({ name: 'user_id', unique: true,  default: uuidv4() })
+  @PrimaryColumn({ name: 'user_id', unique: true,  default: uuidv4() })
   userId!: string;
 
   @Column({ name: 'nome' })
@@ -29,7 +30,7 @@ export class UserEntity {
   @Length(6, 6, { message: 'O crp deve ter 6 caracteres' })
   crpCode!: string;
 
-  @Column({ name: 'email', unique: true })
+  @Column({ name: 'email', unique: true  })
   @IsNotEmpty({ message: 'O e-mail é obrigatório' })
   @IsEmail({}, { message: 'Deve ser um e-mail válido' })
   email!: string;

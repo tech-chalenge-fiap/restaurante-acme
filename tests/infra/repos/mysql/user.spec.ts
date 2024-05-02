@@ -27,7 +27,7 @@ describe('UserRepository', () => {
 
   it('should return if client exists exists', async () => {
     clientRepo = sut.getRepository(UserEntity)
-    const client = await sut.findOne({ id: 1 })
-    expect(client?.id).toEqual(1)
+    const client = await sut.findOne({ userId: '1' })
+    expect(client?.userId).toEqual(1)
   })
 })

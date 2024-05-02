@@ -6,3 +6,4 @@ import { makeValidator } from '@/main/factories/application/validation'
 export const makeUserController = (): UserController => {
   return new UserController(makeValidator(), makeTokenHandler(), makeUserRepo())
 }
+

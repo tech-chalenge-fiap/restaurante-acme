@@ -17,7 +17,8 @@ export class UserRepository extends MySQLRepository implements User {
       const user = await userRepo.insert(userData)
       if (user !== null) {
         return {
-          userId: userData.userId
+          userId: userData.userId,
+          name: userData.name
         }
       }
     }catch(error: any) {

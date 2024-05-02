@@ -1,11 +1,11 @@
 version: "3"
 
 services:
-  facilita-neuro-api:
+  tech-challenge-restaurante:
     restart: always
     build:
       context: ./
-    container_name: facilita-neuro-api
+    container_name: tech-challenge-restaurante
     entrypoint: npm start
     networks:
       - pontal_network

@@ -1,4 +1,4 @@
-import { env } from '@/main/config/env'
+import { env } from '@/application/main/config/env'
 import { TokenHandler } from '@/infra/gateways'
 
 export const makeTokenHandler = (): TokenHandler => {

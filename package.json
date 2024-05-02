@@ -1,12 +1,11 @@
 {
-  "name": "facilita-neuro-api",
+  "name": "tech-challenge-restaurante",
   "version": "0.0.1",
-  "description": "Api responsável por acessar a base de dados MySQL da Oakbit",
+  "description": "Api responsável por gerenciar a aplicação do Restaurente Tech Challenge ",
   "license": "GPL-3.0-or-later",
   "keywords": [
-    "clean architecture",
+    "Ports and Adapters",
     "clean code",
-    "tdd",
     "ddd",
     "solid",
     "design patterns",
@@ -16,12 +15,12 @@
     "typeorm"
   ],
   "author": {
-    "name": "Mauricio Carvalho Pinheiro",
-    "email": "mauricio.pinheiro@pontaltech.com.br"
+    "name": "any",
+    "email": "any@any.com"
   },
   "scripts": {
-    "start": "node -r dotenv/config dist/main",
-    "dev": "ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/main",
+    "start": "node -r dotenv/config dist/application/main",
+    "dev": "ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/application/main",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc -p tsconfig-build.json",
     "prepare": "husky install",

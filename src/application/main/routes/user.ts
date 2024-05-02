@@ -1,9 +1,9 @@
 import { 
   adaptExpressGetUserRoute as getUser, 
   adaptExpressCreateUserRoute as createUser
-} from '@/main/adapters';
-import { makeUserController } from '@/main/factories/application/controllers';
-import { auth } from '@/main/middlewares'
+} from '@/application/main/adapters';
+import { makeUserController } from '@/application/main/factories/application/controllers';
+import { auth } from '@/application/main/middlewares'
 
 import { Router } from 'express';
 

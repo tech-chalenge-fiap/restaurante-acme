@@ -3,9 +3,9 @@ import {
   adaptExpressCreateTestRoute as createTest,
   adaptExpressGetTestCategoryRoute as getTestCategory, 
   adaptExpressCreateTestCategoryRoute as createTestCategory 
-} from '@/main/adapters';
-import { makeTestController } from '@/main/factories/application/controllers';
-import { auth } from '@/main/middlewares'
+} from '@/application/main/adapters';
+import { makeTestController } from '@/application/main/factories/application/controllers';
+import { auth } from '@/application/main/middlewares'
 
 import { Router } from 'express';
 

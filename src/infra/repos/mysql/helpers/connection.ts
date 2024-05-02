@@ -1,6 +1,6 @@
 import { ConnectionNotFoundError } from '@/infra/errors';
 import { DataSource, Repository, ObjectLiteral, ObjectType } from 'typeorm';
-import { env } from '@/main/config/env'
+import { env } from '@/application/main/config/env'
 import { logger } from '@/infra/helpers'
 
 export type GenericType <T = any> = T

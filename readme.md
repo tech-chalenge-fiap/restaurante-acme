@@ -1,6 +1,8 @@
-<h1 align="center">Fase 1: Tech Challenge - Software Architecture
+<h1 align="center">FIAP - Software Architecture
 Pós Tech - 7SOAT</h1>
-<h3 align="center">Restaurante ACME</h3>
+<h3 align="center">Fase 1: Tech Challenge - Restaurante ACME</h3>
+
+<h4 align="center">Restaurante ACME</h4>
 
 - 🔭 I’m currently working on [Pontaltech](https://www.pontaltech.com.br/)
 

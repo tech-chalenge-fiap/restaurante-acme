@@ -1,0 +1,80 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "Restaurante ACME API",
+		"version": "1.0.0",
+		"description": "Documentação da API do restaurante ACME",
+		"license": {
+			"name": "GPL-3.0-or-later"
+		},
+		"contact": {
+			"name": "any",
+			"email": "any@any.com"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/healthcheck": {
+			"get": {
+				"operationId": "GetHealthCheck",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string",
+											"enum": [
+												"OK"
+											],
+											"nullable": false
+										},
+										"uptime": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"message",
+										"uptime"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para verificação da saúde do servidor",
+				"tags": [
+					"Health Check"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/v1/api"
+		}
+	]
+}

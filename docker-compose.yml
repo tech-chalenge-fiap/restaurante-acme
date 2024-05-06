@@ -6,7 +6,7 @@ services:
     build:
       context: ./
     container_name: tech-challenge-restaurante
-    entrypoint: npm start
+    entrypoint: npm start && npm run docs
     networks:
       - pontal_network
     volumes:

@@ -12,10 +12,11 @@ import {
   Body as body,
   Response as response,
   Controller,
-  type HttpStatusCodeLiteral,
-  type HttpStatusCodeStringLiteral,
-  type OtherValidOpenApiHttpStatusCode
-} from 'tsoa'
+  HttpStatusCodeLiteral,
+  HttpStatusCodeStringLiteral,
+  OtherValidOpenApiHttpStatusCode,
+} from 'tsoa';
+
 
 export function Route(value: string): any {
   return route(value)

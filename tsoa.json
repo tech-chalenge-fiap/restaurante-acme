@@ -2,7 +2,7 @@
   "entryFile": "src/application/main/index.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": [
-    "docs/*.ts"
+    "src/infra/docs/*.ts"
   ],
   "spec": {
     "name": "Restaurante ACME API",

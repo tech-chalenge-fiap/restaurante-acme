@@ -12,13 +12,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { TestCategoryEntity } from './test-category';
 
 
-@Entity({ name: 'tests' })
+@Entity({ name: 'ingredientes-items' })
 export class TestEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'teste_id', unique: true,  default: uuidv4() })
-  testId!: string;
+  @Column({ name: 'ingredientes_items_id', unique: true,  default: uuidv4() })
+  ingredientsId!: string;
 
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
@@ -26,7 +26,7 @@ export class TestEntity {
   name!: string;
 
   @Column({ name: 'descricao' })
-  @MaxLength(2500, { message: 'O nome historico ter  no máximo 2500 caracteres' })
+  @MaxLength(2500, { message: 'A descricao ter  no máximo 2500 caracteres' })
   description!: string;
 
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
@@ -34,8 +34,4 @@ export class TestEntity {
 
   @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
   updatedAt!: Date;
-
-  @ManyToOne(() => TestCategoryEntity, (category) => category.tests, { onDelete: 'CASCADE' })
-  category?: TestCategoryEntity;
- 
 }

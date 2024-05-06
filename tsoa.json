@@ -1,0 +1,35 @@
+{
+  "entryFile": "src/application/main/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": [
+    "docs/*.ts"
+  ],
+  "spec": {
+    "name": "Restaurante ACME API",
+    "description": "Documentação da API do restaurante ACME",
+    "outputDirectory": "src/application/main/docs",
+    "specVersion": 3,
+    "version": "1.0.0",
+    "basePath": "/v1/api",
+    "securityDefinitions": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "src/application/main/docs",
+    "authenticationModule": "src/application/main/middlewares/authentication.ts"
+  },
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  },
+  "ignore": [
+    "**/node_modules/**"
+  ]
+}

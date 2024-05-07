@@ -4,11 +4,11 @@ export interface Register {
 }
 
 export namespace Register {
-  export type FindClientInput = { clientId: string }
+  export type FindClientInput = { cpf: string }
   export type FindClientOutput = undefined | {
     clientId: string
     name: string 
-    registration: string
+    cpf: string
     email: string
     orders?: GenericType[]
   }
@@ -18,7 +18,7 @@ export namespace Register {
   export type InsertClientInput = {
     clientId: string
     name: string 
-    registration: string
+    cpf: string
     email: string
     orders?: GenericType[]
   }

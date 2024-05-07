@@ -6,14 +6,14 @@ export class RegisterRepository extends MySQLRepository implements Register {
   
   constructor(private readonly clientEntity: Register.GenericType) { super() }
 
-  async findClient ({ clientId }: Register.FindClientInput): Promise<Register.FindClientOutput> {
+  async findClient ({ cpf }: Register.FindClientInput): Promise<Register.FindClientOutput> {
     const clientRepo = this.getRepository(this.clientEntity)
-    const client = await clientRepo.findOne({ where: { clientId } })
+    const client = await clientRepo.findOne({ where: { cpf } })
     
     if (client !== null) return {
       clientId: client.clientId,
       name: client.name,
-      registration: client.registration,
+      cpf: client.registration,
       email: client.email,
       orders: client.orders
     }

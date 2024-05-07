@@ -29,7 +29,7 @@ export class ClientEntity {
   @Column({ name: 'cpf', unique: true })
   @IsNotEmpty({ message: 'O cpf é obrigatório' })
   @IsCPF({ message: 'O número de cpf deve ser válido' })
-  registration!: string;
+  cpf!: string;
 
   @Column({ name: 'email', unique: true  })
   @IsNotEmpty({ message: 'O e-mail é obrigatório' })

@@ -1,4 +1,4 @@
-export * from './user'
-export * from './patient'
+export * from './register'
+export * from './order'
 export * from './test'
 export * from './test-category'

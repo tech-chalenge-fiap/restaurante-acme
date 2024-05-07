@@ -5,7 +5,7 @@ import { TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
 import { EntityError } from '@/infra/errors'
 
-export class PatientController {
+export class OrderController {
   constructor(
     private readonly validator: Validator,
     private readonly tokenHandler: TokenHandler,

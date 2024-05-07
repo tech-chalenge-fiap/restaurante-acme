@@ -1,13 +1,13 @@
 import { 
-  adaptExpressGetUserRoute as getUser, 
-  adaptExpressCreateUserRoute as createUser
+  adaptExpressGetClientRoute as getClient, 
+  adaptExpressCreateClientRoute as createClient
 } from '@/application/main/adapters';
-import { makeUserController } from '@/application/main/factories/application/controllers';
+import { makeClientController } from '@/application/main/factories/application/controllers';
 import { auth } from '@/application/main/middlewares'
 
 import { Router } from 'express';
 
 export default (router: Router): void => {
-  router.get('/user', auth, getUser(makeUserController()));
-  router.post('/user', auth, createUser(makeUserController()));
+  router.get('/client', auth, getClient(makeClientController()));
+  router.post('/client', auth, createClient(makeClientController()));
 };

@@ -9,16 +9,16 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TestEntity } from './test';
+import { OrderItemEntity } from './order-item';
 
 
-@Entity({ name: 'categorias_testes' })
-export class TestCategoryEntity {
+@Entity({ name: 'items_categoria' })
+export class CategoryItemEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'categoria_id', unique: true,  default: uuidv4() })
-  testCategoryId!: string;
+  @Column({ name: 'items_categoria_id', unique: true,  default: uuidv4() })
+  itemCategoryId!: string;
  
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
@@ -31,6 +31,6 @@ export class TestCategoryEntity {
   @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
   updatedAt!: Date;
 
-  @OneToMany(() => TestEntity, (test) => test.category, { cascade: true })
-  tests?: TestEntity[];
+  @OneToMany(() => OrderItemEntity, (order) => order.categoryItem, { cascade: true })
+  ordemItems?: OrderItemEntity[];
 }

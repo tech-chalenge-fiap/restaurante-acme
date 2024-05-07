@@ -5,20 +5,17 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TestCategoryEntity } from './test-category';
 
-
-@Entity({ name: 'ingredientes-items' })
-export class TestEntity {
+@Entity({ name: 'ingredientes_item' })
+export class IngredientItemEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'ingredientes_items_id', unique: true,  default: uuidv4() })
-  ingredientsId!: string;
+  @Column({ name: 'ingredientes_item_id', unique: true,  default: uuidv4() })
+  ingredientId!: string;
 
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })

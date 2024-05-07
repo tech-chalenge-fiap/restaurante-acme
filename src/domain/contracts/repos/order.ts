@@ -1,37 +1,31 @@
-export interface Patient {
-
+export interface Order {
+  findOrder: (input: Order.FindOrderInput) => Promise<Order.FindOrderOutput>
+  insertOrder: (input: Order.InsertOrderInput) => Promise<Order.InsertOrderOutput>
 }
 
-export namespace Patient {
-  export type FindInput = { patientId: string }
-  export type FindOutput = undefined | {
+export namespace Order {
+  export type FindOrderInput = { orderId: string }
+  export type FindOrderOutput = undefined | {
     orderId: string
     createdAt: string
-    client: GenericType[]
+    client: GenericType
+    orderItems: GenericType[]
   }
 
 
   export type GenericType<T = any> = T
 
-  export type InsertInput = {
-    orderId: string,
-    name: string 
-    email: string 
-    birthDate?: string 
-    registration: string
-    phone?: string 
-    address?: string 
-    education?: string 
-    educationalInstitution?: string 
-    gender?: string 
-    notes?: GenericType[] 
-    specialist: GenericType
+  export type InsertOrderInput = {
+    orderId: string
+    client: GenericType
+    orderItems: GenericType[]
   }
   
 
-  export type InsertOutput = undefined | {
-    orderId: string
-    name?: string
+  export type InsertOrderOutput = undefined | {
+    orderId: string,
+    client: GenericType
+    orderItems: GenericType[]
   }
 }
 

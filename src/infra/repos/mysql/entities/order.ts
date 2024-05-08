@@ -10,7 +10,8 @@ import {
 
   import { v4 as uuidv4 } from 'uuid';
 
-  import { OrderItemEntity, ClientEntity } from '@/infra/repos/mysql/entities'
+  import { OrderProductsEntity, ClientEntity } from '@/infra/repos/mysql/entities'
+import { IsNotEmpty } from 'class-validator';
   
   
   @Entity({ name: 'pedidos' })
@@ -28,9 +29,11 @@ import {
     updatedAt!: Date;
 
     @ManyToOne(() => ClientEntity, (client) => client.orders, { onDelete: 'CASCADE' })
+    @IsNotEmpty({ message: 'O client é obrigatório' })
     client!: ClientEntity;
 
-    @OneToMany(() => OrderItemEntity, (orderItems) => orderItems.order, { cascade: true })
-    orderItems!: OrderItemEntity[];
+    @OneToMany(() => OrderProductsEntity, (orderProducts) => orderProducts.order, { cascade: true })
+    @IsNotEmpty({ message: 'OrderProducts é obrigatório' })
+    orderProducts!: OrderProductsEntity[];
   }
   

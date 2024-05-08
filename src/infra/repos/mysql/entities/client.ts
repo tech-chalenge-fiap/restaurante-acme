@@ -1,13 +1,12 @@
 import {
   Entity,
-  Column,
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  PrimaryColumn
+  Column
 } from 'typeorm';
-import { IsEmail, IsNotEmpty, Length, IsEnum, IsDateString, IsBoolean, IsMobilePhone } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { IsCPF } from 'brazilian-class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderEntity } from './order';
@@ -18,7 +17,7 @@ export class ClientEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
 
-  @PrimaryColumn({ name: 'cliente_id', unique: true,  default: uuidv4() })
+  @Column({ name: 'cliente_id', unique: true,  default: uuidv4() })
   clientId!: string;
 
   @Column({ name: 'nome' })

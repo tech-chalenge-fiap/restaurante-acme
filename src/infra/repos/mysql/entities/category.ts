@@ -1,34 +1,36 @@
 import { MaxLength, IsNotEmpty } from 'class-validator';
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  Column
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
+import { ProductEntity } from './product';
 
-@Entity({ name: 'ingredientes_produtos' })
-export class IngredientProductsEntity {
+
+@Entity({ name: 'categorias' })
+export class CategoryEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'ingrediente_produto_id', unique: true,  default: uuidv4() })
-  ingredientId!: string;
-
+  @Column({ name: 'categoria_id', unique: true,  default: uuidv4() })
+  productsCategoryId!: string;
+ 
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
   @MaxLength(255, { message: 'O nome historico ter  no máximo 255 caracteres' })
   name!: string;
-
-  @Column({ name: 'descricao' })
-  @MaxLength(2500, { message: 'A descricao ter  no máximo 2500 caracteres' })
-  description!: string;
 
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
   createdAt!: Date;
 
   @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
   updatedAt!: Date;
+
+  @OneToMany(() => ProductEntity, (product) => product.category, { cascade: true })
+  products?: ProductEntity[];
 }

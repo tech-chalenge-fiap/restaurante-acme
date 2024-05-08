@@ -1,26 +1,24 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
   ManyToOne,
-  ManyToMany
+  Column
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-
-import { CategoryProductsEntity } from './category-products';
 import { IsNotEmpty, Length } from 'class-validator';
-import { OrderProductsEntity } from './order-products';
-
+import { OrderProductEntity } from './order-product'; 
+import { CategoryEntity } from './category';
 
 @Entity({ name: 'produtos' })
-export class ProductsEntity {
+export class ProductEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
-  
-  @Column({ name: 'produto_id', unique: true,  default: uuidv4() })
-  orderProductsId!: string;
+
+  @Column({ name: 'produto_id', unique: true, default: uuidv4() })
+  productId!: string;
 
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
@@ -28,8 +26,8 @@ export class ProductsEntity {
   name!: string;
 
   @Column({ name: 'descricao' })
-  @IsNotEmpty({ message: 'O nome é obrigatório' })
-  @Length(6, 255, { message: 'O nome deve ter entre 6 e 255 caracteres' })
+  @IsNotEmpty({ message: 'A descrição é obrigatória' })
+  @Length(6, 255, { message: 'A descrição deve ter entre 6 e 255 caracteres' })
   description!: string;
 
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
@@ -38,6 +36,9 @@ export class ProductsEntity {
   @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
   updatedAt!: Date;
 
-  @ManyToMany(() => CategoryProductsEntity, (category) => category.products, { onDelete: 'CASCADE' })
-  categoryProducts!: CategoryProductsEntity;
+  @OneToMany(() => OrderProductEntity, (orderProduct) => orderProduct.product, { cascade: true })
+  orderProducts!: OrderProductEntity[]; 
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products, { onDelete: 'SET NULL' })
+  category?: CategoryEntity; 
 }

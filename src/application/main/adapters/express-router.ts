@@ -1,9 +1,8 @@
-import { PatientController, UserController, TestController } from '@/application/controllers';
+import { OrderController, RegisterController } from '@/application/controllers';
 import { RequestHandler } from 'express';
 
-type UserAdapter = (controller: UserController) => RequestHandler;
-type PatientAdapter = (controller: PatientController) => RequestHandler;
-type TestAdapter = (controller: TestController) => RequestHandler;
+type ClientAdapter = (controller: RegisterController) => RequestHandler;
+type OrderAdapter = (controller: OrderController) => RequestHandler;
 type GenericType<T = any> = T
 
 type AdapterHealthcheck = () => RequestHandler;
@@ -19,9 +18,9 @@ const makeResponseHandler = (data: GenericType, statusCode: number, res: Generic
   res.status(statusCode).json(json)
 }
 
-export const adaptExpressGetUserRoute: UserAdapter = controller => async (req, res) => {
+export const adaptExpressGetClientRoute: ClientAdapter = controller => async (req, res) => {
   const { query, locals } = req;
-  const { statusCode, data } = await controller.handleGetUser({
+  const { statusCode, data } = await controller.handleGetClient({
     ...locals,
     ...query
   });
@@ -30,16 +29,16 @@ export const adaptExpressGetUserRoute: UserAdapter = controller => async (req, r
 };
 
 
-export const adaptExpressCreateUserRoute: UserAdapter = controller => async (req, res) => {
+export const adaptExpressCreateClientRoute: ClientAdapter = controller => async (req, res) => {
   const { body } = req;
-  const { statusCode, data } = await controller.handleCreateUser(body);
+  const { statusCode, data } = await controller.handleCreateClient(body);
 
   makeResponseHandler(data, statusCode, res)
 };
 
-export const adaptExpressGetPatientRoute: PatientAdapter = controller => async (req, res) => {
+export const adaptExpressGetOrderRoute: OrderAdapter = controller => async (req, res) => {
   const { query, locals } = req;
-  const { statusCode, data } = await controller.handleGetPatient({
+  const { statusCode, data } = await controller.handleGetOrder({
     ...locals,
     ...query
   });
@@ -48,49 +47,12 @@ export const adaptExpressGetPatientRoute: PatientAdapter = controller => async (
 };
 
 
-export const adaptExpressCreatePatientRoute: PatientAdapter = controller => async (req, res) => {
+export const adaptExpressCreateOrderRoute: OrderAdapter = controller => async (req, res) => {
   const { body } = req;
-  const { statusCode, data } = await controller.handleCreatePatient(body);
+  const { statusCode, data } = await controller.handleCreateOrder(body);
 
   makeResponseHandler(data, statusCode, res)
 };
-
-export const adaptExpressGetTestRoute: TestAdapter = controller => async (req, res) => {
-  const { query, locals } = req;
-  const { statusCode, data } = await controller.handleGetTest({
-    ...locals,
-    ...query
-  });
-
-  makeResponseHandler(data, statusCode, res)
-};
-
-
-export const adaptExpressCreateTestRoute: TestAdapter = controller => async (req, res) => {
-  const { body } = req;
-  const { statusCode, data } = await controller.handleCreateTest(body);
-
-  makeResponseHandler(data, statusCode, res)
-};
-
-
-export const adaptExpressGetTestCategoryRoute: TestAdapter = controller => async (req, res) => {
-  const { query, locals } = req;
-  const { statusCode, data } = await controller.handleGetTestCategory({
-    ...locals,
-    ...query
-  });
-
-  makeResponseHandler(data, statusCode, res)
-};
-
-
-export const adaptExpressCreateTestCategoryRoute: TestAdapter = controller => async (req, res) => {
-  const { body } = req;
-  const { statusCode, data } = await controller.handleCreateTestCategory(body);
-  makeResponseHandler(data, statusCode, res)
-};
-
 
 
 export const adaptExpressHealthcheckRoute: AdapterHealthcheck = () => async (_, res) => {

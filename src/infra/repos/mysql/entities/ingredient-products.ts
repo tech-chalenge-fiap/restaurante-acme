@@ -9,12 +9,12 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 
-@Entity({ name: 'ingredientes_item' })
-export class IngredientItemEntity {
+@Entity({ name: 'ingredientes_produtos' })
+export class IngredientProductsEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'ingredientes_item_id', unique: true,  default: uuidv4() })
+  @Column({ name: 'ingrediente_produto_id', unique: true,  default: uuidv4() })
   ingredientId!: string;
 
   @Column({ name: 'nome' })

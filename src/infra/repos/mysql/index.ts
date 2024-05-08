@@ -1,3 +1,2 @@
-export * from './user-repository'
-export * from './patient-repository'
-export * from './test-repository'
+export * from './register-repository'
+export * from './order-repository'

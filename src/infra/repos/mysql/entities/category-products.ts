@@ -5,29 +5,25 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
+  OneToMany
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TestCategoryEntity } from './test-category';
+import { ProductsEntity } from './products';
 
 
-@Entity({ name: 'tests' })
-export class TestEntity {
+@Entity({ name: 'produtos_categorias' })
+export class CategoryProductsEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
   
-  @Column({ name: 'teste_id', unique: true,  default: uuidv4() })
-  testId!: string;
-
+  @Column({ name: 'produto_categoria_id', unique: true,  default: uuidv4() })
+  productsCategoryId!: string;
+ 
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
   @MaxLength(255, { message: 'O nome historico ter  no máximo 255 caracteres' })
   name!: string;
-
-  @Column({ name: 'descricao' })
-  @MaxLength(2500, { message: 'O nome historico ter  no máximo 2500 caracteres' })
-  description!: string;
 
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
   createdAt!: Date;
@@ -35,7 +31,6 @@ export class TestEntity {
   @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
   updatedAt!: Date;
 
-  @ManyToOne(() => TestCategoryEntity, (category) => category.tests, { onDelete: 'CASCADE' })
-  category?: TestCategoryEntity;
- 
+  @OneToMany(() => ProductsEntity, (products) => products.categoryProducts, { cascade: true })
+  products?: ProductsEntity[];
 }

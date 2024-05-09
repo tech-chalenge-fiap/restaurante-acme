@@ -44,3 +44,5 @@ export class ClientEntity {
   @OneToMany(() => OrderEntity, (order) => order.client, { cascade: true })
   orders?: OrderEntity[];
 }
+
+

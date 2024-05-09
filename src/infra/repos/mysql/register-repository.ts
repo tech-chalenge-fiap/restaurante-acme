@@ -13,9 +13,8 @@ export class RegisterRepository extends MySQLRepository implements Register {
     if (client !== null) return {
       clientId: client.clientId,
       name: client.name,
-      cpf: client.registration,
-      email: client.email,
-      orders: client.orders
+      cpf: client.cpf,
+      email: client.email
     }
   }
 
@@ -24,11 +23,11 @@ export class RegisterRepository extends MySQLRepository implements Register {
     const client = await clientRepo.findOne({ where: { clientId } })
     
     if (client !== null) return {
+      id: client.id,
       clientId: client.clientId,
       name: client.name,
-      cpf: client.registration,
-      email: client.email,
-      orders: client.orders
+      cpf: client.cpf,
+      email: client.email
     }
   }
 

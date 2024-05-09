@@ -28,8 +28,7 @@ export class OrderEntity {
   updatedAt!: Date;
 
   @ManyToOne(() => ClientEntity, (client) => client.orders, { onDelete: 'CASCADE' })
-  @IsNotEmpty({ message: 'O client é obrigatório' })
-  client!: ClientEntity;
+  client?: ClientEntity;
 
   @OneToMany(() => OrderProductEntity, (orderProducts) => orderProducts.order, { cascade: true })
   @IsNotEmpty({ message: 'OrderProducts é obrigatório' })

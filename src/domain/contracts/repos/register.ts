@@ -6,8 +6,9 @@ export interface Register {
 
 export namespace Register {
   export type FindClientInput = { cpf: string }
-  export type FindClientByIdInput = { clientId: string }
+  export type FindClientByIdInput = { clientId?: string }
   export type FindClientOutput = undefined | {
+    id?: number
     clientId: string
     name: string 
     cpf: string

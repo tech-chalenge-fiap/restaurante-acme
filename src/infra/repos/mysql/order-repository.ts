@@ -8,13 +8,16 @@ export class OrderRepository extends MySQLRepository implements Order {
         private readonly  orderEntity: Order.GenericType,
         private readonly  productEntity: Order.GenericType,
         private readonly  orderProductEntity: Order.GenericType,
-        private readonly ingredientProductEntity: Order.GenericType,
-        private readonly categoryProductEntity: Order.GenericType
+        private readonly ingredientEntity: Order.GenericType,
+        private readonly ingredientProductEntity: Order.GenericType
     ) { super() }
 
     getOrderEntity = () => new this.orderEntity()
     getOrderProductsEntity = () => new this.orderProductEntity()
-
+    getProductEntity = () => new this.productEntity()
+    getOrderProductEntity = () => new this.orderProductEntity()
+    getIngredientProductEntity = () => new this.ingredientProductEntity()
+    getIngredientEntity = () => new this.ingredientEntity()
 
     async findOrder ({ orderId }: Order.FindOrderInput): Promise<Order.FindOrderOutput> {
         const orderRepo = this.getRepository(this.orderEntity)
@@ -32,11 +35,10 @@ export class OrderRepository extends MySQLRepository implements Order {
         try{
           const orderRepo = this.getRepository(this.orderEntity)
           const order = await orderRepo.insert(orderData)
-          if (order !== null) {
+          if (order.raw.insertId) {
             return {
-                orderId: orderData.orderId,
-                client: orderData.client,
-                orderProducts: orderData.orderProducts
+                id: order.raw.insertId,
+                orderId: orderData.orderId
             }
           }
         }catch(error: any) {
@@ -45,19 +47,66 @@ export class OrderRepository extends MySQLRepository implements Order {
         
       }
 
-      async findOrderProduct ({ orderProductId }: Order.FindOrderProductInput): Promise<Order.FindOrderProductOutput> {
-        const orderRepo = this.getRepository(this.orderProductEntity)
-        const orderProduct = await orderRepo.findOne({ where: { orderProductId } })
+      async insertProductOrder (productOrderData: Order.InsertProductOrderInput): Promise<Order.InsertProductOrderOutput> {
+        try{
+          const orderRepo = this.getRepository(this.orderProductEntity)
+          const order = await orderRepo.insert(productOrderData)
+          if (order.raw.insertId) {
+            return {
+                id: order.raw.insertId, 
+                orderId: productOrderData.order.orderId,
+                productId: productOrderData.product.productId
+            }
+          }
+        }catch(error: any) {
+          throw new EntityError(error.message)
+        }
         
-        if (orderProduct !== null) return {
-          orderProductId: orderProduct.orderProductId,
-          name: orderProduct.name,
-          description: orderProduct.description,
-          price: orderProduct.price,
-          order: orderProduct.order
+      }
+
+      async insertIngredientProduct (ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
+        try{
+          const orderRepo = this.getRepository(this.ingredientProductEntity)
+          const order = await orderRepo.insert(ingredientProductData)
+          if (order.raw.insertId) {
+            return {
+                id: order.raw.insertId, 
+                ingredientId: ingredientProductData.ingredient.ingredientId,
+                orderProductId: ingredientProductData.orderProduct.id
+            }
+          }
+        }catch(error: any) {
+          throw new EntityError(error.message)
+        }
+        
+      }
+
+      async findProduct ({ productId }: Order.FindProductInput): Promise<Order.FindProductOutput> {
+        const orderRepo = this.getRepository(this.productEntity)
+        const product = await orderRepo.findOne({ where: { productId } })
+        
+        if (product !== null) return {
+          id: product.id,
+          productId: product.productId,
+          name: product.name,
+          description: product.description,
+          price: product.price
         }
       }
-    
+
+      async findIngredient ({ ingredientId }: Order.FindIngredientInput): Promise<Order.FindIngredientOutput> {
+        const orderRepo = this.getRepository(this.ingredientEntity)
+        const ingredient = await orderRepo.findOne({ where: { ingredientId } })
+        
+        if (ingredient !== null) return {
+          id: ingredient.id,
+          ingredientId: ingredient.ingredientId,
+          name: ingredient.name,
+          description: ingredient.description,
+          price: ingredient.price
+        }
+      }
+
 }
 
 

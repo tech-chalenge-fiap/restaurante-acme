@@ -5,6 +5,6 @@ import { auth } from '@/application/main/middlewares'
 import { Router } from 'express';
 
 export default (router: Router): void => {
-  router.get('/order', auth, getOrder(makeOrderController()));
-  router.post('/order', auth, createOrder(makeOrderController()));
+  router.get('/pedido', auth, getOrder(makeOrderController()));
+  router.post('/pedido', auth, createOrder(makeOrderController()));
 };

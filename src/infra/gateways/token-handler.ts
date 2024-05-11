@@ -6,10 +6,10 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 export class TokenHandler implements TokenValidator {
-  constructor (private readonly secret: string) {}
+  constructor (private readonly secret?: string) {}
 
   async validate ({ token }: TokenValidator.Input): Promise<TokenValidator.Output> {
-    const payload = verify(token, this.secret) as JwtPayload
+    const payload = verify(token, this.secret ?? 'any_secret') as JwtPayload
     return payload.apiName
   }
 

@@ -10,6 +10,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import { ProductEntity } from './product';
+import { IngredientEntity } from './ingredient';
 
 
 @Entity({ name: 'categorias' })
@@ -18,7 +19,7 @@ export class CategoryEntity {
   id?: number;
   
   @Column({ name: 'categoria_id', unique: true,  default: uuidv4() })
-  productsCategoryId!: string;
+  categoryId!: string;
  
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
@@ -33,4 +34,7 @@ export class CategoryEntity {
 
   @OneToMany(() => ProductEntity, (product) => product.category, { cascade: true })
   products?: ProductEntity[];
+
+  @OneToMany(() => IngredientEntity, (ingredient) => ingredient.category, { cascade: true })
+  ingredients?: IngredientEntity[];
 }

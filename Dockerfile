@@ -1,23 +1,22 @@
 FROM node:alpine as ts-compiler
 WORKDIR /usr/app
 COPY package*.json ./
-# COPY ecosystem.config*.cjs ./
 COPY tsconfig*.json ./
 RUN npm install
+
+# Copie todo o código fonte e compile
 COPY . ./
 RUN npm run build
 
 FROM node:alpine as ts-remover
 WORKDIR /usr/app
 COPY --from=ts-compiler /usr/app/package*.json ./
-# COPY --from=ts-compiler /usr/app/.env ./
-# COPY --from=ts-compiler /usr/app/ecosystem.config*.cjs ./
 COPY --from=ts-compiler /usr/app/dist ./dist
-
 
 FROM node:alpine
 WORKDIR /usr/app
 
+# Adicionando biblioteca openssl se necessário
 RUN apk add --no-cache openssl
 
 # ENV DOCKERIZE_VERSION v0.6.1
@@ -25,11 +24,13 @@ RUN apk add --no-cache openssl
 #     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
 #     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+# Copie a aplicação compilada para a imagem final
 COPY --from=ts-remover /usr/app ./
 
-# Instale pm2
-# RUN npm install pm2 -g
+# Instale alias de módulo
 RUN npm i --save module-alias
-ENTRYPOINT [ "npm", "start" ] 
+
+# Use o script de entrada
+ENTRYPOINT ["npm", "start"]
 
 USER 1000

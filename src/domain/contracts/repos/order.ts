@@ -15,10 +15,12 @@ export namespace Order {
   export type FindOrderInput = { orderId: string }
 
   export type FindOrderOutput = undefined | {
+    id: number
     orderId: string
     createdAt: string
     client?: GenericType
-    orderProducts: GenericType[]
+    orderProducts: GenericType[],
+    totalValue?: number
   }
 
 

@@ -8,8 +8,8 @@ import {
   Column
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { IsNotEmpty, Length } from 'class-validator';
-import { OrderProductEntity } from './order-product'; 
+import { IsNotEmpty, Length, IsNumber, IsPositive, Min } from 'class-validator';
+import { OrderProductEntity } from './order-product';
 import { CategoryEntity } from './category';
 
 @Entity({ name: 'produtos' })
@@ -30,6 +30,12 @@ export class ProductEntity {
   @Length(6, 255, { message: 'A descrição deve ter entre 6 e 255 caracteres' })
   description!: string;
 
+  @Column({ name: 'preco', type: 'decimal', precision: 10, scale: 2 })
+  @IsNumber({}, { message: 'O preço deve ser um número' })
+  @IsPositive({ message: 'O preço deve ser positivo' })
+  @Min(0.01, { message: 'O preço deve ser pelo menos 0,01' })
+  price!: number;
+
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
   createdAt!: Date;
 
@@ -37,8 +43,8 @@ export class ProductEntity {
   updatedAt!: Date;
 
   @OneToMany(() => OrderProductEntity, (orderProduct) => orderProduct.product, { cascade: true })
-  orderProducts!: OrderProductEntity[]; 
+  orderProducts!: OrderProductEntity[];
 
   @ManyToOne(() => CategoryEntity, (category) => category.products, { onDelete: 'SET NULL' })
-  category?: CategoryEntity; 
+  category?: CategoryEntity;
 }

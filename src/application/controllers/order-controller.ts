@@ -4,13 +4,15 @@ import { Order } from '@/domain/contracts/repos'
 import { TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
 import { EntityError } from '@/infra/errors'
+import { OrderService } from '@/domain/contracts/services/order-service'
 
 export class OrderController {
   constructor(
     private readonly validator: Validator,
     private readonly tokenHandler: TokenHandler,
     private readonly registerRepo: RegisterRepository,
-    readonly orderRepo: OrderRepository
+    private readonly orderRepo: OrderRepository,
+    private readonly orderService: OrderService 
   ) { }
 
   async handleGetOrder(httpRequest: Order.GenericType): Promise<HttpResponse> {
@@ -24,7 +26,7 @@ export class OrderController {
   async getOrder({ orderId }: Order.FindOrderInput): Promise<HttpResponse<Order.FindOrderOutput | Error>> {
     const order = await this.orderRepo.findOrder({ orderId })
     if (order === undefined) return notFound()
-    return ok(order)
+    return ok(this.orderService.calculateOrderValue(order))
   }
 
   async handleCreateOrder(orderData: Order.InsertOrderInput): Promise<HttpResponse> {

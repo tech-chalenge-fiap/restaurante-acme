@@ -36,7 +36,8 @@
     "test:k6": "k6 run --vus 100 --duration 30s ./tests/infra/api/load-test-metrics.js",
     "docs": "npm run tsoa:routes && npm run tsoa:swagger",
     "tsoa:routes": "tsoa routes",
-    "tsoa:swagger": "tsoa swagger"
+    "tsoa:swagger": "tsoa swagger",
+    "typeorm:migrate": "typeorm migration:run"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

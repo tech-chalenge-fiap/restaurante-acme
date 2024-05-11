@@ -3,7 +3,7 @@ import { DataSource, Repository, ObjectLiteral, ObjectType } from 'typeorm';
 import { env } from '@/application/main/config/env'
 import { logger } from '@/infra/helpers'
 
-export type GenericType <T = any> = T
+export type GenericType<T = any> = T
 export class MySQLConnection {
   private static instance: MySQLConnection;
   private dataSource: DataSource;
@@ -13,9 +13,9 @@ export class MySQLConnection {
       type: 'mysql',
       ...env.database.mysql,
       entities: [`${process.cwd()}/${process.env.TS_NODE_DEV === undefined ? 'dist' : 'src'}/infra/repos/mysql/entities/index.{js,ts}`],
+      migrations: [`${process.cwd()}/${process.env.TS_NODE_DEV === undefined ? 'dist' : 'src'}/infra/repos/mysql/migrations/index.{js,ts}`],
       logging: false,
-      synchronize: true,
-      
+      synchronize: true
     });
   }
 
@@ -29,6 +29,7 @@ export class MySQLConnection {
   public async initialize(): Promise<void> {
     if (this.dataSource) {
       await this.dataSource.initialize();
+      await this.dataSource.runMigrations();
       logger.success("MySQL Connection has already been created")
     } else {
       throw new ConnectionNotFoundError();

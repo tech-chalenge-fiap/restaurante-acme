@@ -1,0 +1,5 @@
+CREATE USER 'developer0101'@'%' IDENTIFIED WITH 'caching_sha2_password' BY 'developer0101';
+GRANT ALL PRIVILEGES ON *.* TO 'developer0101'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+CREATE DATABASE IF NOT EXISTS restaurante_acme;
+

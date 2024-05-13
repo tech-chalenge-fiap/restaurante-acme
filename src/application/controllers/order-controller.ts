@@ -3,7 +3,7 @@ import { badRequest, HttpResponse, notFound, ok, serverError } from '@/applicati
 import { Order } from '@/domain/contracts/repos'
 import { TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
-import { EntityError } from '@/infra/errors'
+import { EntityError, TransactionError } from '@/infra/errors'
 import { OrderService } from '@/domain/contracts/services/order-service'
 
 export class OrderController {
@@ -12,7 +12,7 @@ export class OrderController {
     private readonly tokenHandler: TokenHandler,
     private readonly registerRepo: RegisterRepository,
     private readonly orderRepo: OrderRepository,
-    private readonly orderService: OrderService 
+    private readonly orderService: OrderService
   ) { }
 
   async handleGetOrder(httpRequest: Order.GenericType): Promise<HttpResponse> {
@@ -30,30 +30,36 @@ export class OrderController {
   }
 
   async handleCreateOrder(orderData: Order.InsertOrderInput): Promise<HttpResponse> {
-    try {
-      // Verificação básica para garantir que temos produtos para criar o pedido
-      if (!orderData.orderProducts) {
-        return badRequest(new Error('Cannot create order: orderProducts not found'));
-      }
 
-      // Cria a entidade de pedido
-      const orderEntity = this.orderRepo.getOrderEntity();
+    await this.orderRepo.prepareTransaction()
+    
+    // Verificação básica para garantir que temos produtos para criar o pedido
+    if (!orderData.orderProducts) {
+      return badRequest(new Error('Cannot create order: orderProducts not found'));
+    }
 
-      // Configura o relacionamento entre cliente e pedido
-      const client = await this.registerRepo.findClientById({ clientId: orderData.clientId });
-      if (!client) {
-        return badRequest(new Error(`Client with ID ${orderData.clientId} not found`));
-      }
+    // Cria a entidade de pedido
+    const orderEntity = this.orderRepo.getOrderEntity();
 
-      // Vincula o cliente ao pedido
+    // Configura o relacionamento entre cliente e pedido
+    const client = await this.registerRepo.findClientById({ clientId: orderData.clientId });
+
+    // Vincula o cliente ao pedido caso existir. 
+    if (client) {
       orderEntity.client = client;
-      orderEntity.orderProducts = [this.orderRepo.getOrderProductEntity()]
+    }
 
-      // Valida o pedido antes de salvar
-      const errors = await this.validator.validate(orderEntity);
-      if (errors.length !== 0) {
-        return badRequest(new Error(JSON.stringify(errors)));
-      }
+    orderEntity.orderProducts = [this.orderRepo.getOrderProductEntity()]
+
+    // Valida o pedido antes de salvar
+    const errors = await this.validator.validate(orderEntity);
+    if (errors.length !== 0) {
+      return badRequest(new Error(JSON.stringify(errors)));
+    }
+
+    await this.orderRepo.openTransaction()
+
+    try {
 
       const order = await this.createOrder(orderEntity);
 
@@ -62,7 +68,7 @@ export class OrderController {
         const productEntity = await this.orderRepo.findProduct({ productId: orderProductData.productId });
 
         if (!productEntity) {
-          return badRequest(new Error(`Product with ID ${orderProductData.productId} not found`));
+          throw new TransactionError(new Error(`Product with ID ${orderProductData.productId} not found`))
         }
 
         const orderProductEntity = this.orderRepo.getOrderProductEntity();
@@ -77,7 +83,7 @@ export class OrderController {
             const ingredientEntity = await this.orderRepo.findIngredient({ ingredientId: ingredientProduct.ingredientId });
 
             if (!ingredientEntity) {
-              return badRequest(new Error(`Ingredient with ID ${ingredientProduct.ingredientId} not found`));
+              throw new TransactionError(new Error(`Ingredient with ID ${ingredientProduct.ingredientId} not found`))
             }
 
             const ingredientProductEntity = this.orderRepo.getIngredientProductEntity();
@@ -88,12 +94,23 @@ export class OrderController {
           }
         }
       }
+
+      await this.orderRepo.commit()
+
       return ok({ orderId: order?.orderId })
     } catch (error) {
-      if (error instanceof EntityError) {
+
+      if (error instanceof TransactionError) {
+        await this.orderRepo.rollback()
+      }
+
+      if (error instanceof EntityError || error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
+
       return serverError(error);
+    } finally {
+      await this.orderRepo.closeTransaction();
     }
   }
 

@@ -1,5 +1,5 @@
-import { ConnectionNotFoundError } from '@/infra/errors';
-import { DataSource, Repository, ObjectLiteral, ObjectType } from 'typeorm';
+import { ConnectionNotFoundError, TransactionNotFoundError } from '@/infra/errors';
+import { DataSource, Repository, ObjectLiteral, ObjectType, QueryRunner } from 'typeorm';
 import { env } from '@/application/main/config/env'
 import { logger } from '@/infra/helpers'
 
@@ -7,6 +7,7 @@ export type GenericType<T = any> = T
 export class MySQLConnection {
   private static instance: MySQLConnection;
   private dataSource: DataSource;
+  private queryRunner: QueryRunner | undefined
 
   private constructor() {
     this.dataSource = new DataSource({
@@ -36,11 +37,51 @@ export class MySQLConnection {
     }
   }
 
+  public async prepareTransaction(): Promise<void> {
+    if (this.dataSource === undefined) throw new ConnectionNotFoundError()
+    this.queryRunner = this.dataSource.createQueryRunner()
+    await this.queryRunner.connect()
+  }
+
+  public async openTransaction(): Promise<void> {
+    if (this.queryRunner === undefined) throw new TransactionNotFoundError()
+    await this.queryRunner.startTransaction()
+  }
+
+  public async closeTransaction(): Promise<void> {
+    if (this.queryRunner === undefined) throw new TransactionNotFoundError()
+    if (!this.transactionIsReleased()) {
+      await this.queryRunner.release()
+    }
+  }
+
+  public async commit(): Promise<void> {
+    if (this.queryRunner === undefined) throw new TransactionNotFoundError()
+    if (!this.transactionIsReleased()) {
+      await this.queryRunner.commitTransaction()
+    }
+  }
+
+  public async rollback(): Promise<void> {
+    if (this.queryRunner === undefined) throw new TransactionNotFoundError()
+    if (!this.transactionIsReleased()) {
+      await this.queryRunner.rollbackTransaction()
+    }
+  }
+
+  public transactionIsReleased(): boolean {
+    if (this.queryRunner === undefined) throw new TransactionNotFoundError()
+    return this.queryRunner.isReleased
+  }
+
+
   public getRepository<T extends ObjectLiteral>(entity: ObjectType<T>): Repository<T> {
+    if (this.queryRunner !== undefined && !this.transactionIsReleased()) {
+      return this.queryRunner.manager.getRepository(entity)
+    }
     if (!this.dataSource) {
       throw new ConnectionNotFoundError();
     }
-
     return this.dataSource.getRepository(entity);
   }
 

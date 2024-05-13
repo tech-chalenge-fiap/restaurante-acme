@@ -20,7 +20,7 @@ export namespace Order {
     createdAt: string
     client?: GenericType
     orderProducts: GenericType[],
-    totalValue?: number
+    totalPrice?: number
   }
 
 

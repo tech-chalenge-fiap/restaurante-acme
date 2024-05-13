@@ -40,10 +40,10 @@ export class OrderRepository extends MySQLRepository implements Order {
         orderId: order.orderId,
         createdAt: order.createdAt,
         client: {
-          clientId: order.client.clientId,
-          name: order.client.name,
-          cpf: order.client.cpf,
-          email: order.client.email
+          clientId: order.client?.clientId,
+          name: order.client?.name,
+          cpf: order.client?.cpf,
+          email: order.client?.email
         },
         orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
           productId: op.product?.productId, 

@@ -10,7 +10,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import { OrderProductEntity, ClientEntity } from '@/infra/repos/mysql/entities'
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, MaxLength } from 'class-validator';
 
 
 @Entity({ name: 'pedidos' })
@@ -20,6 +20,12 @@ export class OrderEntity {
 
   @Column({ name: 'pedido_id', unique: true, default: uuidv4() })
   orderId!: string;
+  
+  @Column({ name: 'status', default: 'Recebido'})
+  @IsEnum(['Recebido', 'Em Preparação', 'Pronto', 'Finalizado'], { message: "O status do pedido deve ser ['Recebido', 'Em Preparação', 'Pronto', 'Finalizado']" })
+  @MaxLength(255, { message: 'O status ter  no máximo 255 caracteres' })
+  status!: string;
+
 
   @CreateDateColumn({ name: 'data_cadastro', type: 'timestamp' })
   createdAt!: Date;
@@ -31,6 +37,5 @@ export class OrderEntity {
   client?: ClientEntity;
 
   @OneToMany(() => OrderProductEntity, (orderProducts) => orderProducts.order, { cascade: true })
-  @IsNotEmpty({ message: 'OrderProducts é obrigatório' })
-  orderProducts!: OrderProductEntity[];
+  orderProducts?: OrderProductEntity[];
 }

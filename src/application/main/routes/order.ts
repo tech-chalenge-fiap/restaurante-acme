@@ -3,7 +3,8 @@ import {
   adaptExpressGetOrderRoute as getOrder, 
   adaptExpressCreateOrderRoute as createOrder,
   adaptExpressDeleteOrderRoute as deleteOrder,
-  adaptExpressUpdateOrderRoute as updateOrder 
+  adaptExpressUpdateOrderRoute as updateOrder,
+  adaptExpressUpdateOrderStatusRoute as updateOrderStatus 
 } from '@/application/main/adapters';
 import { makeOrderController } from '@/application/main/factories/application/controllers';
 import { auth } from '@/application/main/middlewares'
@@ -16,4 +17,5 @@ export default (router: Router): void => {
   router.post('/order', auth, createOrder(makeOrderController()));
   router.delete('/order', auth, deleteOrder(makeOrderController()));
   router.put('/order', auth, updateOrder(makeOrderController()));
+  router.put('/order-status', auth, updateOrderStatus(makeOrderController()));
 };

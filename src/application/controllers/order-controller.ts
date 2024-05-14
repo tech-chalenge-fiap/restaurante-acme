@@ -44,7 +44,6 @@ export class OrderController {
     return ok(this.orderService.calculateOrderValue(order))
   }
 
-
   async handleUpdateOrder(orderData: Order.InsertOrderInput): Promise<HttpResponse> {
 
     await this.orderRepo.prepareTransaction()
@@ -62,12 +61,16 @@ export class OrderController {
     await this.orderRepo.openTransaction()
 
     try {
-          // Cria a entidade de pedido
-    const order = await this.orderRepo.findOrder({ orderId: orderData.orderId });
+      // Busca a entidade de pedido
+      const order = await this.orderRepo.findOrder({ orderId: orderData.orderId });
 
-    if (!order) {
-      return badRequest(new Error(`Order with ID ${orderData.orderId} not found`))
-    }
+      if (!order) {
+        return badRequest(new Error(`Order with ID ${orderData.orderId} not found`))
+      }
+
+      if (!this.orderService.validateOrderStatusRule(order)) {
+        return badRequest(new Error(`Cant not update order with ID ${orderData.orderId}, status ${order.status}`));
+      }
 
       // Processa os produtos associados ao pedido
       for (const orderProductData of orderData.orderProducts) {
@@ -87,7 +90,7 @@ export class OrderController {
           continue;
         }
 
-        const orderProduct = await this.createOrderProduct(orderProductEntity)
+        const orderProduct = await this.saveOrderProduct(orderProductEntity)
 
         // Processa os ingredientes associados ao produto do pedido
         if (orderProductData.ingredientProducts) {
@@ -108,14 +111,14 @@ export class OrderController {
               continue;
             }
 
-            await this.createIngredientProduct(ingredientProductEntity)
+            await this.saveIngredientProduct(ingredientProductEntity)
           }
         }
       }
 
       await this.orderRepo.commit()
 
-      return ok({ orderId: order?.orderId })
+      return ok({ orderId: order?.orderId, status: order.status })
     } catch (error) {
 
       if (error instanceof TransactionError) {
@@ -138,21 +141,23 @@ export class OrderController {
 
     // Verificação básica para garantir que temos produtos para criar o pedido
     if (!orderData.orderProducts || orderData.orderProducts.length === 0) {
-      return badRequest(new Error('Cannot create order: orderProducts not found'));
+      return badRequest(new Error('Cannot save order: orderProducts not found'));
     }
 
     // Cria a entidade de pedido
-    const orderEntity = Object.assign(this.orderRepo.getOrderEntity(), orderData);
+    const orderEntity = this.orderRepo.getOrderEntity();
 
     // Configura o relacionamento entre cliente e pedido
     const client = await this.registerRepo.findClientById({ clientId: orderData.clientId });
+
+    console.log(client)
 
     // Vincula o cliente ao pedido caso existir. 
     if (client) {
       orderEntity.client = client;
     }
 
-    orderEntity.orderProducts = [this.orderRepo.getOrderProductEntity()]
+    orderEntity.status = 'Recebido'
 
     // Valida o pedido antes de salvar
     const errors = await this.validator.validate(orderEntity);
@@ -164,7 +169,7 @@ export class OrderController {
 
     try {
 
-      const order = await this.createOrder(orderEntity);
+      const order = await this.saveOrder(orderEntity);
 
       // Processa os produtos associados ao pedido
       for (const orderProductData of orderData.orderProducts) {
@@ -179,7 +184,7 @@ export class OrderController {
         orderProductEntity.count = orderProductData.count;
         orderProductEntity.order = Object.assign(this.orderRepo.getOrderEntity(), order);
 
-        const orderProduct = await this.createOrderProduct(orderProductEntity)
+        const orderProduct = await this.saveOrderProduct(orderProductEntity)
 
         // Processa os ingredientes associados ao produto do pedido
         if (orderProductData.ingredientProducts) {
@@ -195,14 +200,14 @@ export class OrderController {
             ingredientProductEntity.count = ingredientProduct.count;
             ingredientProductEntity.orderProduct = Object.assign(this.orderRepo.getOrderProductEntity(), orderProduct);
 
-            await this.createIngredientProduct(ingredientProductEntity)
+            await this.saveIngredientProduct(ingredientProductEntity)
           }
         }
       }
 
       await this.orderRepo.commit()
 
-      return ok({ orderId: order?.orderId })
+      return ok({ orderId: order?.orderId, status: order?.status })
     } catch (error) {
 
       if (error instanceof TransactionError) {
@@ -219,25 +224,79 @@ export class OrderController {
     }
   }
 
-  async createOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
+  async handleUpdateOrderStatus(orderData: Order.UpdateOrderStatusInput): Promise<HttpResponse> {
+
+    await this.orderRepo.prepareTransaction()
+
+    // Verificação básica para garantir que temos orderId para alterar o pedido
+    if (!orderData.orderId) {
+      return badRequest(new Error('Cannot update order: orderId not found'));
+    }
+
+    await this.orderRepo.openTransaction()
+
+    try {
+      // Cria a entidade de pedido
+      const orderEntity = Object.assign(this.orderRepo.getOrderEntity(), orderData);
+
+      // Valida o pedido antes de salvar
+      const errors = await this.validator.validate(orderEntity);
+      if (errors.length !== 0) {
+        return badRequest(new Error(JSON.stringify(errors)));
+      }
+
+      // Busca a entidade de pedido
+      const order = await this.orderRepo.findOrder({ orderId: orderData.orderId });
+
+      if (!order) {
+        return badRequest(new Error(`Order with ID ${orderData.orderId} not found`))
+      }
+
+
+      if (!this.orderService.validateOrderStatusRule(order, orderData.status)) {
+        return badRequest(new Error(`Cant not update order with ID ${orderData.orderId}, status ${order.status}`));
+      }
+
+      // Altera a entidade de pedido
+      await this.saveOrder(Object.assign(order, orderEntity))
+
+      await this.orderRepo.commit()
+
+      return ok({ orderId: order?.orderId, status: order.status })
+    } catch (error) {
+
+      if (error instanceof TransactionError) {
+        await this.orderRepo.rollback()
+      }
+
+      if (error instanceof EntityError || error instanceof TransactionError) {
+        return badRequest(new Error(error.message));
+      }
+
+      return serverError(error);
+    } finally {
+      await this.orderRepo.closeTransaction();
+    }
+  }
+
+  async saveOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
     if (!orderData.orderId) orderData.orderId = this.tokenHandler.generateUuid()
     const order = await this.orderRepo.saveOrder(orderData)
     if (order === undefined) throw new Error('Cant insert order')
     return order
   }
 
-  async createOrderProduct(productOrderData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
+  async saveOrderProduct(productOrderData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
     const productOrder = await this.orderRepo.saveOrderProduct(productOrderData)
     if (productOrder === undefined) throw new Error('Cant insert product order')
     return productOrder
   }
 
-  async createIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
+  async saveIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
     const ingredientProduct = await this.orderRepo.saveIngredientProduct(ingredientProductData)
     if (ingredientProduct === undefined) throw new Error('Cant insert product order')
     return ingredientProduct
   }
-
 
   async handleDeleteOrder(httpRequest: Order.GenericType): Promise<HttpResponse> {
     try {

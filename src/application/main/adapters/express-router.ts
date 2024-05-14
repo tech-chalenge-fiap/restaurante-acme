@@ -69,6 +69,13 @@ export const adaptExpressUpdateOrderRoute: OrderAdapter = controller => async (r
   makeResponseHandler(data, statusCode, res)
 };
 
+export const adaptExpressUpdateOrderStatusRoute: OrderAdapter = controller => async (req, res) => {
+  const { body } = req;
+  const { statusCode, data } = await controller.handleUpdateOrderStatus(body);
+
+  makeResponseHandler(data, statusCode, res)
+};
+
 export const adaptExpressDeleteOrderRoute: OrderAdapter = controller => async (req, res) => {
   const { query } = req;
   const { statusCode, data } = await controller.handleDeleteOrder(query);

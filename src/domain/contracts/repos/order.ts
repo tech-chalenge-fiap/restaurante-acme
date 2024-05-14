@@ -36,6 +36,16 @@ export namespace Order {
   export type FindOrdersOutput = FindOrderOutput[] | undefined 
 
 
+  export type FindCategoryOutput = undefined | {
+    id: number
+    name: string
+    products: GenericType[]
+    ingredients: GenericType[]
+  }
+
+  export type FindCategoriesOutput = FindCategoryOutput[] | undefined 
+
+
   export type InsertOrderInput = {
     orderId: string
     clientId?: string
@@ -83,6 +93,7 @@ export namespace Order {
     name: string
     description: string
     price: number
+    category: GenericType
   }
 
   export type InsertOrderProductInput = {

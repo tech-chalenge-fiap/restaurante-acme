@@ -39,6 +39,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         return orders.map(order => ({
           id: order.id,
           orderId: order.orderId,
+          status: order.status,
           createdAt: order.createdAt,
           client: {
             clientId: order.client?.clientId,
@@ -90,6 +91,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         return {
           id: order.id,
           orderId: order.orderId,
+          status: order.status,
           createdAt: order.createdAt,
           client: {
             clientId: order.client?.clientId,
@@ -98,6 +100,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             email: order.client?.email
           },
           orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
+            id: op.id,
             productId: op.product?.productId,
             name: op.product?.name,
             description: op.product?.description,
@@ -108,6 +111,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             },
             price: parseFloat(op.product?.price),
             ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
+              id: ip.id,
               ingredientId: ip.ingredient?.ingredientProductId,
               name: ip.ingredient?.name,
               description: ip.ingredient?.description,
@@ -125,10 +129,11 @@ export class OrderRepository extends MySQLRepository implements Order {
   async saveOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
     try {
       const orderRepo = this.getRepository(this.orderEntity)
-      const insertResult = await orderRepo.insert(orderData)
-      if (insertResult.raw.insertId) {
+      const saveResult = await orderRepo.save(orderData)
+      if (saveResult !== null) {
         return {
-          id: insertResult.raw.insertId,
+          id: saveResult.id,
+          status: saveResult.status,
           orderId: orderData.orderId
         }
       }
@@ -160,7 +165,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         }
       }
       const orderProduct = await orderRepo.save({...existingOrderProduct, ...orderProductData})
-      if (orderProduct) {
+      if (orderProduct !== null) {
         return {
           id: existingOrderProduct?.id,
           count: orderProductData.count,

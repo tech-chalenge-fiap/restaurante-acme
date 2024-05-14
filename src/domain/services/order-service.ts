@@ -20,4 +20,24 @@ export class OrderManager implements OrderService {
     orderData.totalPrice = totalPrice
     return orderData
   }
+
+
+  validateOrderStatusRule(order: OrderService.GenericType, newStatus?: string): boolean {
+    if (order.status && !["Recebido", "Em Preparação", "Pronto", "Finalizado"].includes(order.status)) {
+      return false;
+    }
+    if (newStatus === "Recebido" && order.status !== "Recebido") {
+      return false; // Não é permitido alterar para "Em Recebido" se o status atual não for "Recebido"
+    }
+    if (newStatus === "Em Preparação" && order.status !== "Recebido") {
+      return false; // Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido"
+    }
+    if (newStatus === "Pronto" && order.status !== "Em Preparação") {
+      return false; // Não é permitido alterar para "Pronto" se o status atual não for "Em Preparação"
+    }
+    if (newStatus === "Finalizado" && order.status !== "Pronto") {
+      return false; // Não é permitido alterar para "Finalizado" se o status atual não for "Pronto"
+    }
+    return true;
+  }
 }

@@ -14,7 +14,7 @@ export class IngredientProductEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id?: number;
 
-  @Column({ name: 'quantidade' })
+  @Column({ name: 'quantidade', default: 1 })
   @IsNumber({}, { message: 'A quantidade deve ser um número' })
   @IsPositive({ message: 'A quantidade deve ser positivo' })
   count!: number;

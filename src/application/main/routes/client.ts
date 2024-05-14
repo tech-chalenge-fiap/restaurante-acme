@@ -8,6 +8,6 @@ import { auth } from '@/application/main/middlewares'
 import { Router } from 'express';
 
 export default (router: Router): void => {
-  router.get('/cliente', auth, getClient(makeRegisterController()));
-  router.post('/cliente', auth, createClient(makeRegisterController()));
+  router.get('/client', auth, getClient(makeRegisterController()));
+  router.post('/client', auth, createClient(makeRegisterController()));
 };

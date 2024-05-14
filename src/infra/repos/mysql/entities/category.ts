@@ -1,4 +1,4 @@
-import { MaxLength, IsNotEmpty } from 'class-validator';
+import { MaxLength, IsNotEmpty, IsEnum } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -23,6 +23,7 @@ export class CategoryEntity {
  
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @IsEnum(['Lanche', 'Acompanhamento', 'Bebida', 'Sobremesa'], { message: "O nome da categoria deve ser ['Lanche', 'Acompanhamento', 'Bebida', 'Sobremesa']" })
   @MaxLength(255, { message: 'O nome historico ter  no máximo 255 caracteres' })
   name!: string;
 

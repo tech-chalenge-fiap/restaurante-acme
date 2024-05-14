@@ -8,7 +8,7 @@ export class RegisterRepository extends MySQLRepository implements Register {
 
   async findClient ({ cpf }: Register.FindClientInput): Promise<Register.FindClientOutput> {
     const clientRepo = this.getRepository(this.clientEntity)
-    const client = await clientRepo.findOne({ where: { cpf } })
+    const client = await clientRepo.findOne({ where: { cpf: cpf ?? '' } })
     
     if (client !== null) return {
       clientId: client.clientId,
@@ -20,7 +20,8 @@ export class RegisterRepository extends MySQLRepository implements Register {
 
   async findClientById ({ clientId }: Register.FindClientByIdInput): Promise<Register.FindClientOutput> {
     const clientRepo = this.getRepository(this.clientEntity)
-    const client = await clientRepo.findOne({ where: { clientId } })
+    console.log(clientId)
+    const client = await clientRepo.findOne({ where: { clientId:  clientId ?? ''} })
     
     if (client !== null) return {
       id: client.id,

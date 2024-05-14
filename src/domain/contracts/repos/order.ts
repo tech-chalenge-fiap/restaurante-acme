@@ -26,6 +26,7 @@ export namespace Order {
   export type FindOrderOutput = undefined | {
     id: number
     orderId: string
+    status?: string
     createdAt: string
     client?: GenericType
     orderProducts: GenericType[]
@@ -42,8 +43,14 @@ export namespace Order {
     orderProducts: GenericType[]
   }
 
+  export type UpdateOrderStatusInput = {
+    orderId: string
+    status: string
+  }
+
   export type InsertOrderOutput = undefined | {
     id: number
+    status: string
     orderId: string
   }
 

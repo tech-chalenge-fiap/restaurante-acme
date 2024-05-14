@@ -4,6 +4,7 @@ import { Order } from "../repos"
 export interface OrderService {
   calculateOrderValue: (input: OrderService.CalculateOrderValueInput) => OrderService.CalculateOrderValueOutput
   calculateOrderValues: (input: OrderService.CalculateOrderValuesInput) => OrderService.CalculateOrderValuesOutput
+  validateOrderStatusRule: (input: OrderService.GenericType, newStatus?: string) => OrderService.GenericType
 }
 
 export namespace OrderService {

@@ -9,7 +9,8 @@ export class OrderRepository extends MySQLRepository implements Order {
     private readonly productEntity: Order.GenericType,
     private readonly orderProductEntity: Order.GenericType,
     private readonly ingredientEntity: Order.GenericType,
-    private readonly ingredientProductEntity: Order.GenericType
+    private readonly ingredientProductEntity: Order.GenericType,
+    private readonly categoryEntity: Order.GenericType
   ) { super() }
 
   getOrderEntity = () => new this.orderEntity()
@@ -18,6 +19,7 @@ export class OrderRepository extends MySQLRepository implements Order {
   getOrderProductEntity = () => new this.orderProductEntity()
   getIngredientProductEntity = () => new this.ingredientProductEntity()
   getIngredientEntity = () => new this.ingredientEntity()
+  getCategoryEntity = () => new this.categoryEntity()
 
 
   async findOrders(): Promise<Order.FindOrdersOutput> {
@@ -77,7 +79,7 @@ export class OrderRepository extends MySQLRepository implements Order {
       const orderRepo = this.getRepository(this.orderEntity);
 
       const order = await orderRepo.findOne({
-        where: { orderId },
+        where: { orderId: orderId ??  '' },
         relations: [
           'client', // Relacionamento com ClientEntity
           'orderProducts', // Relacionamento com OrderProductEntity
@@ -217,14 +219,41 @@ export class OrderRepository extends MySQLRepository implements Order {
   async findProduct({ productId }: Order.FindProductInput): Promise<Order.FindProductOutput> {
     try {
       const orderRepo = this.getRepository(this.productEntity)
-      const product = await orderRepo.findOne({ where: { productId } })
+      const product = await orderRepo.findOne({ 
+        where: { productId: productId ?? '' },
+        relations: ['category']
+      })
 
       if (product !== null) return {
         id: product.id,
         productId: product.productId,
         name: product.name,
         description: product.description,
-        price: product.price
+        price: product.price,
+        category: product.category
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
+  async findCategories(): Promise<Order.FindCategoriesOutput> {
+    try {
+      const orderRepo = this.getRepository(this.categoryEntity)
+      const categories = await orderRepo.find({
+        relations: [
+          'products', // Relacionamento com ProductEntity
+          'ingredients', // Relacionamento com IngredientEntity
+        ],
+      });
+
+      if (categories !== null && categories.length > 0) {
+        return categories.map(category => ({
+          id: category.id,
+          name: category.name,
+          products: category.products,
+          ingredients: category.ingredients
+        }))
       }
     } catch (error: any) {
       throw new EntityError(error.message)

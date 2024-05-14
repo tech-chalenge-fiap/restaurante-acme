@@ -19,128 +19,282 @@ export class OrderRepository extends MySQLRepository implements Order {
   getIngredientProductEntity = () => new this.ingredientProductEntity()
   getIngredientEntity = () => new this.ingredientEntity()
 
-  async findOrder({ orderId }: Order.FindOrderInput): Promise<Order.FindOrderOutput> {
-    const orderRepo = this.getRepository(this.orderEntity);
 
-    const order = await orderRepo.findOne({
-      where: { orderId },
-      relations: [
-        'client', // Relacionamento com ClientEntity
-        'orderProducts', // Relacionamento com OrderProductEntity
-        'orderProducts.product', // Para obter os produtos associados através do pivot
-        'orderProducts.product.category', // Relacionamento com CategoryEntity
-        'orderProducts.ingredientProducts',  // Relacionamento com IngredientProductEntity
-        'orderProducts.ingredientProducts.ingredient' // Para obter os produtos associados através do pivot
-      ],
-    });
+  async findOrders(): Promise<Order.FindOrdersOutput> {
+    try {
+      const orderRepo = this.getRepository(this.orderEntity);
 
-    if (order !== null) {
-      return {
-        id: order.id,
-        orderId: order.orderId,
-        createdAt: order.createdAt,
-        client: {
-          clientId: order.client?.clientId,
-          name: order.client?.name,
-          cpf: order.client?.cpf,
-          email: order.client?.email
-        },
-        orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
-          productId: op.product?.productId, 
-          name: op.product?.name, 
-          description: op.product?.description,
-          category: {
-            categoryId: op.product?.category.categoryId,
-            name: op.product?.category.name
+      const orders = await orderRepo.find({
+        relations: [
+          'client', // Relacionamento com ClientEntity
+          'orderProducts', // Relacionamento com OrderProductEntity
+          'orderProducts.product', // Para obter os produtos associados através do pivot
+          'orderProducts.product.category', // Relacionamento com CategoryEntity
+          'orderProducts.ingredientProducts',  // Relacionamento com IngredientProductEntity
+          'orderProducts.ingredientProducts.ingredient' // Para obter os produtos associados através do pivot
+        ],
+      });
+
+      if (orders !== null && orders.length > 0) {
+        return orders.map(order => ({
+          id: order.id,
+          orderId: order.orderId,
+          createdAt: order.createdAt,
+          client: {
+            clientId: order.client?.clientId,
+            name: order.client?.name,
+            cpf: order.client?.cpf,
+            email: order.client?.email
           },
-          price: op.product?.price,
-          ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
-            ingredientId: ip.ingredient?.ingredientProductId,
-            name: ip.ingredient?.name,
-            description: ip.ingredient?.description,
-            price: ip.ingredient?.price
+          orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
+            productId: op.product?.productId,
+            name: op.product?.name,
+            description: op.product?.description,
+            count: parseInt(op.count),
+            category: {
+              categoryId: op.product?.category.categoryId,
+              name: op.product?.category.name
+            },
+            price: parseFloat(op.product?.price),
+            ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
+              ingredientId: ip.ingredient?.ingredientProductId,
+              name: ip.ingredient?.name,
+              description: ip.ingredient?.description,
+              count: parseInt(ip.count),
+              price: parseFloat(ip.ingredient?.price)
+            })),
           })),
-        })),
-      };
+        }))
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
     }
   }
 
-  async insertOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
+  async findOrder({ orderId }: Order.FindOrderInput): Promise<Order.FindOrderOutput> {
+    try {
+      const orderRepo = this.getRepository(this.orderEntity);
+
+      const order = await orderRepo.findOne({
+        where: { orderId },
+        relations: [
+          'client', // Relacionamento com ClientEntity
+          'orderProducts', // Relacionamento com OrderProductEntity
+          'orderProducts.product', // Para obter os produtos associados através do pivot
+          'orderProducts.product.category', // Relacionamento com CategoryEntity
+          'orderProducts.ingredientProducts',  // Relacionamento com IngredientProductEntity
+          'orderProducts.ingredientProducts.ingredient' // Para obter os produtos associados através do pivot
+        ],
+      });
+      if (order !== null) {
+        return {
+          id: order.id,
+          orderId: order.orderId,
+          createdAt: order.createdAt,
+          client: {
+            clientId: order.client?.clientId,
+            name: order.client?.name,
+            cpf: order.client?.cpf,
+            email: order.client?.email
+          },
+          orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
+            productId: op.product?.productId,
+            name: op.product?.name,
+            description: op.product?.description,
+            count: parseInt(op.count),
+            category: {
+              categoryId: op.product?.category.categoryId,
+              name: op.product?.category.name
+            },
+            price: parseFloat(op.product?.price),
+            ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
+              ingredientId: ip.ingredient?.ingredientProductId,
+              name: ip.ingredient?.name,
+              description: ip.ingredient?.description,
+              count: ip.count,
+              price: parseFloat(ip.ingredient?.price)
+            })),
+          })),
+        };
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
+  async saveOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
     try {
       const orderRepo = this.getRepository(this.orderEntity)
-      const order = await orderRepo.insert(orderData)
-      if (order.raw.insertId) {
+      const insertResult = await orderRepo.insert(orderData)
+      if (insertResult.raw.insertId) {
         return {
-          id: order.raw.insertId,
+          id: insertResult.raw.insertId,
           orderId: orderData.orderId
         }
       }
     } catch (error: any) {
       throw new EntityError(error.message)
     }
-
   }
 
-  async insertProductOrder(productOrderData: Order.InsertProductOrderInput): Promise<Order.InsertProductOrderOutput> {
+  async saveOrderProduct(orderProductData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
     try {
       const orderRepo = this.getRepository(this.orderProductEntity)
-      const order = await orderRepo.insert(productOrderData)
-      if (order.raw.insertId) {
+      //console.log(orderProductData)
+      const existingOrderProduct = await orderRepo.findOne({
+        where: {
+          'order.id': orderProductData.order.id,
+          'product.id': orderProductData.product.id
+        }
+      });
+      //console.log(existingOrderProduct)
+      if (!existingOrderProduct) {
+        const orderProduct = await orderRepo.insert(orderProductData)
+        if (orderProduct !== null) {
+          return {
+            id: orderProduct.raw.insertId,
+            count: orderProductData.count,
+            order: orderProductData.order,
+            product: orderProductData.product
+          }
+        }
+      }
+      const orderProduct = await orderRepo.save({...existingOrderProduct, ...orderProductData})
+      if (orderProduct) {
         return {
-          id: order.raw.insertId,
-          orderId: productOrderData.order.orderId,
-          productId: productOrderData.product.productId
+          id: existingOrderProduct?.id,
+          count: orderProductData.count,
+          order: orderProductData.order,
+          product: orderProductData.product
         }
       }
     } catch (error: any) {
+      console.log(error)
       throw new EntityError(error.message)
     }
 
   }
 
-  async insertIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
+  async saveIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
     try {
       const orderRepo = this.getRepository(this.ingredientProductEntity)
-      const order = await orderRepo.insert(ingredientProductData)
-      if (order.raw.insertId) {
+      const existingIngredientProduct = await orderRepo.findOne({
+        where: {
+          "ingredient.id": ingredientProductData.ingredient.id,
+          "orderProduct.id": ingredientProductData.orderProduct.id
+        }
+      });
+      if (!existingIngredientProduct) {
+        const ingredientProduct = await orderRepo.insert(ingredientProductData)
+        if (ingredientProduct !== null) {
+          return {
+            id: ingredientProduct.raw.insertId,
+            count: ingredientProductData.count,
+            ingredient: ingredientProductData.ingredient,
+            orderProduct: ingredientProductData.orderProduct
+          }
+        }
+      }
+      const ingredientProduct = await orderRepo.save({ ...existingIngredientProduct, ...ingredientProductData })
+      if (ingredientProduct !== null) {
         return {
-          id: order.raw.insertId,
-          ingredientId: ingredientProductData.ingredient.ingredientId,
-          orderProductId: ingredientProductData.orderProduct.id
+          id: existingIngredientProduct?.id,
+          count: ingredientProductData.count,
+          ingredient: ingredientProductData.ingredient,
+          orderProduct: ingredientProductData.orderProduct
         }
       }
     } catch (error: any) {
       throw new EntityError(error.message)
     }
-
   }
 
   async findProduct({ productId }: Order.FindProductInput): Promise<Order.FindProductOutput> {
-    const orderRepo = this.getRepository(this.productEntity)
-    const product = await orderRepo.findOne({ where: { productId } })
+    try {
+      const orderRepo = this.getRepository(this.productEntity)
+      const product = await orderRepo.findOne({ where: { productId } })
 
-    if (product !== null) return {
-      id: product.id,
-      productId: product.productId,
-      name: product.name,
-      description: product.description,
-      price: product.price
+      if (product !== null) return {
+        id: product.id,
+        productId: product.productId,
+        name: product.name,
+        description: product.description,
+        price: product.price
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
     }
   }
 
   async findIngredient({ ingredientId }: Order.FindIngredientInput): Promise<Order.FindIngredientOutput> {
-    const orderRepo = this.getRepository(this.ingredientEntity)
-    const ingredient = await orderRepo.findOne({ where: { ingredientId } })
+    try {
+      const orderRepo = this.getRepository(this.ingredientEntity)
+      const ingredient = await orderRepo.findOne({ where: { ingredientId } })
 
-    if (ingredient !== null) return {
-      id: ingredient.id,
-      ingredientId: ingredient.ingredientId,
-      name: ingredient.name,
-      description: ingredient.description,
-      price: ingredient.price
+      if (ingredient !== null) return {
+        id: ingredient.id,
+        ingredientId: ingredient.ingredientId,
+        name: ingredient.name,
+        description: ingredient.description,
+        price: ingredient.price
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
     }
   }
 
+  async deleteOrder(orderData: Order.FindOrderInput): Promise<Order.deleteOrderOutput> {
+    try {
+      const orderRepo = this.getRepository(this.orderEntity)
+      const deleteResult = await orderRepo.delete({ orderId: orderData.orderId })
+      if (deleteResult.affected !== 0) {
+        return {
+          orderId: orderData.orderId,
+          affected: deleteResult.affected
+        }
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
+  async deleteOrderProduct(orderProductData: Partial<Order.InsertOrderProductInput>): Promise<Order.deleteOrderProductOutput> {
+    try {
+      const orderRepo = this.getRepository(this.orderProductEntity)
+      const deleteResult = await orderRepo.delete({
+        order: orderProductData.order,
+        product: orderProductData.product
+      })
+      if (deleteResult.affected !== 0) {
+        return {
+          orderId: orderProductData.order.orderId,
+          productId: orderProductData.product.productId,
+          affected: deleteResult.affected
+        }
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
+  async deleteIngredientProduct(ingredientProductData: Partial<Order.InsertIngredientProductInput>): Promise<Order.deleteIngredientProductOutput> {
+    try {
+      const orderRepo = this.getRepository(this.ingredientProductEntity)
+      const deleteResult = await orderRepo.delete({
+        ingredient: ingredientProductData.ingredient,
+        orderProduct: ingredientProductData.orderProduct
+      })
+      if (deleteResult.affected !== 0) {
+        return {
+          ingredientId: ingredientProductData.ingredient.ingredientId,
+          orderProductId: ingredientProductData.orderProduct.orderProductId,
+          affected: deleteResult.affected
+        }
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
 }
 
 

@@ -3,6 +3,7 @@ import { Middleware } from '@/application/middlewares'
 import { RequestHandler } from 'express'
 
 type Adapter = (middleware: Middleware) => RequestHandler
+type AdapterHealthcheck = () => RequestHandler;
 
 export const adaptExpressMiddleware: Adapter = middleware => async (req, res, next) => {
   const ip = req.ip?.replace(/.*:(\d+\.\d+\.\d+\.\d+)$/, '$1')
@@ -19,3 +20,8 @@ export const adaptExpressMiddleware: Adapter = middleware => async (req, res, ne
     }
   }
 }
+
+export const adaptExpressHealthcheckRoute: AdapterHealthcheck = () => async (_, res) => {
+  const json = { ok: true };
+  res.status(200).json(json);
+};

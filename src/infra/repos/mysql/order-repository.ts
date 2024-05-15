@@ -10,7 +10,8 @@ export class OrderRepository extends MySQLRepository implements Order {
     private readonly orderProductEntity: Order.GenericType,
     private readonly ingredientEntity: Order.GenericType,
     private readonly ingredientProductEntity: Order.GenericType,
-    private readonly categoryEntity: Order.GenericType
+    private readonly categoryEntity: Order.GenericType,
+    private readonly paymentEntity: Order.GenericType
   ) { super() }
 
   getOrderEntity = () => new this.orderEntity()
@@ -20,6 +21,7 @@ export class OrderRepository extends MySQLRepository implements Order {
   getIngredientProductEntity = () => new this.ingredientProductEntity()
   getIngredientEntity = () => new this.ingredientEntity()
   getCategoryEntity = () => new this.categoryEntity()
+  getPaymentEntity = () => new this.paymentEntity()
 
 
   async findOrders(): Promise<Order.FindOrdersOutput> {
@@ -29,6 +31,7 @@ export class OrderRepository extends MySQLRepository implements Order {
       const orders = await orderRepo.find({
         relations: [
           'client', // Relacionamento com ClientEntity
+          'payments', // Relacionamento com PaymentEntity
           'orderProducts', // Relacionamento com OrderProductEntity
           'orderProducts.product', // Para obter os produtos associados através do pivot
           'orderProducts.product.category', // Relacionamento com CategoryEntity
@@ -50,6 +53,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             email: order.client?.email
           },
           orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
+            id: op.id,
             productId: op.product?.productId,
             name: op.product?.name,
             description: op.product?.description,
@@ -60,6 +64,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             },
             price: parseFloat(op.product?.price),
             ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
+              id: ip.id,
               ingredientId: ip.ingredient?.ingredientProductId,
               name: ip.ingredient?.name,
               description: ip.ingredient?.description,
@@ -67,6 +72,13 @@ export class OrderRepository extends MySQLRepository implements Order {
               price: parseFloat(ip.ingredient?.price)
             })),
           })),
+          payments: order.payments?.map((pay: Order.GenericType) => ({
+            id: pay.id,
+            paymentId: pay.paymentId,
+            totalPrice: pay.totalPrice,
+            paymentMethod: pay.paymentMethod,
+            status: pay.status
+          }))
         }))
       }
     } catch (error: any) {
@@ -82,6 +94,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         where: { orderId: orderId ??  '' },
         relations: [
           'client', // Relacionamento com ClientEntity
+          'payments', // Relacionamento com PaymentEntity
           'orderProducts', // Relacionamento com OrderProductEntity
           'orderProducts.product', // Para obter os produtos associados através do pivot
           'orderProducts.product.category', // Relacionamento com CategoryEntity
@@ -89,6 +102,7 @@ export class OrderRepository extends MySQLRepository implements Order {
           'orderProducts.ingredientProducts.ingredient' // Para obter os produtos associados através do pivot
         ],
       });
+      
       if (order !== null) {
         return {
           id: order.id,
@@ -121,6 +135,13 @@ export class OrderRepository extends MySQLRepository implements Order {
               price: parseFloat(ip.ingredient?.price)
             })),
           })),
+          payments: order.payments?.map((pay: Order.GenericType) => ({
+            id: pay.id,
+            paymentId: pay.paymentId,
+            totalPrice: pay.totalPrice,
+            paymentMethod: pay.paymentMethod,
+            status: pay.status
+          }))
         };
       }
     } catch (error: any) {
@@ -131,7 +152,9 @@ export class OrderRepository extends MySQLRepository implements Order {
   async saveOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
     try {
       const orderRepo = this.getRepository(this.orderEntity)
+      console.log(orderData)
       const saveResult = await orderRepo.save(orderData)
+
       if (saveResult !== null) {
         return {
           id: saveResult.id,
@@ -144,17 +167,36 @@ export class OrderRepository extends MySQLRepository implements Order {
     }
   }
 
+  async savePayment(paymentData: Order.InsertPaymentInput): Promise<Order.InsertPaymentOutput> {
+    try {
+      const orderRepo = this.getRepository(this.paymentEntity)
+
+      const saveResult = await orderRepo.save(paymentData)
+
+      if (saveResult !== null) {
+        return {
+          id: saveResult.id,
+          status: paymentData.status,
+          paymentId: paymentData.paymentId,
+          totalPrice: paymentData.totalPrice
+        }
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
   async saveOrderProduct(orderProductData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
     try {
       const orderRepo = this.getRepository(this.orderProductEntity)
-      //console.log(orderProductData)
+
       const existingOrderProduct = await orderRepo.findOne({
         where: {
           'order.id': orderProductData.order.id,
           'product.id': orderProductData.product.id
         }
       });
-      //console.log(existingOrderProduct)
+
       if (!existingOrderProduct) {
         const orderProduct = await orderRepo.insert(orderProductData)
         if (orderProduct !== null) {
@@ -166,7 +208,9 @@ export class OrderRepository extends MySQLRepository implements Order {
           }
         }
       }
+
       const orderProduct = await orderRepo.save({...existingOrderProduct, ...orderProductData})
+
       if (orderProduct !== null) {
         return {
           id: existingOrderProduct?.id,
@@ -185,12 +229,14 @@ export class OrderRepository extends MySQLRepository implements Order {
   async saveIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
     try {
       const orderRepo = this.getRepository(this.ingredientProductEntity)
+
       const existingIngredientProduct = await orderRepo.findOne({
         where: {
           "ingredient.id": ingredientProductData.ingredient.id,
           "orderProduct.id": ingredientProductData.orderProduct.id
         }
       });
+
       if (!existingIngredientProduct) {
         const ingredientProduct = await orderRepo.insert(ingredientProductData)
         if (ingredientProduct !== null) {
@@ -202,7 +248,9 @@ export class OrderRepository extends MySQLRepository implements Order {
           }
         }
       }
+
       const ingredientProduct = await orderRepo.save({ ...existingIngredientProduct, ...ingredientProductData })
+
       if (ingredientProduct !== null) {
         return {
           id: existingIngredientProduct?.id,
@@ -219,6 +267,7 @@ export class OrderRepository extends MySQLRepository implements Order {
   async findProduct({ productId }: Order.FindProductInput): Promise<Order.FindProductOutput> {
     try {
       const orderRepo = this.getRepository(this.productEntity)
+
       const product = await orderRepo.findOne({ 
         where: { productId: productId ?? '' },
         relations: ['category']
@@ -240,6 +289,7 @@ export class OrderRepository extends MySQLRepository implements Order {
   async findCategories(): Promise<Order.FindCategoriesOutput> {
     try {
       const orderRepo = this.getRepository(this.categoryEntity)
+
       const categories = await orderRepo.find({
         relations: [
           'products', // Relacionamento com ProductEntity
@@ -263,7 +313,8 @@ export class OrderRepository extends MySQLRepository implements Order {
   async findIngredient({ ingredientId }: Order.FindIngredientInput): Promise<Order.FindIngredientOutput> {
     try {
       const orderRepo = this.getRepository(this.ingredientEntity)
-      const ingredient = await orderRepo.findOne({ where: { ingredientId } })
+
+      const ingredient = await orderRepo.findOne({ where: { ingredientId: ingredientId ?? '' } })
 
       if (ingredient !== null) return {
         id: ingredient.id,
@@ -280,7 +331,9 @@ export class OrderRepository extends MySQLRepository implements Order {
   async deleteOrder(orderData: Order.FindOrderInput): Promise<Order.deleteOrderOutput> {
     try {
       const orderRepo = this.getRepository(this.orderEntity)
+
       const deleteResult = await orderRepo.delete({ orderId: orderData.orderId })
+
       if (deleteResult.affected !== 0) {
         return {
           orderId: orderData.orderId,
@@ -295,10 +348,12 @@ export class OrderRepository extends MySQLRepository implements Order {
   async deleteOrderProduct(orderProductData: Partial<Order.InsertOrderProductInput>): Promise<Order.deleteOrderProductOutput> {
     try {
       const orderRepo = this.getRepository(this.orderProductEntity)
+
       const deleteResult = await orderRepo.delete({
         order: orderProductData.order,
         product: orderProductData.product
       })
+
       if (deleteResult.affected !== 0) {
         return {
           orderId: orderProductData.order.orderId,
@@ -314,10 +369,12 @@ export class OrderRepository extends MySQLRepository implements Order {
   async deleteIngredientProduct(ingredientProductData: Partial<Order.InsertIngredientProductInput>): Promise<Order.deleteIngredientProductOutput> {
     try {
       const orderRepo = this.getRepository(this.ingredientProductEntity)
+
       const deleteResult = await orderRepo.delete({
         ingredient: ingredientProductData.ingredient,
         orderProduct: ingredientProductData.orderProduct
       })
+
       if (deleteResult.affected !== 0) {
         return {
           ingredientId: ingredientProductData.ingredient.ingredientId,

@@ -61,8 +61,12 @@ export class OrderController {
     await this.orderRepo.openTransaction()
 
     try {
+
       // Busca a entidade de pedido
       const order = await this.orderRepo.findOrder({ orderId: orderData.orderId });
+
+      // Cria a entidade de pagamento com base no ultimo pagamento
+      const paymentEntity = Object.assign(this.orderRepo.getPaymentEntity(), order?.payments[order?.payments.length - 1]);
 
       if (!order) {
         return badRequest(new Error(`Order with ID ${orderData.orderId} not found`))
@@ -116,6 +120,10 @@ export class OrderController {
         }
       }
 
+      const orderInfo = this.orderService.calculateOrderValue(await this.orderRepo.findOrder({ orderId: order?.orderId ?? '' }))
+      paymentEntity.totalPrice = orderInfo?.totalPrice
+      await this.savePayment(paymentEntity)
+
       await this.orderRepo.commit()
 
       return ok({ orderId: order?.orderId, status: order.status })
@@ -147,17 +155,22 @@ export class OrderController {
     // Cria a entidade de pedido
     const orderEntity = this.orderRepo.getOrderEntity();
 
+    // Cria a entidade de pagamento
+    const paymentEntity = this.orderRepo.getPaymentEntity();
+
     // Configura o relacionamento entre cliente e pedido
     const client = await this.registerRepo.findClientById({ clientId: orderData.clientId });
-
-    console.log(client)
 
     // Vincula o cliente ao pedido caso existir. 
     if (client) {
       orderEntity.client = client;
     }
 
-    orderEntity.status = 'Recebido'
+    orderEntity.status = 'Recebido';
+    paymentEntity.status = 'Pendente';
+
+    orderEntity.payment = paymentEntity;
+
 
     // Valida o pedido antes de salvar
     const errors = await this.validator.validate(orderEntity);
@@ -170,6 +183,7 @@ export class OrderController {
     try {
 
       const order = await this.saveOrder(orderEntity);
+      paymentEntity.order = order;
 
       // Processa os produtos associados ao pedido
       for (const orderProductData of orderData.orderProducts) {
@@ -204,6 +218,9 @@ export class OrderController {
           }
         }
       }
+      const orderInfo = this.orderService.calculateOrderValue(await this.orderRepo.findOrder({ orderId: order?.orderId ?? '' }))
+      paymentEntity.totalPrice = orderInfo?.totalPrice
+      await this.savePayment(paymentEntity)
 
       await this.orderRepo.commit()
 
@@ -283,6 +300,13 @@ export class OrderController {
     if (!orderData.orderId) orderData.orderId = this.tokenHandler.generateUuid()
     const order = await this.orderRepo.saveOrder(orderData)
     if (order === undefined) throw new Error('Cant insert order')
+    return order
+  }
+
+  async savePayment(paymentData: Order.InsertPaymentInput): Promise<Order.InsertPaymentOutput> {
+    if (!paymentData.paymentId) paymentData.paymentId = this.tokenHandler.generateUuid()
+    const order = await this.orderRepo.savePayment(paymentData)
+    if (order === undefined) throw new Error('Cant insert payment')
     return order
   }
 

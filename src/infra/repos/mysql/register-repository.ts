@@ -8,6 +8,7 @@ export class RegisterRepository extends MySQLRepository implements Register {
 
   async findClient ({ cpf }: Register.FindClientInput): Promise<Register.FindClientOutput> {
     const clientRepo = this.getRepository(this.clientEntity)
+    
     const client = await clientRepo.findOne({ where: { cpf: cpf ?? '' } })
     
     if (client !== null) return {
@@ -20,7 +21,7 @@ export class RegisterRepository extends MySQLRepository implements Register {
 
   async findClientById ({ clientId }: Register.FindClientByIdInput): Promise<Register.FindClientOutput> {
     const clientRepo = this.getRepository(this.clientEntity)
-    console.log(clientId)
+
     const client = await clientRepo.findOne({ where: { clientId:  clientId ?? ''} })
     
     if (client !== null) return {
@@ -35,7 +36,9 @@ export class RegisterRepository extends MySQLRepository implements Register {
   async insertClient (clientData: Register.InsertClientInput): Promise<Register.InsertClientOutput> {
     try{
       const clientRepo = this.getRepository(this.clientEntity)
+
       const client = await clientRepo.insert(clientData)
+
       if (client !== null) {
         return {
           clientId: clientData.clientId,
@@ -45,7 +48,6 @@ export class RegisterRepository extends MySQLRepository implements Register {
     }catch(error: any) {
       throw new EntityError(error.message)
     }
-    
   }
 
   getClientEntity = () => new this.clientEntity()

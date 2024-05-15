@@ -5,13 +5,21 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  Column
+  Column,
+  OneToOne,
+  JoinColumn
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { OrderProductEntity, ClientEntity } from '@/infra/repos/mysql/entities'
-import { IsEnum, IsNotEmpty, MaxLength } from 'class-validator';
+import { OrderProductEntity, ClientEntity, PaymentEntity } from '@/infra/repos/mysql/entities'
+import { IsEnum, MaxLength } from 'class-validator';
 
+enum OrderStatus {
+  RECEBIDO = 'Recebido',
+  EM_PREPARACAO = 'Em Preparação',
+  PRONTO = 'Pronto',
+  FINALIZADO = 'Finalizado',
+}
 
 @Entity({ name: 'pedidos' })
 export class OrderEntity {
@@ -21,8 +29,8 @@ export class OrderEntity {
   @Column({ name: 'pedido_id', unique: true, default: uuidv4() })
   orderId!: string;
   
-  @Column({ name: 'status', default: 'Recebido'})
-  @IsEnum(['Recebido', 'Em Preparação', 'Pronto', 'Finalizado'], { message: "O status do pedido deve ser ['Recebido', 'Em Preparação', 'Pronto', 'Finalizado']" })
+  @Column({ name: 'status', default: OrderStatus.RECEBIDO })
+  @IsEnum(OrderStatus, { message: "O status do pedido deve ser 'Recebido', 'Em Preparação', 'Pronto' ou 'Finalizado'" })
   @MaxLength(255, { message: 'O status ter  no máximo 255 caracteres' })
   status!: string;
 
@@ -38,4 +46,7 @@ export class OrderEntity {
 
   @OneToMany(() => OrderProductEntity, (orderProducts) => orderProducts.order, { cascade: true })
   orderProducts?: OrderProductEntity[];
+
+  @OneToMany(() => PaymentEntity, (payment) => payment.order, { cascade: true })
+  payments?: PaymentEntity[];
 }

@@ -23,7 +23,6 @@ export class OrderController {
     }
   }
 
-
   async getOrders(): Promise<HttpResponse<Order.FindOrdersOutput | Error>> {
     const orders = await this.orderRepo.findOrders()
     if (orders === undefined) return notFound()

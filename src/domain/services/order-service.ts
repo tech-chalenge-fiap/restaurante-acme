@@ -27,7 +27,7 @@ export class OrderManager implements OrderService {
       return false;
     }
     if (newStatus === "Recebido" && order.status !== "Recebido") {
-      return false; // Não é permitido alterar para "Em Recebido" se o status atual não for "Recebido"
+      return false; // Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão. 
     }
     if (newStatus === "Em Preparação" && order.status !== "Recebido") {
       return false; // Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido"

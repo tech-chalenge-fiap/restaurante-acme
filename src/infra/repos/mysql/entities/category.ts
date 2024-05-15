@@ -12,7 +12,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { ProductEntity } from './product';
 import { IngredientEntity } from './ingredient';
 
-
+enum CategoriesNames {
+  LANCHE = 'Lanche',
+  ACOMPANHAMENTO = 'Acompanhamento',
+  BEBIDA = 'Bebida',
+  Sobremesa = 'Sobremesa'
+}
 @Entity({ name: 'categorias' })
 export class CategoryEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
@@ -23,7 +28,7 @@ export class CategoryEntity {
  
   @Column({ name: 'nome' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
-  @IsEnum(['Lanche', 'Acompanhamento', 'Bebida', 'Sobremesa'], { message: "O nome da categoria deve ser ['Lanche', 'Acompanhamento', 'Bebida', 'Sobremesa']" })
+  @IsEnum(CategoriesNames, { message: "O nome da categoria deve ser 'Lanche', 'Acompanhamento', 'Bebida' ou 'Sobremesa'" })
   @MaxLength(255, { message: 'O nome historico ter  no máximo 255 caracteres' })
   name!: string;
 

@@ -2,6 +2,7 @@ export interface Order {
   findOrder: (input: Order.FindOrderInput) => Promise<Order.FindOrderOutput>
   findOrders: () => Promise<Order.FindOrdersOutput>
   saveOrder: (input: Order.InsertOrderInput, options: Order.saveOptions) => Promise<Order.InsertOrderOutput>
+  savePayment: (input: Order.InsertPaymentInput, options: Order.saveOptions) => Promise<Order.InsertPaymentOutput>
   saveOrderProduct: (input: Order.InsertOrderProductInput, options: Order.saveOptions) => Promise<Order.InsertOrderProductOutput>
   saveIngredientProduct: (input: Order.InsertIngredientProductInput, options: Order.saveOptions) => Promise<Order.InsertIngredientProductOutput>
   findProduct: (input: Order.FindProductInput) => Promise<Order.FindProductOutput>
@@ -27,6 +28,7 @@ export namespace Order {
     id: number
     orderId: string
     status?: string
+    payments: GenericType[] 
     createdAt: string
     client?: GenericType
     orderProducts: GenericType[]
@@ -50,7 +52,23 @@ export namespace Order {
     orderId: string
     clientId?: string
     client?: GenericType
+    payment: GenericType
     orderProducts: GenericType[]
+  }
+
+  export type InsertPaymentInput = {
+    paymentId: string
+    totalPrice: number
+    paymentMethod: string
+    status: string
+    order: GenericType
+  }
+
+  export type InsertPaymentOutput = undefined | {
+    id: number
+    status: string
+    paymentId: string
+    totalPrice: number
   }
 
   export type UpdateOrderStatusInput = {

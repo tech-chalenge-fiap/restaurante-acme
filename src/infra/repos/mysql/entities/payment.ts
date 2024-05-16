@@ -30,13 +30,13 @@ export class PaymentEntity {
     @IsEnum(PaymentStatus, { message: "O status do pagamento deve ser 'Pendente', 'Processando', 'Pronto' ou 'Cancelado'" })
     status!: PaymentStatus;
 
-    @Column({ name: 'pix_url' })
+    @Column({ name: 'pix_url', default: '' })
     pixUrl?: string;
 
-    @Column({ name: 'pix_code' })
+    @Column({ name: 'pix_code', default: '' })
     pixCode?: string;
 
-    @Column({ name: 'validade' })
+    @Column({ name: 'validade', default: '' })
     expirationDate?: string;
 
     @ManyToOne(() => OrderEntity, (order) => order.payments, { onDelete: 'CASCADE' })

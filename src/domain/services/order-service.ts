@@ -23,11 +23,17 @@ export class OrderManager implements OrderService {
 
 
   validateOrderStatusRule(order: OrderService.GenericType, newStatus?: string): boolean {
+    // Status permitidos no pedido
     if (order.status && !["Recebido", "Em Preparação", "Pronto", "Finalizado"].includes(order.status)) {
       return false;
     }
+    // Não é possível alterar um pedido Pronto
+    // Não é possível alterar um pedido Finalizado
+    if (order.status && !newStatus && ["Pronto", "Finalizado"].includes(order.status)) {
+      return false;
+    }
     if (newStatus === "Recebido" && order.status !== "Recebido") {
-      return false; // Não é permitido alterar para "Em Recebido" se o status atual não for "Recebido"
+      return false; // Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão. 
     }
     if (newStatus === "Em Preparação" && order.status !== "Recebido") {
       return false; // Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido"
@@ -39,5 +45,9 @@ export class OrderManager implements OrderService {
       return false; // Não é permitido alterar para "Finalizado" se o status atual não for "Pronto"
     }
     return true;
+  }
+
+  validatePaymentMethodRule (paymentMethod: string): boolean {
+    return paymentMethod === 'Pix'
   }
 }

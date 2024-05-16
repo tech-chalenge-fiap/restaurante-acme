@@ -5,6 +5,7 @@ export interface OrderService {
   calculateOrderValue: (input: OrderService.CalculateOrderValueInput) => OrderService.CalculateOrderValueOutput
   calculateOrderValues: (input: OrderService.CalculateOrderValuesInput) => OrderService.CalculateOrderValuesOutput
   validateOrderStatusRule: (input: OrderService.GenericType, newStatus?: string) => OrderService.GenericType
+  validatePaymentMethodRule: (paymentMethod: string) => boolean
 }
 
 export namespace OrderService {

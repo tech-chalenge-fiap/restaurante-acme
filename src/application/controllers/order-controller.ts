@@ -1,7 +1,7 @@
 import { OrderRepository, RegisterRepository } from '@/infra/repos/mysql'
 import { badRequest, HttpResponse, notFound, ok, serverError } from '@/application/helpers'
 import { Order } from '@/domain/contracts/repos'
-import { TokenHandler } from '@/infra/gateways'
+import { PaymentGateway, TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
 import { EntityError, TransactionError } from '@/infra/errors'
 import { OrderService } from '@/domain/contracts/services/order-service'
@@ -12,7 +12,8 @@ export class OrderController {
     private readonly tokenHandler: TokenHandler,
     private readonly registerRepo: RegisterRepository,
     private readonly orderRepo: OrderRepository,
-    private readonly orderService: OrderService
+    private readonly orderService: OrderService,
+    private readonly paymentGateway: PaymentGateway
   ) { }
 
   async handleGetOrders(): Promise<HttpResponse> {
@@ -22,7 +23,6 @@ export class OrderController {
       return serverError(error)
     }
   }
-
 
   async getOrders(): Promise<HttpResponse<Order.FindOrdersOutput | Error>> {
     const orders = await this.orderRepo.findOrders()
@@ -89,6 +89,7 @@ export class OrderController {
         orderProductEntity.count = orderProductData.count;
         orderProductEntity.order = Object.assign(this.orderRepo.getOrderEntity(), order);
 
+        // Deleta um produto do pedido caso a quantidade for zero
         if (orderProductEntity.count === 0) {
           await this.orderRepo.deleteOrderProduct(orderProductEntity)
           continue;
@@ -110,8 +111,9 @@ export class OrderController {
             ingredientProductEntity.count = ingredientProduct.count;
             ingredientProductEntity.orderProduct = Object.assign(this.orderRepo.getOrderProductEntity(), orderProduct);
 
-            if (orderProductEntity.count === 0) {
-              await this.orderRepo.deleteIngredientProduct(orderProductEntity)
+            // Deleta um ingrediente do produto caso a quantidade for zero
+            if (ingredientProductEntity.count === 0) {
+              await this.orderRepo.deleteIngredientProduct(ingredientProductEntity)
               continue;
             }
 
@@ -198,6 +200,10 @@ export class OrderController {
         orderProductEntity.count = orderProductData.count;
         orderProductEntity.order = Object.assign(this.orderRepo.getOrderEntity(), order);
 
+        if (orderProductEntity.count <= 0) {
+          throw new TransactionError(new Error(`Product with ID ${productEntity.productId} could not count as ${orderProductEntity.count}`))
+        }
+
         const orderProduct = await this.saveOrderProduct(orderProductEntity)
 
         // Processa os ingredientes associados ao produto do pedido
@@ -213,6 +219,10 @@ export class OrderController {
             ingredientProductEntity.ingredient = Object.assign(this.orderRepo.getIngredientEntity(), ingredientEntity);
             ingredientProductEntity.count = ingredientProduct.count;
             ingredientProductEntity.orderProduct = Object.assign(this.orderRepo.getOrderProductEntity(), orderProduct);
+
+            if (ingredientProductEntity.count <= 0) {
+              throw new TransactionError(new Error(`Product with ID ${ingredientEntity.ingredientId} could not count as ${ingredientProductEntity.count}`))
+            }
 
             await this.saveIngredientProduct(ingredientProductEntity)
           }
@@ -271,7 +281,7 @@ export class OrderController {
 
 
       if (!this.orderService.validateOrderStatusRule(order, orderData.status)) {
-        return badRequest(new Error(`Cant not update order with ID ${orderData.orderId}, status ${order.status}`));
+        return badRequest(new Error(`Cant not update order status with ID ${orderData.orderId}, status ${order.status}`));
       }
 
       // Altera a entidade de pedido
@@ -336,4 +346,86 @@ export class OrderController {
     return ok(order)
   }
 
+  async handleGetCheckout({ paymentId }: Order.FindPaymentInput): Promise<HttpResponse> {
+    try {
+      return await this.getCheckout({ paymentId })
+    } catch (error) {
+      return serverError(error)
+    }
+  }
+
+  async getCheckout({ paymentId }: Order.FindPaymentInput): Promise<HttpResponse<Order.FindPaymentOutput | Error>> {
+    const payment = await this.orderRepo.findPayment({ paymentId })
+    if (payment === undefined) return notFound()
+    return ok(payment)
+  }
+
+  async handleCreateCheckout(paymentData: Order.CreatePaymentInput): Promise<HttpResponse> {
+
+    await this.orderRepo.prepareTransaction()
+
+    // Verificação básica para garantir os dados do checkout
+    if (!paymentData.paymentMethod || !paymentData.orderId) {
+      return badRequest(new Error('Cannot create checkout: paymentMethod not found'));
+    }
+
+    if (!paymentData.orderId) {
+      return badRequest(new Error('Cannot create checkout: orderId not found'));
+    }
+
+    if (!this.orderService.validatePaymentMethodRule(paymentData.paymentMethod)) {
+      return badRequest(new Error(`Cant not create payment with paymentMethod ${paymentData.paymentMethod}`));
+    }
+
+    await this.orderRepo.openTransaction()
+
+    try {
+
+      // Busca a entidade de pedido
+      const order = this.orderService.calculateOrderValue(await this.orderRepo.findOrder({ orderId: paymentData.orderId }));
+      
+      if (!order) {
+        return badRequest(new Error(`Order with ID ${paymentData.orderId} not found`))
+
+      }
+      // Cria a entidade de pagamento com base no ultimo pagamento
+      const payment = order.payments[order.payments.length - 1];
+      const paymentEntity = Object.assign(this.orderRepo.getPaymentEntity(), payment);
+
+
+      paymentEntity.totalPrice = order.totalPrice;
+      paymentEntity.order = order;
+
+      const pixGenerated = await this.paymentGateway.pixGenerate(order);
+
+      if(!pixGenerated) {
+        throw new TransactionError(new Error(`Payment with order ID ${order.orderId} not perform successfull transaction`))
+      }
+
+      paymentEntity.status = 'Processando';
+
+      const savedPayment = await this.savePayment(Object.assign(paymentEntity, pixGenerated));
+
+      if(!savedPayment) {
+        throw new TransactionError(new Error(`Payment with order ID ${order.orderId} not perform successfull transaction`))
+      }
+
+      await this.orderRepo.commit()
+
+      return ok({ orderId: order?.orderId, status: savedPayment?.status, paymentId: savedPayment.paymentId })
+    } catch (error) {
+
+      if (error instanceof TransactionError) {
+        await this.orderRepo.rollback()
+      }
+
+      if (error instanceof EntityError || error instanceof TransactionError) {
+        return badRequest(new Error(error.message));
+      }
+
+      return serverError(error);
+    } finally {
+      await this.orderRepo.closeTransaction();
+    }
+  }
 }

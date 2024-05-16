@@ -8,8 +8,8 @@ export interface Order {
   findProduct: (input: Order.FindProductInput) => Promise<Order.FindProductOutput>
   findIngredient: (input: Order.FindIngredientInput) => Promise<Order.FindIngredientOutput>
   deleteOrder: (input: Order.FindOrderInput) => Promise<Order.deleteOrderOutput>
-  deleteOrderProduct: (orderProductData: Partial<Order.InsertOrderProductInput>) => Promise<Order.deleteOrderProductOutput> 
-  deleteIngredientProduct: (orderProductData: Partial<Order.InsertIngredientProductInput>) => Promise<Order.deleteIngredientProductOutput> 
+  deleteOrderProduct: (orderProductData: Partial<Order.InsertOrderProductInput>) => Promise<Order.deleteOrderProductOutput>
+  deleteIngredientProduct: (orderProductData: Partial<Order.InsertIngredientProductInput>) => Promise<Order.deleteIngredientProductOutput>
 }
 
 export namespace Order {
@@ -28,14 +28,14 @@ export namespace Order {
     id: number
     orderId: string
     status?: string
-    payments: GenericType[] 
+    payments: GenericType[]
     createdAt: string
     client?: GenericType
     orderProducts: GenericType[]
     totalPrice?: number
   }
 
-  export type FindOrdersOutput = FindOrderOutput[] | undefined 
+  export type FindOrdersOutput = FindOrderOutput[] | undefined
 
 
   export type InsertOrderInput = {
@@ -57,7 +57,7 @@ export namespace Order {
     orderId: string
   }
 
-  
+
   export type deleteOrderOutput = undefined | {
     orderId: string
     affected: number | null | undefined
@@ -96,7 +96,7 @@ export namespace Order {
   }
 
   // Categories Properties
-  
+
   export type FindCategoryOutput = undefined | {
     id: number
     name: string
@@ -104,7 +104,7 @@ export namespace Order {
     ingredients: GenericType[]
   }
 
-  export type FindCategoriesOutput = FindCategoryOutput[] | undefined 
+  export type FindCategoriesOutput = FindCategoryOutput[] | undefined
 
   //Ingredients Properties
   export type FindIngredientInput = { ingredientId: string }
@@ -117,7 +117,7 @@ export namespace Order {
     price: number
   }
 
-   export type InsertIngredientProductOutput = undefined | {
+  export type InsertIngredientProductOutput = undefined | {
     id: number
     count: number
     ingredient: GenericType
@@ -137,7 +137,9 @@ export namespace Order {
   }
 
 
-// Payment properties
+  // Payment properties
+  export type FindPaymentInput = { paymentId: string }
+
   export type InsertPaymentInput = {
     paymentId: string
     totalPrice: number
@@ -146,11 +148,28 @@ export namespace Order {
     order: GenericType
   }
 
+  export type FindPaymentOutput = undefined | {
+    id: number
+    paymentId: string
+    totalPrice: number
+    paymentMethod: string
+    status: string
+    pixUrl: string
+    pixCode: string
+    expirationDate: Date
+    order: GenericType
+  }
+
   export type InsertPaymentOutput = undefined | {
     id: number
     status: string
     paymentId: string
     totalPrice: number
+  }
+
+  export type CreatePaymentInput = {
+    orderId: string
+    paymentMethod: string
   }
 
 }

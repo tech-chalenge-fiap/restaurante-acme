@@ -4,7 +4,6 @@ import { RequestHandler } from 'express';
 type OrderAdapter = (controller: OrderController) => RequestHandler;
 type GenericType<T = any> = T
 
-type AdapterHealthcheck = () => RequestHandler;
 
 const makeResponseHandler = (data: GenericType, statusCode: number, res: GenericType) => {
   let errors = {}
@@ -63,4 +62,25 @@ export const adaptExpressDeleteOrderRoute: OrderAdapter = controller => async (r
 
   makeResponseHandler(data, statusCode, res)
 };
+
+export const adaptExpressGetCheckoutRoute: OrderAdapter = controller => async (req, res) => {
+  const { query, locals } = req;
+  const { statusCode, data } = await controller.handleGetCheckout({
+    ...locals,
+    ...query
+  });
+
+  makeResponseHandler(data, statusCode, res)
+};
+
+
+export const adaptExpressCreateCheckoutRoute: OrderAdapter = controller => async (req, res) => {
+  const { body } = req;
+  const { statusCode, data } = await controller.handleCreateCheckout(body);
+
+  makeResponseHandler(data, statusCode, res)
+};
+
+
+
 

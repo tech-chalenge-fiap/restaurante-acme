@@ -65,7 +65,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             price: parseFloat(op.product?.price),
             ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
               id: ip.id,
-              ingredientId: ip.ingredient?.ingredientProductId,
+              ingredientId: ip.ingredient?.ingredientId,
               name: ip.ingredient?.name,
               description: ip.ingredient?.description,
               count: parseInt(ip.count),
@@ -128,7 +128,7 @@ export class OrderRepository extends MySQLRepository implements Order {
             price: parseFloat(op.product?.price),
             ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
               id: ip.id,
-              ingredientId: ip.ingredient?.ingredientProductId,
+              ingredientId: ip.ingredient?.ingredientId,
               name: ip.ingredient?.name,
               description: ip.ingredient?.description,
               count: ip.count,
@@ -169,9 +169,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async savePayment(paymentData: Order.InsertPaymentInput): Promise<Order.InsertPaymentOutput> {
     try {
-      const orderRepo = this.getRepository(this.paymentEntity)
+      const paymentRepo = this.getRepository(this.paymentEntity)
 
-      const saveResult = await orderRepo.save(paymentData)
+      const saveResult = await paymentRepo.save(paymentData)
 
       if (saveResult !== null) {
         return {
@@ -186,11 +186,40 @@ export class OrderRepository extends MySQLRepository implements Order {
     }
   }
 
+  async findPayment({ paymentId }: Order.FindPaymentInput): Promise<Order.FindPaymentOutput> {
+    try {
+      const paymentRepo = this.getRepository(this.paymentEntity);
+
+      const paymentOrder = await paymentRepo.findOne({
+        where: { paymentId: paymentId ??  '' },
+        relations: [
+          'order', // Relacionamento com OrderEntit
+        ],
+      });
+      
+      if (paymentOrder !== null) {
+        return {
+          id: paymentOrder.id,
+          paymentId: paymentOrder.paymentId,
+          status: paymentOrder.status,
+          totalPrice: parseFloat(paymentOrder.totalPrice),
+          paymentMethod: paymentOrder.paymentMethod,
+          pixUrl: paymentOrder.pixUrl,
+          pixCode: paymentOrder.pixCode,
+          expirationDate: paymentOrder.expirationDate,
+          order: paymentOrder.order
+        };
+      }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
   async saveOrderProduct(orderProductData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
     try {
-      const orderRepo = this.getRepository(this.orderProductEntity)
+      const orderProductRepo = this.getRepository(this.orderProductEntity)
 
-      const existingOrderProduct = await orderRepo.findOne({
+      const existingOrderProduct = await orderProductRepo.findOne({
         where: {
           'order.id': orderProductData.order.id,
           'product.id': orderProductData.product.id
@@ -198,7 +227,7 @@ export class OrderRepository extends MySQLRepository implements Order {
       });
 
       if (!existingOrderProduct) {
-        const orderProduct = await orderRepo.insert(orderProductData)
+        const orderProduct = await orderProductRepo.insert(orderProductData)
         if (orderProduct !== null) {
           return {
             id: orderProduct.raw.insertId,
@@ -209,7 +238,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         }
       }
 
-      const orderProduct = await orderRepo.save({...existingOrderProduct, ...orderProductData})
+      const orderProduct = await orderProductRepo.save({...existingOrderProduct, ...orderProductData})
 
       if (orderProduct !== null) {
         return {
@@ -228,9 +257,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async saveIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
     try {
-      const orderRepo = this.getRepository(this.ingredientProductEntity)
+      const ingredientProductRepo = this.getRepository(this.ingredientProductEntity)
 
-      const existingIngredientProduct = await orderRepo.findOne({
+      const existingIngredientProduct = await ingredientProductRepo.findOne({
         where: {
           "ingredient.id": ingredientProductData.ingredient.id,
           "orderProduct.id": ingredientProductData.orderProduct.id
@@ -238,7 +267,7 @@ export class OrderRepository extends MySQLRepository implements Order {
       });
 
       if (!existingIngredientProduct) {
-        const ingredientProduct = await orderRepo.insert(ingredientProductData)
+        const ingredientProduct = await ingredientProductRepo.insert(ingredientProductData)
         if (ingredientProduct !== null) {
           return {
             id: ingredientProduct.raw.insertId,
@@ -249,7 +278,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         }
       }
 
-      const ingredientProduct = await orderRepo.save({ ...existingIngredientProduct, ...ingredientProductData })
+      const ingredientProduct = await ingredientProductRepo.save({ ...existingIngredientProduct, ...ingredientProductData })
 
       if (ingredientProduct !== null) {
         return {
@@ -266,9 +295,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async findProduct({ productId }: Order.FindProductInput): Promise<Order.FindProductOutput> {
     try {
-      const orderRepo = this.getRepository(this.productEntity)
+      const productRepo = this.getRepository(this.productEntity)
 
-      const product = await orderRepo.findOne({ 
+      const product = await productRepo.findOne({ 
         where: { productId: productId ?? '' },
         relations: ['category']
       })
@@ -288,9 +317,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async findCategories(): Promise<Order.FindCategoriesOutput> {
     try {
-      const orderRepo = this.getRepository(this.categoryEntity)
+      const categoryRepo = this.getRepository(this.categoryEntity)
 
-      const categories = await orderRepo.find({
+      const categories = await categoryRepo.find({
         relations: [
           'products', // Relacionamento com ProductEntity
           'ingredients', // Relacionamento com IngredientEntity
@@ -312,9 +341,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async findIngredient({ ingredientId }: Order.FindIngredientInput): Promise<Order.FindIngredientOutput> {
     try {
-      const orderRepo = this.getRepository(this.ingredientEntity)
+      const ingredientRepo = this.getRepository(this.ingredientEntity)
 
-      const ingredient = await orderRepo.findOne({ where: { ingredientId: ingredientId ?? '' } })
+      const ingredient = await ingredientRepo.findOne({ where: { ingredientId: ingredientId ?? '' } })
 
       if (ingredient !== null) return {
         id: ingredient.id,
@@ -347,9 +376,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async deleteOrderProduct(orderProductData: Partial<Order.InsertOrderProductInput>): Promise<Order.deleteOrderProductOutput> {
     try {
-      const orderRepo = this.getRepository(this.orderProductEntity)
+      const orderProductRepo = this.getRepository(this.orderProductEntity)
 
-      const deleteResult = await orderRepo.delete({
+      const deleteResult = await orderProductRepo.delete({
         order: orderProductData.order,
         product: orderProductData.product
       })
@@ -368,9 +397,9 @@ export class OrderRepository extends MySQLRepository implements Order {
 
   async deleteIngredientProduct(ingredientProductData: Partial<Order.InsertIngredientProductInput>): Promise<Order.deleteIngredientProductOutput> {
     try {
-      const orderRepo = this.getRepository(this.ingredientProductEntity)
+      const ingredientProductRepo = this.getRepository(this.ingredientProductEntity)
 
-      const deleteResult = await orderRepo.delete({
+      const deleteResult = await ingredientProductRepo.delete({
         ingredient: ingredientProductData.ingredient,
         orderProduct: ingredientProductData.orderProduct
       })

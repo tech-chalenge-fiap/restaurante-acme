@@ -11,10 +11,11 @@ import {
   Header as header,
   Body as body,
   Response as response,
+  Put as put,
   Controller,
   HttpStatusCodeLiteral,
   HttpStatusCodeStringLiteral,
-  OtherValidOpenApiHttpStatusCode,
+  OtherValidOpenApiHttpStatusCode
 } from 'tsoa';
 
 
@@ -62,6 +63,10 @@ export function Security(value: string): any {
   return security(value)
 }
 
+export function Put(value?: string): any {
+  return put(value)
+}
+
 export class TsoaController extends Controller {}
 
 export function Response<T>(
@@ -73,3 +78,6 @@ export function Response<T>(
 }
 
 export * from './healthCheckDoc'
+export * from './orderDoc'
+export * from './clientDoc'
+export * from './productDoc'

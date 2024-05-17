@@ -172,14 +172,14 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/order/:orderId',
+        app.get('/order',
             authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(FindOrderDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindOrderDoc.prototype.FindOrder)),
 
             function FindOrderDoc_FindOrder(request: any, response: any, next: any) {
             const args = {
-                    orderId: {"in":"path","name":"orderId","required":true,"dataType":"string"},
+                    _orderId: {"in":"query","name":"orderId","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -224,14 +224,14 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/order/:orderId',
+        app.delete('/order',
             authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(DeleteOrderDoc)),
             ...(fetchMiddlewares<RequestHandler>(DeleteOrderDoc.prototype.DeleteOrder)),
 
             function DeleteOrderDoc_DeleteOrder(request: any, response: any, next: any) {
             const args = {
-                    orderId: {"in":"path","name":"orderId","required":true,"dataType":"string"},
+                    _orderId: {"in":"query","name":"orderId","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -326,13 +326,13 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/client/:cpf',
+        app.get('/client',
             ...(fetchMiddlewares<RequestHandler>(FindClientDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindClientDoc.prototype.FindClient)),
 
             function FindClientDoc_FindClient(request: any, response: any, next: any) {
             const args = {
-                    cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
+                    _cpf: {"in":"query","name":"cpf","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -351,13 +351,13 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/product/:productId',
+        app.get('/product',
             ...(fetchMiddlewares<RequestHandler>(FindProductDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindProductDoc.prototype.FindProduct)),
 
             function FindProductDoc_FindProduct(request: any, response: any, next: any) {
             const args = {
-                    productId: {"in":"path","name":"productId","required":true,"dataType":"string"},
+                    _cpf: {"in":"query","name":"cpf","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

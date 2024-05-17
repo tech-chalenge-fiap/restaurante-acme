@@ -1,5 +1,5 @@
 import { Order } from '@/domain/contracts/repos/order';
-import { Route, Tags, Response, TsoaController, Get, Post, Body, Put, Delete, Path, Security } from '.'
+import { Route, Tags, Response, TsoaController, Get, Post, Body, Put, Delete, Path, Security, Query } from '.'
 
 @Route('/order')
 export class CreateOrderDoc extends TsoaController {
@@ -15,7 +15,7 @@ export class CreateOrderDoc extends TsoaController {
   }
 }
 
-@Route('/order/:orderId')
+@Route('/order')
 export class FindOrderDoc extends TsoaController {
   /**
    * @summary Rota para buscar um pedido
@@ -24,7 +24,7 @@ export class FindOrderDoc extends TsoaController {
   @Tags('Order')
   @Security('apiKey')
   @Response<Order.FindOrderOutput>(200, 'Ok')
-  FindOrder(@Path() orderId: string): void {
+  FindOrder(@Query('orderId') _orderId: string): void {
     /* Documentation - Rout to find an order */
   }
 }
@@ -43,7 +43,7 @@ export class UpdateOrderDoc extends TsoaController {
   }
 }
 
-@Route('/order/:orderId')
+@Route('/order')
 export class DeleteOrderDoc extends TsoaController {
   /**
    * @summary Rota para deletar um pedido
@@ -52,7 +52,7 @@ export class DeleteOrderDoc extends TsoaController {
   @Tags('Order')
   @Security('apiKey')
   @Response<Order.deleteOrderOutput>(200, 'Ok')
-  DeleteOrder(@Path() orderId: string): void {
+  DeleteOrder(@Query('orderId') _orderId: string): void {
     /* Documentation - Rout to delete an order */
   }
 }

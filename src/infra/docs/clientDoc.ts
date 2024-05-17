@@ -1,5 +1,5 @@
 import { Register } from '@/domain/contracts/repos/register';
-import { Route, Tags, Response, TsoaController, Get, Post, Body, Path } from '.'
+import { Route, Tags, Response, TsoaController, Get, Post, Body, Query } from '.'
 
 @Route('/client')
 export class CreateClientDoc extends TsoaController {
@@ -14,7 +14,7 @@ export class CreateClientDoc extends TsoaController {
   }
 }
 
-@Route('/client/:cpf')
+@Route('/client')
 export class FindClientDoc extends TsoaController {
   /**
    * @summary Rota para buscar um cliente
@@ -22,7 +22,7 @@ export class FindClientDoc extends TsoaController {
   @Get()
   @Tags('Client')
   @Response<Register.FindClientOutput>(200, 'Ok')
-  FindClient(@Path() cpf: string): void {
+  FindClient(@Query('cpf') _cpf: string): void {
     /* Documentation - Rout to find a client */
   }
 }

@@ -1,7 +1,7 @@
 import { Order } from '@/domain/contracts/repos/order';
-import { Route, Tags, Response, TsoaController, Get, Path } from '.'
+import { Route, Tags, Response, TsoaController, Get, Query } from '.'
 
-@Route('/product/:productId')
+@Route('/product')
 export class FindProductDoc extends TsoaController {
   /**
    * @summary Rota para procurar um produto
@@ -9,7 +9,7 @@ export class FindProductDoc extends TsoaController {
   @Get()
   @Tags('Product')
   @Response<Order.FindProductInput>(201, 'Created')
-  FindProduct(@Path() productId: string): void {
+  FindProduct(@Query('cpf') _cpf: string): void {
     /* Documentation - Rout to find a product */
   }
 }

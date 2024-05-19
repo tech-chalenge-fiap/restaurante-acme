@@ -24,7 +24,7 @@ export class OrderRepository extends MySQLRepository implements Order {
   getPaymentEntity = () => new this.paymentEntity()
 
 
-  async findOrders(): Promise<Order.FindOrdersOutput> {
+  async findOrders(): Promise<Order.FindOrderOutput[] | undefined> {
     try {
       const orderRepo = this.getRepository(this.orderEntity);
 
@@ -75,7 +75,7 @@ export class OrderRepository extends MySQLRepository implements Order {
           payments: order.payments?.map((pay: Order.GenericType) => ({
             id: pay.id,
             paymentId: pay.paymentId,
-            totalPrice: pay.totalPrice,
+            totalPrice: parseFloat(pay.totalPrice),
             paymentMethod: pay.paymentMethod,
             status: pay.status
           }))
@@ -138,7 +138,7 @@ export class OrderRepository extends MySQLRepository implements Order {
           payments: order.payments?.map((pay: Order.GenericType) => ({
             id: pay.id,
             paymentId: pay.paymentId,
-            totalPrice: pay.totalPrice,
+            totalPrice: parseFloat(pay.totalPrice),
             paymentMethod: pay.paymentMethod,
             status: pay.status
           }))
@@ -307,7 +307,7 @@ export class OrderRepository extends MySQLRepository implements Order {
         productId: product.productId,
         name: product.name,
         description: product.description,
-        price: product.price,
+        price: parseFloat(product.price),
         category: product.category
       }
     } catch (error: any) {
@@ -350,14 +350,14 @@ export class OrderRepository extends MySQLRepository implements Order {
         ingredientId: ingredient.ingredientId,
         name: ingredient.name,
         description: ingredient.description,
-        price: ingredient.price
+        price: parseFloat(ingredient.price)
       }
     } catch (error: any) {
       throw new EntityError(error.message)
     }
   }
 
-  async deleteOrder(orderData: Order.FindOrderInput): Promise<Order.deleteOrderOutput> {
+  async deleteOrder(orderData: Order.FindOrderInput): Promise<Order.DeleteOrderOutput> {
     try {
       const orderRepo = this.getRepository(this.orderEntity)
 
@@ -374,7 +374,7 @@ export class OrderRepository extends MySQLRepository implements Order {
     }
   }
 
-  async deleteOrderProduct(orderProductData: Partial<Order.InsertOrderProductInput>): Promise<Order.deleteOrderProductOutput> {
+  async deleteOrderProduct(orderProductData: Partial<Order.InsertOrderProductInput>): Promise<Order.DeleteOrderProductOutput> {
     try {
       const orderProductRepo = this.getRepository(this.orderProductEntity)
 
@@ -395,7 +395,7 @@ export class OrderRepository extends MySQLRepository implements Order {
     }
   }
 
-  async deleteIngredientProduct(ingredientProductData: Partial<Order.InsertIngredientProductInput>): Promise<Order.deleteIngredientProductOutput> {
+  async deleteIngredientProduct(ingredientProductData: Partial<Order.InsertIngredientProductInput>): Promise<Order.DeleteIngredientProductOutput> {
     try {
       const ingredientProductRepo = this.getRepository(this.ingredientProductEntity)
 

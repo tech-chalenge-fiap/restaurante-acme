@@ -13,7 +13,6 @@ export namespace Register {
     name: string 
     cpf: string
     email: string
-    orders?: GenericType[]
   }
 
   export type GenericType<T = any> = T
@@ -23,7 +22,6 @@ export namespace Register {
     name: string 
     cpf: string
     email: string
-    orders?: GenericType[]
   }
   
 

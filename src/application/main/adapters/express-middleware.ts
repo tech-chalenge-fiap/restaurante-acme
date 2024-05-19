@@ -8,7 +8,7 @@ type AdapterHealthcheck = () => RequestHandler;
 export const adaptExpressMiddleware: Adapter = middleware => async (req, res, next) => {
   const ip = req.ip?.replace(/.*:(\d+\.\d+\.\d+\.\d+)$/, '$1')
   const { statusCode, data } = await middleware.handle({ ...req.headers, ip })
-  if (statusCode === 200) {
+  if (statusCode === 200 || statusCode === 201) {
     const validEntries = Object.entries(data).filter(([, value]) => value)
     req.locals = { ...req.locals, ...Object.fromEntries(validEntries) }
     next()

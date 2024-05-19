@@ -13,7 +13,7 @@ const makeResponseHandler = (data: GenericType, statusCode: number, res: Generic
   } catch (error) {
     errors = { errors: data.message }
   }
-  const json = [200, 204].includes(statusCode) ? data : errors;
+  const json = [200, 201, 204].includes(statusCode) ? data : errors;
   res.status(statusCode).json(json)
 }
 

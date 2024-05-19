@@ -3,7 +3,7 @@ import { Order } from "../repos"
 
 export interface OrderService {
   calculateOrderValue: (input: OrderService.CalculateOrderValueInput) => OrderService.CalculateOrderValueOutput
-  calculateOrderValues: (input: OrderService.CalculateOrderValuesInput) => OrderService.CalculateOrderValuesOutput
+  calculateOrderValues: (input: OrderService.CalculateOrderValueInput[]) => OrderService.CalculateOrderValueOutput[]
   validateOrderStatusRule: (input: OrderService.GenericType, newStatus?: string) => OrderService.GenericType
   validatePaymentMethodRule: (paymentMethod: string) => boolean
 }
@@ -14,8 +14,6 @@ export namespace OrderService {
 
   // Order Properties
   export type CalculateOrderValueInput = Order.FindOrderOutput 
-  export type CalculateOrderValueOutput = Order.FindOrderOutput 
-  export type CalculateOrderValuesInput = Order.FindOrdersOutput
-  export type CalculateOrderValuesOutput = Order.FindOrdersOutput
+  export type CalculateOrderValueOutput = Order.FindOrderOutput
 }
 

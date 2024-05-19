@@ -1,4 +1,4 @@
-import { Order } from '@/domain/contracts/repos/order';
+import { OrderHttp } from '@/domain/contracts/gateways';
 import { Route, Tags, Response, TsoaController, Get, Post, Body, Put, Delete, Path, Security, Query } from '.'
 
 @Route('/order')
@@ -9,8 +9,8 @@ export class CreateOrderDoc extends TsoaController {
   @Post()
   @Tags('Order')
   @Security('apiKey')
-  @Response<{ orderId: string, status: string }>(201, 'Created')
-  CreateOrder(@Body() _body: Order.InsertOrderInput): void {
+  @Response<OrderHttp.CreateOrderOutput>(201, 'Created')
+  CreateOrder(@Body() _body: OrderHttp.CreateOrderInput): void {
     /* Documentation - Rout to create an order */
   }
 }
@@ -23,7 +23,7 @@ export class FindOrderDoc extends TsoaController {
   @Get()
   @Tags('Order')
   @Security('apiKey')
-  @Response<Order.FindOrderOutput>(200, 'Ok')
+  @Response<OrderHttp.GetOrderOutput>(200, 'Ok')
   FindOrder(@Query('orderId') _orderId: string): void {
     /* Documentation - Rout to find an order */
   }
@@ -37,8 +37,8 @@ export class UpdateOrderDoc extends TsoaController {
   @Put()
   @Tags('Order')
   @Security('apiKey')
-  @Response<{ orderId: string, status: string }>(200, 'Ok')
-  UpdateOrder(@Body() _body: Order.InsertOrderInput): void {
+  @Response<OrderHttp.UpdateOrderOutput>(200, 'Ok')
+  UpdateOrder(@Body() _body: OrderHttp.UpdateOrderInput): void {
     /* Documentation - Rout to update an order */
   }
 }
@@ -51,7 +51,7 @@ export class DeleteOrderDoc extends TsoaController {
   @Delete()
   @Tags('Order')
   @Security('apiKey')
-  @Response<Order.deleteOrderOutput>(200, 'Ok')
+  @Response<OrderHttp.DeleteOrderOutput>(200, 'Ok')
   DeleteOrder(@Query('orderId') _orderId: string): void {
     /* Documentation - Rout to delete an order */
   }
@@ -65,8 +65,8 @@ export class UpdateOrderStatusDoc extends TsoaController {
   @Put()
   @Tags('Order')
   @Security('apiKey')
-  @Response<{ orderId: string, status: string }>(200, 'Ok')
-  UpdateOrderStatus(@Body() _body: Order.UpdateOrderStatusInput): void {
+  @Response<OrderHttp.UpdateOrderStatusInput>(200, 'Ok')
+  UpdateOrderStatus(@Body() _body: OrderHttp.UpdateOrderStatusInput): void {
     /* Documentation - Rout to update order status */
   }
 }
@@ -79,7 +79,7 @@ export class FindAllOrdersDoc extends TsoaController {
   @Get()
   @Tags('Orders')
   @Security('apiKey')
-  @Response<Order.FindOrdersOutput>(200, 'Ok')
+  @Response<OrderHttp.GetOrderOutput[]>(200, 'Ok')
   FindAllOrders(): void {
     /* Documentation - Rout to find all orders */
   }

@@ -1,4 +1,4 @@
-import { Order } from '@/domain/contracts/repos/order';
+import { OrderHttp } from '@/domain/contracts/gateways';
 import { Route, Tags, Response, TsoaController, Get, Post, Body, Query, Security } from '.'
 import { Example } from 'tsoa';
 
@@ -9,15 +9,13 @@ export class CreateCheckoutDoc extends TsoaController {
    */
   @Post()
   @Example({
-    orderId: '7e57d004-2b97-4c3c-b9f9-67647ad1a1f8',
-    paymentId: '3f29bc1c-547b-4f57-9fbc-f2e9a1a2b67a',
-    status: 'created'
-
+    "paymentMethod": "PIX",
+    "orderId": "0c76844d-3ec3-4ed6-8d61-1d415cf80c68"
   })
   @Tags('Checkout')
   @Security('apiKey')
-  @Response<{ orderId: string, status: string, paymentId: string }>(201, 'Created')
-  CreateOrder(@Body() _body: Order.CreatePaymentInput): void {
+  @Response<OrderHttp.CreateCheckoutOutput>(201, 'Created')
+  CreateOrder(@Body() _body: OrderHttp.GetPaymentInput): void {
     /* Documentation - Rout to create checkout */
   }
 }
@@ -30,7 +28,7 @@ export class GetCheckoutDoc extends TsoaController {
   @Get()
   @Tags('Checkout')
   @Security('apiKey')
-  @Response<Order.FindPaymentOutput>(200, 'Ok')
+  @Response<OrderHttp.GetPaymentOutput>(200, 'Ok')
   FindOrder(@Query('paymentId') _paymentId: string): void {
     /* Documentation - Rout to get a checkout */
   }

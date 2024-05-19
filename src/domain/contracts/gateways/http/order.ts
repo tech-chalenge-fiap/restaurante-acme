@@ -80,7 +80,5 @@ export type GetOrderOutput = Order.FindOrderOutput
   export type CreateCheckoutInput = { orderId: string, paymentMethod: string }
 
   export type CreateCheckoutOutput = { orderId: string, paymentId: string, status: string }
-
-  
 }
 

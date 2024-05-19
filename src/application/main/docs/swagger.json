@@ -375,28 +375,30 @@
 				],
 				"type": "object"
 			},
-			"Register.InsertClientInput": {
+			"ClientHttp.CreateClientOutput": {
+				"$ref": "#/components/schemas/Register.InsertClientOutput"
+			},
+			"ClientHttp.CreateClientInput": {
 				"properties": {
-					"email": {
+					"name": {
 						"type": "string"
 					},
 					"cpf": {
 						"type": "string"
 					},
-					"name": {
-						"type": "string"
-					},
-					"clientId": {
+					"email": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"email",
-					"cpf",
 					"name",
-					"clientId"
+					"cpf",
+					"email"
 				],
 				"type": "object"
+			},
+			"ClientHttp.GetClientOutput": {
+				"$ref": "#/components/schemas/Register.FindClientOutput"
 			},
 			"ProductOutput": {
 				"properties": {
@@ -541,9 +543,12 @@
 			"OrderHttp.GetCategoriesOutput": {
 				"$ref": "#/components/schemas/Order.FindCategoriesOutput"
 			},
-			"Order.CreatePaymentInput": {
+			"OrderHttp.CreateCheckoutOutput": {
 				"properties": {
-					"paymentMethod": {
+					"status": {
+						"type": "string"
+					},
+					"paymentId": {
 						"type": "string"
 					},
 					"orderId": {
@@ -551,8 +556,20 @@
 					}
 				},
 				"required": [
-					"paymentMethod",
+					"status",
+					"paymentId",
 					"orderId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.GetPaymentInput": {
+				"properties": {
+					"paymentId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"paymentId"
 				],
 				"type": "object"
 			},
@@ -601,6 +618,9 @@
 					"id"
 				],
 				"type": "object"
+			},
+			"OrderHttp.GetPaymentOutput": {
+				"$ref": "#/components/schemas/Order.FindPaymentOutput"
 			}
 		},
 		"securitySchemes": {
@@ -710,7 +730,7 @@
 			"get": {
 				"operationId": "FindOrder",
 				"responses": {
-					"201": {
+					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
@@ -902,7 +922,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Register.InsertClientOutput"
+									"$ref": "#/components/schemas/ClientHttp.CreateClientOutput"
 								}
 							}
 						}
@@ -926,7 +946,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Register.InsertClientInput"
+								"$ref": "#/components/schemas/ClientHttp.CreateClientInput"
 							}
 						}
 					}
@@ -940,7 +960,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Register.FindClientOutput"
+									"$ref": "#/components/schemas/ClientHttp.GetClientOutput"
 								}
 							}
 						}
@@ -1048,23 +1068,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"paymentId": {
-											"type": "string"
-										},
-										"status": {
-											"type": "string"
-										},
-										"orderId": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"paymentId",
-										"status",
-										"orderId"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/OrderHttp.CreateCheckoutOutput"
 								}
 							}
 						}
@@ -1088,7 +1092,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Order.CreatePaymentInput"
+								"$ref": "#/components/schemas/OrderHttp.GetPaymentInput"
 							}
 						}
 					}
@@ -1102,7 +1106,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Order.FindPaymentOutput"
+									"$ref": "#/components/schemas/OrderHttp.GetPaymentOutput"
 								}
 							}
 						}

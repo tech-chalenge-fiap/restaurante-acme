@@ -21,7 +21,7 @@
   },
   "routes": {
     "routesDir": "src/application/main/docs",
-    "authenticationModule": "src/application/main/middlewares/authentication.ts"
+    "authenticationModule": "src/application/main/middlewares/express-authentication.ts"
   },
   "compilerOptions": {
     "baseUrl": "src",

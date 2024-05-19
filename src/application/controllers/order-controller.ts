@@ -5,7 +5,7 @@ import { PaymentGateway, TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
 import { EntityError, TransactionError } from '@/infra/errors'
 import { OrderService } from '@/domain/contracts/services/order-service'
-import { OrderHttp } from '@/domain/contracts/gateways/http'
+import { OrderHttp } from '@/domain/contracts/gateways'
 import { OrderServiceError } from '@/domain/errors'
 
 export class OrderController {
@@ -400,8 +400,7 @@ export class OrderController {
 
       order.status = 'Recebido';
 
-      // Altera sattus da entidade de pedido
-      // Cria a entidade de pedido
+      // Altera status da entidade de pedido
       const orderEntity = this.orderRepo.getOrderEntity()
       orderEntity.id = order.id;
       orderEntity.orderId = order.orderId;
@@ -411,7 +410,7 @@ export class OrderController {
 
       await this.orderRepo.commit()
 
-      return ok({ orderId: order?.orderId, status: savedPayment?.status, paymentId: savedPayment.paymentId })
+      return created({ orderId: order?.orderId, status: savedPayment?.status, paymentId: savedPayment.paymentId })
     } catch (error) {
 
       if (error instanceof TransactionError) {

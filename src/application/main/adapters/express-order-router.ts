@@ -17,7 +17,6 @@ const makeResponseHandler = (data: GenericType, statusCode: number, res: Generic
 }
 
 export const adaptExpressGetOrdersRoute: OrderAdapter = controller => async (req, res) => {
-  const { query, locals } = req;
   const { statusCode, data } = await controller.handleGetOrders();
 
   makeResponseHandler(data, statusCode, res)
@@ -57,8 +56,12 @@ export const adaptExpressUpdateOrderStatusRoute: OrderAdapter = controller => as
 };
 
 export const adaptExpressDeleteOrderRoute: OrderAdapter = controller => async (req, res) => {
-  const { query } = req;
-  const { statusCode, data } = await controller.handleDeleteOrder(query);
+  const { query, locals } = req;
+  const { statusCode, data } = await controller.handleDeleteOrder({
+      ...locals,
+      ...query
+    }
+  );
 
   makeResponseHandler(data, statusCode, res)
 };

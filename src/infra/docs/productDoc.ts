@@ -1,5 +1,5 @@
-import { Order } from '@/domain/contracts/repos/order';
-import { Route, Tags, Response, TsoaController, Get, Query } from '.'
+import { OrderHttp } from '@/domain/contracts/gateways';
+import { Route, Tags, Response, TsoaController, Get, Query, Security } from '.'
 
 @Route('/product')
 export class FindProductDoc extends TsoaController {
@@ -8,8 +8,9 @@ export class FindProductDoc extends TsoaController {
    */
   @Get()
   @Tags('Product')
-  @Response<Order.FindProductInput>(201, 'Created')
-  FindProduct(@Query('cpf') _cpf: string): void {
+  @Security('apiKey')
+  @Response<OrderHttp.GetProductOutput>(200, 'Ok')
+  FindProduct(@Query('productId') _productId: string): void {
     /* Documentation - Rout to find a product */
   }
 }
@@ -21,7 +22,8 @@ export class FindProductsCategoriesDoc extends TsoaController {
    */
   @Get()
   @Tags('Product categories')
-  @Response<Order.FindCategoriesOutput>(200, 'Ok')
+  @Security('apiKey')
+  @Response<OrderHttp.GetCategoriesOutput>(200, 'Ok')
   FindProductsCategories(): void {
     /* Documentation - Rout to find products categories */
   }

@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "node -r dotenv/config dist/application/main",
-    "dev": "ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/application/main",
+    "dev": "npm run docs && ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/application/main",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc -p tsconfig-build.json",
     "prepare": "husky install",

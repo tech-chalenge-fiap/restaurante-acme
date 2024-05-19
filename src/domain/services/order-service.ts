@@ -1,15 +1,16 @@
 import { OrderService } from "@/domain/contracts/services/order-service";
+import { OrderServiceError } from "@/domain/errors";
 
 
 export class OrderManager implements OrderService {
-  calculateOrderValues(orderData: OrderService.CalculateOrderValuesInput): OrderService.CalculateOrderValuesOutput {
-    if (!orderData) throw new Error('Order data not found to calculate total price');
+  calculateOrderValues(orderData: OrderService.CalculateOrderValueInput[]): OrderService.CalculateOrderValueInput[] {
+    if (!orderData) throw new OrderServiceError(new Error('Order data not found to calculate total price'));
     // Calculando a soma dos preços em orderProducts e ingredientProducts
     return orderData.map((order) => this.calculateOrderValue(order))
   }
 
   calculateOrderValue(orderData: OrderService.GenericType): OrderService.GenericType {
-    if (!orderData) throw new Error('Order data not found to calculate total price');
+    if (!orderData) throw new OrderServiceError(new Error('Order data not found to calculate total price'));
     // Calculando a soma dos preços em orderProducts e ingredientProducts
     const totalPrice = orderData.orderProducts.reduce((acc: number, product: OrderService.GenericType) => {
       return acc + product.price * product.count;
@@ -44,10 +45,15 @@ export class OrderManager implements OrderService {
     if (newStatus === "Finalizado" && order.status !== "Pronto") {
       return false; // Não é permitido alterar para "Finalizado" se o status atual não for "Pronto"
     }
+
+    // if (order.payments[0].status === "Processando") {
+    //   return false; // Não é permitido alterar status quanto o pagamento estiver processando 
+    // }
     return true;
   }
+  
 
   validatePaymentMethodRule (paymentMethod: string): boolean {
-    return paymentMethod === 'Pix'
+    return paymentMethod.toLocaleUpperCase() === 'PIX'
   }
 }

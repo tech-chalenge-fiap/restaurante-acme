@@ -1,19 +1,20 @@
+import { Register } from "./register"
+
 export interface Order {
   findOrder: (input: Order.FindOrderInput) => Promise<Order.FindOrderOutput>
-  findOrders: () => Promise<Order.FindOrdersOutput>
+  findOrders: () => Promise<Order.FindOrderOutput[] | undefined>
   saveOrder: (input: Order.InsertOrderInput) => Promise<Order.InsertOrderOutput>
   savePayment: (input: Order.InsertPaymentInput) => Promise<Order.InsertPaymentOutput>
   saveOrderProduct: (input: Order.InsertOrderProductInput) => Promise<Order.InsertOrderProductOutput>
   saveIngredientProduct: (input: Order.InsertIngredientProductInput) => Promise<Order.InsertIngredientProductOutput>
   findProduct: (input: Order.FindProductInput) => Promise<Order.FindProductOutput>
   findIngredient: (input: Order.FindIngredientInput) => Promise<Order.FindIngredientOutput>
-  deleteOrder: (input: Order.FindOrderInput) => Promise<Order.deleteOrderOutput>
-  deleteOrderProduct: (orderProductData: Partial<Order.InsertOrderProductInput>) => Promise<Order.deleteOrderProductOutput>
-  deleteIngredientProduct: (orderProductData: Partial<Order.InsertIngredientProductInput>) => Promise<Order.deleteIngredientProductOutput>
+  deleteOrder: (input: Order.FindOrderInput) => Promise<Order.DeleteOrderOutput>
+  deleteOrderProduct: (orderProductData: Partial<Order.InsertOrderProductInput>) => Promise<Order.DeleteOrderProductOutput>
+  deleteIngredientProduct: (orderProductData: Partial<Order.InsertIngredientProductInput>) => Promise<Order.DeleteIngredientProductOutput>
 }
 
 export namespace Order {
-
   export type saveOptions = undefined | {
     update?: boolean;
     insert?: boolean
@@ -27,16 +28,38 @@ export namespace Order {
   export type FindOrderOutput = undefined | {
     id: number
     orderId: string
-    status?: string
-    payments: GenericType[]
+    status: string
+    payments: FindPaymentOutput[]
     createdAt: string
-    client?: GenericType
-    orderProducts: GenericType[]
+    client?: Register.FindClientOutput
+    orderProducts: OrderProductOutput[]
     totalPrice?: number
   }
 
-  export type FindOrdersOutput = FindOrderOutput[] | undefined
+  export type OrderProductOutput = {
+    id: number
+    productId: string
+    name: string
+    description: string
+    count: number
+    category: OrderProductCategoryOutput
+    price: number
+    ingredientProducts: OrderProductIngredientOutput[]
+  }
 
+  export type OrderProductCategoryOutput = {
+    categoryId: string
+    name: string
+  }
+
+  export type OrderProductIngredientOutput = {
+    id: number
+    ingredientId: string
+    name: string
+    description: string
+    count: number
+    price: number
+  }
 
   export type InsertOrderInput = {
     orderId: string
@@ -46,19 +69,13 @@ export namespace Order {
     orderProducts: GenericType[]
   }
 
-  export type UpdateOrderStatusInput = {
-    orderId: string
-    status: string
-  }
-
   export type InsertOrderOutput = undefined | {
     id: number
     status: string
     orderId: string
   }
 
-
-  export type deleteOrderOutput = undefined | {
+  export type DeleteOrderOutput = undefined | {
     orderId: string
     affected: number | null | undefined
   }
@@ -72,7 +89,26 @@ export namespace Order {
     name: string
     description: string
     price: number
-    category: GenericType
+    category: ProductOutput
+  }
+
+  export type ProductOutput = {
+    id: number
+    productId: string
+    name: string
+    description: string
+    price: number
+    createdAt: string
+    updatedAt: string
+  }
+
+  export type IngredientsOutput = {
+    id: number
+    ingredientId: string
+    name: string
+    description: string
+    createdAt: string
+    updatedAt: string
   }
 
   export type InsertOrderProductInput = {
@@ -81,7 +117,6 @@ export namespace Order {
     order: GenericType
   }
 
-
   export type InsertOrderProductOutput = undefined | {
     id: number
     count: number
@@ -89,19 +124,18 @@ export namespace Order {
     product: GenericType
   }
 
-  export type deleteOrderProductOutput = undefined | {
+  export type DeleteOrderProductOutput = undefined | {
     orderId: string
     productId: string
     affected: number | null | undefined
   }
 
   // Categories Properties
-
   export type FindCategoryOutput = undefined | {
     id: number
     name: string
-    products: GenericType[]
-    ingredients: GenericType[]
+    products: ProductOutput[]
+    ingredients: IngredientsOutput[]
   }
 
   export type FindCategoriesOutput = FindCategoryOutput[] | undefined
@@ -130,12 +164,11 @@ export namespace Order {
     orderProduct: GenericType
   }
 
-  export type deleteIngredientProductOutput = undefined | {
+  export type DeleteIngredientProductOutput = undefined | {
     ingredientId: string
     orderProductId: string
     affected: number | null | undefined
   }
-
 
   // Payment properties
   export type FindPaymentInput = { paymentId: string }
@@ -171,6 +204,5 @@ export namespace Order {
     orderId: string
     paymentMethod: string
   }
-
 }
 

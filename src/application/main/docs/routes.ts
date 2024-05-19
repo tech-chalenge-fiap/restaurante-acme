@@ -37,39 +37,89 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "OrderHttp.CreateOrderOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"string","required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateIngredientProductInput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"count":{"dataType":"double","required":true},"ingredientId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateOrderProductInput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"ingredientProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"CreateIngredientProductInput"}},"count":{"dataType":"double","required":true},"productId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.CreateOrderInput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"CreateOrderProductInput"},"required":true},"clientId":{"dataType":"string"}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GenericType": {
         "dataType": "refAlias",
         "type": {"dataType":"any","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Order.InsertOrderInput": {
+    "FindPaymentOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"payment":{"ref":"GenericType","required":true},"client":{"ref":"GenericType"},"clientId":{"dataType":"string"},"orderId":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"order":{"ref":"GenericType","required":true},"expirationDate":{"dataType":"datetime","required":true},"pixCode":{"dataType":"string","required":true},"pixUrl":{"dataType":"string","required":true},"status":{"dataType":"string","required":true},"paymentMethod":{"dataType":"string","required":true},"totalPrice":{"dataType":"double","required":true},"paymentId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Register.FindClientOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true},"cpf":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"clientId":{"dataType":"string","required":true},"id":{"dataType":"double"}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderProductCategoryOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true},"categoryId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderProductIngredientOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"price":{"dataType":"double","required":true},"count":{"dataType":"double","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"ingredientId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderProductOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"ingredientProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderProductIngredientOutput"},"required":true},"price":{"dataType":"double","required":true},"category":{"ref":"OrderProductCategoryOutput","required":true},"count":{"dataType":"double","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"productId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Order.FindOrderOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"totalPrice":{"dataType":"double"},"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"client":{"ref":"GenericType"},"createdAt":{"dataType":"string","required":true},"payments":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"status":{"dataType":"string"},"orderId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"totalPrice":{"dataType":"double"},"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderProductOutput"},"required":true},"client":{"ref":"Register.FindClientOutput"},"createdAt":{"dataType":"string","required":true},"payments":{"dataType":"array","array":{"dataType":"refAlias","ref":"FindPaymentOutput"},"required":true},"status":{"dataType":"string","required":true},"orderId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Order.deleteOrderOutput": {
+    "OrderHttp.GetOrderOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"affected":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]},{"dataType":"undefined"}],"required":true},"orderId":{"dataType":"string","required":true}}}],"validators":{}},
+        "type": {"ref":"Order.FindOrderOutput","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Order.UpdateOrderStatusInput": {
+    "OrderHttp.UpdateOrderOutput": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"string","required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "FindOrderOutput": {
+    "OrderHttp.UpdateOrderInput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"totalPrice":{"dataType":"double"},"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"client":{"ref":"GenericType"},"createdAt":{"dataType":"string","required":true},"payments":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"status":{"dataType":"string"},"orderId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"orderProducts":{"dataType":"array","array":{"dataType":"refAlias","ref":"CreateOrderProductInput"},"required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Order.FindOrdersOutput": {
+    "Order.DeleteOrderOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refAlias","ref":"FindOrderOutput"}},{"dataType":"undefined"}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"affected":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]},{"dataType":"undefined"}],"required":true},"orderId":{"dataType":"string","required":true}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.DeleteOrderOutput": {
+        "dataType": "refAlias",
+        "type": {"ref":"Order.DeleteOrderOutput","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.UpdateOrderStatusInput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"string","required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Register.InsertClientOutput": {
@@ -79,27 +129,42 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Register.InsertClientInput": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"orders":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"}},"email":{"dataType":"string","required":true},"cpf":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"clientId":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true},"cpf":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"clientId":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Register.FindClientOutput": {
+    "ProductOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"orders":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"}},"email":{"dataType":"string","required":true},"cpf":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"clientId":{"dataType":"string","required":true},"id":{"dataType":"double"}}}],"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"updatedAt":{"dataType":"string","required":true},"createdAt":{"dataType":"string","required":true},"price":{"dataType":"double","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"productId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Order.FindProductInput": {
+    "Order.FindProductOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"productId":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"category":{"ref":"ProductOutput","required":true},"price":{"dataType":"double","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"productId":{"dataType":"string","required":true},"id":{"dataType":"string","required":true}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.GetProductOutput": {
+        "dataType": "refAlias",
+        "type": {"ref":"Order.FindProductOutput","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IngredientsOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"updatedAt":{"dataType":"string","required":true},"createdAt":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"ingredientId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FindCategoryOutput": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"ingredients":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"products":{"dataType":"array","array":{"dataType":"refAlias","ref":"GenericType"},"required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"ingredients":{"dataType":"array","array":{"dataType":"refAlias","ref":"IngredientsOutput"},"required":true},"products":{"dataType":"array","array":{"dataType":"refAlias","ref":"ProductOutput"},"required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Order.FindCategoriesOutput": {
         "dataType": "refAlias",
         "type": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refAlias","ref":"FindCategoryOutput"}},{"dataType":"undefined"}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.GetCategoriesOutput": {
+        "dataType": "refAlias",
+        "type": {"ref":"Order.FindCategoriesOutput","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Order.CreatePaymentInput": {
@@ -153,7 +218,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function CreateOrderDoc_CreateOrder(request: any, response: any, next: any) {
             const args = {
-                    _body: {"in":"body","name":"_body","required":true,"ref":"Order.InsertOrderInput"},
+                    _body: {"in":"body","name":"_body","required":true,"ref":"OrderHttp.CreateOrderInput"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -205,7 +270,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function UpdateOrderDoc_UpdateOrder(request: any, response: any, next: any) {
             const args = {
-                    _body: {"in":"body","name":"_body","required":true,"ref":"Order.InsertOrderInput"},
+                    _body: {"in":"body","name":"_body","required":true,"ref":"OrderHttp.UpdateOrderInput"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -257,7 +322,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function UpdateOrderStatusDoc_UpdateOrderStatus(request: any, response: any, next: any) {
             const args = {
-                    _body: {"in":"body","name":"_body","required":true,"ref":"Order.UpdateOrderStatusInput"},
+                    _body: {"in":"body","name":"_body","required":true,"ref":"OrderHttp.UpdateOrderStatusInput"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -302,6 +367,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/client',
+            authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(CreateClientDoc)),
             ...(fetchMiddlewares<RequestHandler>(CreateClientDoc.prototype.CreateClient)),
 
@@ -327,6 +393,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/client',
+            authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(FindClientDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindClientDoc.prototype.FindClient)),
 
@@ -352,12 +419,13 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/product',
+            authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(FindProductDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindProductDoc.prototype.FindProduct)),
 
             function FindProductDoc_FindProduct(request: any, response: any, next: any) {
             const args = {
-                    _cpf: {"in":"query","name":"cpf","required":true,"dataType":"string"},
+                    _productId: {"in":"query","name":"productId","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -377,6 +445,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/categories',
+            authenticateMiddleware([{"apiKey":[]}]),
             ...(fetchMiddlewares<RequestHandler>(FindProductsCategoriesDoc)),
             ...(fetchMiddlewares<RequestHandler>(FindProductsCategoriesDoc.prototype.FindProductsCategories)),
 

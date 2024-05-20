@@ -1,12 +1,11 @@
 {
-  "name": "facilita-neuro-api",
+  "name": "tech-challenge-restaurante",
   "version": "0.0.1",
-  "description": "Api responsável por acessar a base de dados MySQL da Oakbit",
+  "description": "Api responsável por gerenciar a aplicação do Restaurente Tech Challenge ",
   "license": "GPL-3.0-or-later",
   "keywords": [
-    "clean architecture",
+    "Ports and Adapters",
     "clean code",
-    "tdd",
     "ddd",
     "solid",
     "design patterns",
@@ -16,14 +15,14 @@
     "typeorm"
   ],
   "author": {
-    "name": "Mauricio Carvalho Pinheiro",
-    "email": "mauricio.pinheiro@pontaltech.com.br"
+    "name": "any",
+    "email": "any@any.com"
   },
   "scripts": {
-    "start": "node -r dotenv/config dist/main",
-    "dev": "ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/main",
+    "start": "node -r dotenv/config dist/application/main",
+    "dev": "npm run docs && ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/application/main",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc -p tsconfig-build.json",
+    "build": "npm run clean && npm run docs && tsc -p tsconfig-build.json",
     "prepare": "husky install",
     "check": "npm-check -s -u",
     "lint": "eslint .",
@@ -34,7 +33,11 @@
     "test:coverage": "npm t -- --coverage",
     "test:integration": "npm t -- --config ./jest.integration.config.js",
     "test:coveralls": "npm run test:coverage && coveralls < coverage/lcov.info",
-    "test:k6": "k6 run --vus 100 --duration 30s ./tests/infra/api/load-test-metrics.js"
+    "test:k6": "k6 run --vus 100 --duration 30s ./tests/infra/api/load-test-metrics.js",
+    "docs": "npm run tsoa:routes && npm run tsoa:swagger",
+    "tsoa:routes": "tsoa routes",
+    "tsoa:swagger": "tsoa swagger",
+    "typeorm:migrate": "typeorm migration:run"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -43,6 +46,8 @@
     "@types/jest": "^29.5.11",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/module-alias": "^2.0.4",
+    "@types/node": "^20.12.8",
+    "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^9.0.8",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
@@ -66,6 +71,8 @@
     "mysql2": "^3.7.0",
     "reflect-metadata": "^0.2.1",
     "rimraf": "^5.0.5",
+    "swagger-ui-express": "^4.1.6",
+    "tsoa": "^4.1.3",
     "typeorm": "^0.3.19",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"

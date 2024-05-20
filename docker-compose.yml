@@ -6,7 +6,7 @@ services:
     build:
       context: ./
     container_name: tech-challenge-restaurante_acme
-    entrypoint: npm start && npm run docs
+    entrypoint: npm start
     networks:
       - restaurante_acme_network
     volumes:

@@ -64,3 +64,35 @@
 </div>
 <p>Essa estrutura visa isolar a lógica de negócios da infraestrutura e das interfaces externas, promovendo uma maior modularidade, testabilidade e facilidade de manutenção. Cada camada tem uma responsabilidade bem definida e se comunica com as outras através de interfaces bem estabelecidas.</p>
 
+
+# Guia para Executar o Projeto Node.js com Docker Compose
+
+Este guia fornece instruções passo a passo para configurar e executar o ambiente do projeto Node.js usando Docker Compose. 
+
+## Pré-requisitos
+
+Certifique-se de ter os seguintes softwares instalados na sua máquina:
+
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+## Passo a Passo
+
+### 1. Clone o Repositório
+
+Clone este repositório para sua máquina local:
+
+```sh
+git clone https://github.com/mauriciocarvalho01/FIAP-Software-Architecture-Pos-Tech-7SOAT.git
+cd FIAP-Software-Architecture-Pos-Tech-7SOAT
+```
+
+### 5. Construa e Inicie o Contêiner
+No terminal, navegue até o diretório raiz do projeto e execute o seguinte comando para construir e iniciar os contêineres definidos no docker-compose.yml:
+
+```sh
+docker-compose up --build
+```
+
+
+

@@ -30,18 +30,18 @@
         <li><strong>controllers</strong>: Contém os controladores que recebem as requisições e coordenam a interação entre as interfaces de entrada e a lógica de negócios.</li>
         <li><strong>errors</strong>: Define os tipos de erros específicos da aplicação que podem ser utilizados para tratamento de exceções.</li>
         <li><strong>helpers</strong>: Inclui funções auxiliares que podem ser reutilizadas em diferentes partes da aplicação.</li>
-    </ul>
-</div>
-<div class="layer">
-    <h2>main</h2>
-    <ul>
-        <li><strong>adapters</strong>: Adaptadores que servem como intermediários entre a aplicação e os serviços externos ou interfaces. Eles traduzem dados e solicitações entre sistemas.</li>
-        <li><strong>config</strong>: Configurações gerais da aplicação, como variáveis de ambiente, configurações de banco de dados, etc.</li>
-        <li><strong>factories</strong>: Fábricas responsáveis por instanciar e configurar objetos, usados para injeção de dependência.</li>
-        <li><strong>middlewares</strong>: Funções intermediárias que processam as requisições antes de chegarem aos controladores ou aos adaptadores.</li>
-        <li><strong>routes</strong>: Define as rotas da aplicação, mapeando URLs para controladores específicos.</li>
-        <li><strong>types</strong>: Tipos TypeScript usados na aplicação para garantir tipagem estática e evitar erros de tipagem.</li>
-        <li><strong>index.ts</strong>: O ponto de entrada principal da aplicação, onde a inicialização ocorre.</li>
+        <li>
+            <h2>main</h2>
+            <ul>
+                <li><strong>adapters</strong>: Adaptadores que servem como intermediários entre a aplicação e os serviços externos ou interfaces. Eles traduzem dados e solicitações entre sistemas.</li>
+                <li><strong>config</strong>: Configurações gerais da aplicação, como variáveis de ambiente, configurações de banco de dados, etc.</li>
+                <li><strong>factories</strong>: Fábricas responsáveis por instanciar e configurar objetos, usados para injeção de dependência.</li>
+                <li><strong>middlewares</strong>: Funções intermediárias que processam as requisições antes de chegarem aos controladores ou aos adaptadores.</li>
+                <li><strong>routes</strong>: Define as rotas da aplicação, mapeando URLs para controladores específicos.</li>
+                <li><strong>types</strong>: Tipos TypeScript usados na aplicação para garantir tipagem estática e evitar erros de tipagem.</li>
+                <li><strong>index.ts</strong>: O ponto de entrada principal da aplicação, onde a inicialização ocorre.</li>
+            </ul>
+        </li>
     </ul>
 </div>
 <div class="layer">

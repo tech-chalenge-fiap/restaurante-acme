@@ -9,6 +9,7 @@ export class OrderManager implements OrderService {
     return orderData.map((order) => this.calculateOrderValue(order))
   }
 
+  //O preço = count(produtos) * price + count(ingredientes) * price
   calculateOrderValue(orderData: OrderService.GenericType): OrderService.GenericType {
     if (!orderData) throw new OrderServiceError(new Error('Order data not found to calculate total price'));
     // Calculando a soma dos preços em orderProducts e ingredientProducts
@@ -52,7 +53,7 @@ export class OrderManager implements OrderService {
     return true;
   }
   
-
+  // Forma de pagamento: Pix 
   validatePaymentMethodRule (paymentMethod: string): boolean {
     return paymentMethod.toLocaleUpperCase() === 'PIX'
   }

@@ -98,7 +98,7 @@ No terminal, navegue até o diretório raiz do projeto e execute o seguinte coma
 docker-compose up --build
 ```
 
-### 4. Leia e teste a documentação
+### 4. Teste a documentação Swagger
 - [Docs](http://localhost:4080/api-docs/)
 
 

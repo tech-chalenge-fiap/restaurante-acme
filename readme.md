@@ -14,6 +14,11 @@
 <h3 align="left">Linguagens e Ferramentas:</h3>
 <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="typescript" width="40" height="40"/> </a><a href="https://www.mysql.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/> </a><a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a><a href="https://www.docker.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a>
 
+<h1>DDD: Domain Driven Design</h1>
+<p>O foco do DDD é entender profundamente esse domínio específico e modelá-lo de forma a refletir com precisão a linguagem e as regras de negócio do domínio no próprio código-fonte do software. Isso envolve colaboração próxima entre desenvolvedores e especialistas no domínio para capturar e representar com precisão o conhecimento do domínio no design do software. Ao fazer isso, o DDD busca criar software que seja altamente adaptado e alinhado com as necessidades do negócio, facilitando a manutenção e evolução do sistema ao longo do tempo.</p>
+- <a href="https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954" target="_blank"><img src="https://images.ctfassets.net/w6r2i5d8q73s/49Gy23NRmO7BRuWS9ewuIk/c786ff574fe59f91b0a054ec531769b3/miro.png" alt="LinkedIn" width="20" height="20"/></a> [Diagrama](https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954)
+
+
 <h1>Arquitetura Hexagonal</h1>
 <p>A arquitetura apresentada segue o estilo da Arquitetura Hexagonal (ou Arquitetura de Portos e Adaptadores), que visa separar a lógica de negócios (núcleo da aplicação) das interfaces externas, como bancos de dados, serviços externos, interfaces de usuário, etc. Vamos analisar cada camada e suas pastas:</p>
 
@@ -30,7 +35,7 @@
     <ul>
         <li><strong>adapters</strong>: Adaptadores que servem como intermediários entre a aplicação e os serviços externos ou interfaces. Eles traduzem dados e solicitações entre sistemas.</li>
         <li><strong>config</strong>: Configurações gerais da aplicação, como variáveis de ambiente, configurações de banco de dados, etc.</li>
-        <li><strong>factories</strong>: Fábricas responsáveis por instanciar e configurar objetos, geralmente usados para injeção de dependência.</li>
+        <li><strong>factories</strong>: Fábricas responsáveis por instanciar e configurar objetos, usados para injeção de dependência.</li>
         <li><strong>middlewares</strong>: Funções intermediárias que processam as requisições antes de chegarem aos controladores ou aos adaptadores.</li>
         <li><strong>routes</strong>: Define as rotas da aplicação, mapeando URLs para controladores específicos.</li>
         <li><strong>types</strong>: Tipos TypeScript usados na aplicação para garantir tipagem estática e evitar erros de tipagem.</li>

@@ -65,7 +65,8 @@
 <p>Essa estrutura visa isolar a lógica de negócios da infraestrutura e das interfaces externas, promovendo uma maior modularidade, testabilidade e facilidade de manutenção. Cada camada tem uma responsabilidade bem definida e se comunica com as outras através de interfaces bem estabelecidas.</p>
 
 
-# Guia para Executar o Projeto Node.js com Docker Compose
+
+# Guia para Executar o Projeto Tech Challenge com Docker Compose
 
 Este guia fornece instruções passo a passo para configurar e executar o ambiente do projeto Node.js usando Docker Compose. 
 

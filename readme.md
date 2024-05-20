@@ -16,7 +16,8 @@
 
 <h1>DDD: Domain Driven Design</h1>
 <p>O foco do DDD é entender profundamente esse domínio específico e modelá-lo de forma a refletir com precisão a linguagem e as regras de negócio do domínio no próprio código-fonte do software. Isso envolve colaboração próxima entre desenvolvedores e especialistas no domínio para capturar e representar com precisão o conhecimento do domínio no design do software. Ao fazer isso, o DDD busca criar software que seja altamente adaptado e alinhado com as necessidades do negócio, facilitando a manutenção e evolução do sistema ao longo do tempo.</p>
-- <a href="https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954" target="_blank"><img src="https://images.ctfassets.net/w6r2i5d8q73s/49Gy23NRmO7BRuWS9ewuIk/c786ff574fe59f91b0a054ec531769b3/miro.png" alt="LinkedIn" width="20" height="20"/></a> [Diagrama](https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954)
+<a href="https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954" target="_blank"><img src="https://images.ctfassets.net/w6r2i5d8q73s/49Gy23NRmO7BRuWS9ewuIk/c786ff574fe59f91b0a054ec531769b3/miro.png" alt="LinkedIn" width="20" height="20"/></a> [Diagrama Event Storm](https://miro.com/app/board/uXjVKTlyQEk=/?share_link_id=112660018954)
+<a href="https://www.notion.so/Tech-Challenge-DDD-linguagem-Ub-qua-d24b857c89544d2aafc33852843f40bc?pvs=4" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" alt="LinkedIn" width="20" height="20"/></a> [Linguagem Ubíqua](https://www.notion.so/Tech-Challenge-DDD-linguagem-Ub-qua-d24b857c89544d2aafc33852843f40bc?pvs=4)
 
 
 <h1>Arquitetura Hexagonal</h1>

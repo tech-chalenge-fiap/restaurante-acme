@@ -66,7 +66,7 @@
 
 
 
-# Guia para Executar o Projeto Tech Challenge com Docker Compose
+# Executar o Projeto Tech Challenge com Docker Compose
 
 Este guia fornece instruções passo a passo para configurar e executar o ambiente do projeto Node.js usando Docker Compose. 
 

@@ -87,12 +87,18 @@ git clone https://github.com/mauriciocarvalho01/FIAP-Software-Architecture-Pos-T
 cd FIAP-Software-Architecture-Pos-Tech-7SOAT
 ```
 
-### 5. Construa e Inicie o Contêiner
+### 2. Crie o arquivo .env
+Na raiz do projeto renomeie o arquivo .env.sample para .env e coloque as variaveis fornecidas anteriormente na entrega do projeto.
+
+### 3. Construa e Inicie o Contêiner
 No terminal, navegue até o diretório raiz do projeto e execute o seguinte comando para construir e iniciar os contêineres definidos no docker-compose.yml:
 
 ```sh
 docker-compose up --build
 ```
+
+### 4. Leia e teste a documentação
+- [Docs](http://localhost:4080/api-docs/)
 
 
 

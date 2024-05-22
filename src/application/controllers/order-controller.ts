@@ -27,7 +27,7 @@ export class OrderController {
     } catch (error) {
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
@@ -44,7 +44,7 @@ export class OrderController {
     } catch (error) {
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
@@ -71,7 +71,7 @@ export class OrderController {
     // Configura o relacionamento entre cliente e pedido
     const client = await this.registerRepo.findClientById({ clientId: orderData.clientId });
 
-    // Vincula o cliente ao pedido caso existir. 
+    // Vincula o cliente ao pedido caso existir.
     if (client) {
       orderEntity.client = client;
     }
@@ -151,7 +151,7 @@ export class OrderController {
 
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
@@ -256,7 +256,7 @@ export class OrderController {
 
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
@@ -315,7 +315,7 @@ export class OrderController {
 
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }
@@ -419,7 +419,7 @@ export class OrderController {
 
       if (
         error instanceof OrderServiceError ||
-        error instanceof EntityError || 
+        error instanceof EntityError ||
         error instanceof TransactionError) {
         return badRequest(new Error(error.message));
       }

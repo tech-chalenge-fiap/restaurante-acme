@@ -16,7 +16,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     deploy:
       resources:
         reservations:
@@ -25,20 +26,26 @@ services:
         limits:
           memory: 512M
           cpus: "1"
-    
+
   mysql:
     image: mysql:latest
     container_name: mysql_db
     hostname: mysql
-    command: >
-      --init-file /docker-entrypoint-initdb.d/init.sql
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: developer0101
+      MYSQL_ALLOW_EMPTY_PASSWORD: false
+      MYSQL_USER: developer0101
+      MYSQL_PASSWORD: developer0101
+      MYSQL_DATABASE: restaurante_acme
     ports:
       - "3307:3306"
     networks:
       - restaurante_acme_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Serviço PHPMyAdmin
   phpmyadmin:

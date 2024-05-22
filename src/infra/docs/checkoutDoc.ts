@@ -15,7 +15,7 @@ export class CreateCheckoutDoc extends TsoaController {
   @Tags('Checkout')
   @Security('apiKey')
   @Response<OrderHttp.CreateCheckoutOutput>(201, 'Created')
-  CreateOrder(@Body() _body: OrderHttp.GetPaymentInput): void {
+  CreateOrder(@Body() _body: OrderHttp.CreateCheckoutInput): void {
     /* Documentation - Rout to create checkout */
   }
 }

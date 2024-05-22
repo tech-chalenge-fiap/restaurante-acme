@@ -1,5 +1,5 @@
 import { RegisterRepository } from '@/infra/repos/mysql'
-import { badRequest, HttpResponse, notFound, ok, serverError } from '@/application/helpers'
+import { badRequest, created, HttpResponse, notFound, ok, serverError } from '@/application/helpers'
 import { Register } from '@/domain/contracts/repos'
 import { TokenHandler } from '@/infra/gateways'
 import { EntityError } from '@/infra/errors'
@@ -43,6 +43,6 @@ export class RegisterController {
     
     const client = await this.registerRepo.insertClient(clientData)
     if (client === undefined) return badRequest(new Error('Cant insert client'))
-    return ok({ clientId: client.clientId, name: client.name })
+    return created({ clientId: client.clientId, name: client.name })
   }
 }

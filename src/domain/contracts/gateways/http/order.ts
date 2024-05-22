@@ -4,15 +4,15 @@ export namespace OrderHttp {
 
   // API types contracts
 
-// GET /orders
-export type GetOrderInput = { orderId: string }
+  // GET /orders
+  export type GetOrderInput = { orderId: string }
 
-export type GetOrderOutput = Order.FindOrderOutput
+  export type GetOrderOutput = Order.FindOrderOutput
 
   // POST /orders
   export type CreateOrderInput = {
     /**
-     * clientId is optional
+     * clientId é opcional
      */
     clientId?: string
     orderProducts: CreateOrderProductInput[]
@@ -27,9 +27,9 @@ export type GetOrderOutput = Order.FindOrderOutput
     productId: string
     count: number
     /**
-     * product count, cant be zero or negative
-     * ingredient count, cant be zero or negative
-     */
+    * Não é possível escolher um produto com a quantidade zero
+   * Não é possível escolher um ingrediente com a quantidade zero
+   */
     ingredientProducts?: CreateIngredientProductInput[]
   }
 
@@ -38,10 +38,16 @@ export type GetOrderOutput = Order.FindOrderOutput
     count: number
   }
 
-   // PUT /orders
-   export type UpdateOrderInput = {
+  // PUT /orders
+  export type UpdateOrderInput = {
     orderId: string
-    orderProducts: CreateOrderProductInput[]
+    orderProducts: UpdateOrderProductInput[]
+  }
+  
+  export type UpdateOrderProductInput = {
+    productId: string
+    count: number
+    ingredientProducts?: CreateIngredientProductInput[]
   }
 
   export type UpdateOrderOutput = {
@@ -50,6 +56,12 @@ export type GetOrderOutput = Order.FindOrderOutput
   }
 
   export type UpdateOrderStatusInput = {
+      /**
+     * Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão. 
+     * Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido" e o status de pagamento for Pendente
+     * Não é permitido alterar para "Pronto" se o status atual não for "Em Preparação"
+     * Não é permitido alterar para "Finalizado" se o status atual não for "Pronto"
+     */
     orderId: string,
     status: string
   }
@@ -77,7 +89,13 @@ export type GetOrderOutput = Order.FindOrderOutput
   export type GetPaymentOutput = Order.FindPaymentOutput
 
   // POST /checkout
-  export type CreateCheckoutInput = { orderId: string, paymentMethod: string }
+  export type CreateCheckoutInput = {
+    /**
+     * paymentMethod aceita somente 'PIX'
+     */
+    orderId: string,
+    paymentMethod: string
+  }
 
   export type CreateCheckoutOutput = { orderId: string, paymentId: string, status: string }
 }

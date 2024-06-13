@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/cors-allow-methods: GET, POST, PATCH, DELETE, PUT, OPTIONS
+    nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+  namespace: $K8S_NAMESPACE
+  name: $K8S_APPLICATION_NAME-ingress
+spec:
+  ingressClassName: $K8S_INGRESS_CLASS_NAME
+  rules:
+  - host: $K8S_APPLICATION_NAME-fiap-tech-challenge.$K8S_DOMAIN
+    http:
+      paths:
+      - path: /api-docs/
+        pathType: Prefix
+        backend:
+          service:
+            name: $K8S_APPLICATION_NAME-svc
+            port:
+              number: 8000
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: $K8S_APPLICATION_NAME-svc
+            port:
+              number: 80

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "$K8S_APPLICATION_NAME"
+  namespace: $K8S_NAMESPACE
+  name: $K8S_APPLICATION_NAME
+spec:
+  replicas: $K8S_REPLICAS_COUNT_DEFAULT
+  selector:
+    matchLabels:
+      app: $K8S_APPLICATION_NAME
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: $K8S_APPLICATION_NAME
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: product
+                operator: In
+                values:
+                - $K8S_NAMESPACE
+      containers:
+        - name: $K8S_APPLICATION_NAME
+          image: $AWS_DOCKER_DOMAIN/$AWS_ORGANIZATION_NAME/$DOCKER_IMAGE_NAME:$GITHUB_COMMIT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              memory: $K8S_REQUEST_MEMORY
+              cpu: $K8S_REQUEST_CPU
+            limits:
+              memory: $K8S_LIMIT_MEMORY
+              cpu: $K8S_LIMIT_CPU
+          envFrom:
+            - secretRef:
+                name: $K8S_APPLICATION_NAME-secrets
+            - configMapRef:
+                name: $K8S_APPLICATION_NAME-vars
+          readinessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 8000
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10
+          livenessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 8000
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10
+      imagePullSecrets:
+        - name: default-secret

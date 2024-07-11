@@ -35,7 +35,7 @@ export class OrderManager implements OrderService {
       return false;
     }
     if (newStatus === "Recebido" && order.status !== "Recebido") {
-      return false; // Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão. 
+      return false; // Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão.
     }
     if (newStatus === "Em Preparação" && order.status !== "Recebido") {
       return false; // Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido"
@@ -48,13 +48,14 @@ export class OrderManager implements OrderService {
     }
 
     // if (order.payments[0].status === "Processando") {
-    //   return false; // Não é permitido alterar status quanto o pagamento estiver processando 
+    //   return false; // Não é permitido alterar status quanto o pagamento estiver processando
     // }
     return true;
   }
-  
-  // Forma de pagamento: Pix 
+
+  // Forma de pagamento: Pix
   validatePaymentMethodRule (paymentMethod: string): boolean {
-    return paymentMethod.toLocaleUpperCase() === 'PIX'
+    const paymentMethods = ['PIX']
+    return paymentMethods.includes(paymentMethod.toLocaleUpperCase())
   }
 }

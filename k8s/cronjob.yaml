@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: $K8S_APPLICATION_NAME-cronjob
+  namespace: $K8S_NAMESPACE
+spec:
+  schedule: "0 12 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: $K8S_APPLICATION_NAME-cronjob
+        spec:
+          containers:
+          - name: $K8S_APPLICATION_NAME-cronjob-container
+            image: busybox
+            command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 30"]
+          restartPolicy: Never
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1

@@ -5,7 +5,13 @@ import { makeTokenHandler, paymentGateway } from '@/application/main/factories/i
 import { makeValidator } from '@/application/main/factories/application/validation'
 
 export const makeOrderController = (): OrderController => {
-  return new OrderController(makeValidator(), makeTokenHandler(), makeRegisterRepo(), makeOrderRepo(), makeOrderService(), paymentGateway())
+  return new OrderController(
+    makeValidator(),
+    makeTokenHandler(),
+    makeRegisterRepo(),
+    makeOrderRepo(),
+    makeOrderService(),
+    paymentGateway())
 }
 
 

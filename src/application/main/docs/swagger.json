@@ -44,7 +44,7 @@
 							"$ref": "#/components/schemas/CreateIngredientProductInput"
 						},
 						"type": "array",
-						"description": "product count, cant be zero or negative\ningredient count, cant be zero or negative"
+						"description": "Não é possível escolher um produto com a quantidade zero\nNão é possível escolher um ingrediente com a quantidade zero"
 					},
 					"count": {
 						"type": "number",
@@ -70,7 +70,7 @@
 					},
 					"clientId": {
 						"type": "string",
-						"description": "clientId is optional"
+						"description": "clientId é opcional"
 					}
 				},
 				"required": [
@@ -309,11 +309,33 @@
 				],
 				"type": "object"
 			},
+			"UpdateOrderProductInput": {
+				"properties": {
+					"ingredientProducts": {
+						"items": {
+							"$ref": "#/components/schemas/CreateIngredientProductInput"
+						},
+						"type": "array"
+					},
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"productId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"count",
+					"productId"
+				],
+				"type": "object"
+			},
 			"OrderHttp.UpdateOrderInput": {
 				"properties": {
 					"orderProducts": {
 						"items": {
-							"$ref": "#/components/schemas/CreateOrderProductInput"
+							"$ref": "#/components/schemas/UpdateOrderProductInput"
 						},
 						"type": "array"
 					},
@@ -352,7 +374,8 @@
 						"type": "string"
 					},
 					"orderId": {
-						"type": "string"
+						"type": "string",
+						"description": "Não é permitido alterar para \"Recebido\" se o status atual não for \"Recebido\", status padrão. \nNão é permitido alterar para \"Em Preparação\" se o status atual não for \"Recebido\" e o status de pagamento for Pendente\nNão é permitido alterar para \"Pronto\" se o status atual não for \"Em Preparação\"\nNão é permitido alterar para \"Finalizado\" se o status atual não for \"Pronto\""
 					}
 				},
 				"required": [
@@ -568,7 +591,8 @@
 						"type": "string"
 					},
 					"orderId": {
-						"type": "string"
+						"type": "string",
+						"description": "paymentMethod aceita somente 'PIX'"
 					}
 				},
 				"required": [

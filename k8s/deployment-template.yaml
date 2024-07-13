@@ -1,0 +1,71 @@
+apiVersion: apps/v1 # Especifica a versão da API Kubernetes a ser usada.
+kind: Deployment # Define o tipo de objeto sendo criado.
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true" # Indica que o Deployment será recarregado automaticamente quando houver mudanças nos ConfigMaps ou Secrets.
+    secret.reloader.stakater.com/reload: fiap/"$K8S_APPLICATION_NAME" # Especifica que o reloader deve monitorar secrets específicos.
+  namespace: $K8S_NAMESPACE # O namespace onde o Deployment será criado.
+  name: $K8S_APPLICATION_NAME # Nome do Deployment.
+spec:
+  replicas: $K8S_REPLICAS_COUNT_DEFAULT # Número de réplicas do pod a serem executadas.
+  selector:
+    matchLabels:
+      app: $K8S_APPLICATION_NAME # Rótulos que os pods devem ter para serem selecionados.
+  strategy:
+    rollingUpdate:
+      maxSurge: 25% # Máximo de pods adicionais permitidos durante a atualização.
+      maxUnavailable: 25% # Máximo de pods indisponíveis permitidos durante a atualização.
+    type: RollingUpdate # Tipo de estratégia de atualização.
+  template:
+    metadata:
+      labels:
+        app: $K8S_APPLICATION_NAME # Rótulos atribuídos aos pods.
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: product # Chave do rótulo do nó.
+                operator: In # Operador para a expressão de correspondência.
+                values:
+                - $K8S_NAMESPACE # Valores para correspondência.
+      containers:
+        - name: $K8S_APPLICATION_NAME # Nome do container.
+          image: $DOCKER_IMAGE:$latest # Imagem Docker do container.
+          imagePullPolicy: Always # Política de pull da imagem.
+          ports:
+            - containerPort: 8000 # Porta no container.
+              protocol: TCP # Protocolo usado na porta.
+          securityContext:
+            runAsUser: 1000 # ID do usuário no container.
+            runAsNonRoot: true # Indica que o container deve ser executado como um usuário não root.
+            allowPrivilegeEscalation: false # Desativa a escalada de privilégios no container.
+          resources:
+            requests:
+              memory: $K8S_REQUEST_MEMORY # Quantidade de memória solicitada.
+              cpu: $K8S_REQUEST_CPU # Quantidade de CPU solicitada.
+            limits:
+              memory: $K8S_LIMIT_MEMORY # Limite máximo de memória.
+              cpu: $K8S_LIMIT_CPU # Limite máximo de CPU.
+          envFrom:
+            - secretRef:
+                name: $K8S_APPLICATION_NAME-secrets # Nome do secret para variáveis de ambiente.
+            - configMapRef:
+                name: $K8S_APPLICATION_NAME-vars # Nome do ConfigMap para variáveis de ambiente.
+          readinessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck # Caminho do endpoint HTTP para verificar a prontidão.
+                  port: 8000 # Porta a ser usada para a verificação.
+              initialDelaySeconds: 0 # Atraso inicial antes da primeira verificação.
+              timeoutSeconds: 1 # Tempo limite para a verificação.
+              periodSeconds: 10 # Intervalo entre verificações.
+          livenessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck # Caminho do endpoint HTTP para verificar a liveness.
+                  port: 8000 # Porta a ser usada para a verificação.
+              initialDelaySeconds: 0 # Atraso inicial antes da primeira verificação.
+              timeoutSeconds: 1 # Tempo limite para a verificação.
+              periodSeconds: 10 # Intervalo entre verificações.
+      imagePullSecrets:
+        - name: default-secret # Nome do secret para pull de imagens.

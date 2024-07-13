@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: $K8S_APPLICATION_NAME-vars
-  namespace: $K8S_NAMESPACE
+  name: restaurante-acme-vars
+  namespace: fiap
   labels:
-    app: $K8S_APPLICATION_NAME
+    app: restaurante-acme
 data:
-  APP_NAME: $K8S_APPLICATION_NAME
+  APP_NAME: restaurante-acme
   PORT: "8000"
   CHECK_IP_AUTHORIZATION: "false"
   WHITE_LIST_IPS: ''

@@ -21,17 +21,12 @@ spec:
       labels:
         app: restaurante-acme
     spec:
-      tolerations:
-        - key: "special"
-          operator: "Equal"
-          value: "gpu"
-          effect: "NoSchedule"
       containers:
         - name: restaurante-acme
           image: developer0101/tech-challenge:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 4080
               protocol: TCP
           securityContext:
             runAsUser: 1000
@@ -52,14 +47,14 @@ spec:
           readinessProbe:
               httpGet:
                   path: /v1/api/healthcheck
-                  port: 8000
+                  port: 4080
               initialDelaySeconds: 0
               timeoutSeconds: 1
               periodSeconds: 10
           livenessProbe:
               httpGet:
                   path: /v1/api/healthcheck
-                  port: 8000
+                  port: 4080
               initialDelaySeconds: 0
               timeoutSeconds: 1
               periodSeconds: 10

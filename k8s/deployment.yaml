@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   annotations:
     reloader.stakater.com/auto: "true"
-    secret.reloader.stakater.com/reload: fiap/"$K8S_APPLICATION_NAME"
-  namespace: $K8S_NAMESPACE
-  name: $K8S_APPLICATION_NAME
+    secret.reloader.stakater.com/reload: fiap/restaurante-acme
+  namespace: fiap
+  name: restaurante-acme
 spec:
-  replicas: $K8S_REPLICAS_COUNT_DEFAULT
+  replicas: 2
   selector:
     matchLabels:
-      app: $K8S_APPLICATION_NAME
+      app: restaurante-acme
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: $K8S_APPLICATION_NAME
+        app: restaurante-acme
     spec:
       affinity:
         nodeAffinity:
@@ -29,10 +29,10 @@ spec:
               - key: product
                 operator: In
                 values:
-                - $K8S_NAMESPACE
+                - fiap
       containers:
-        - name: $K8S_APPLICATION_NAME
-          image: $DOCKER_IMAGE:$latest
+        - name: restaurante-acme
+          image: developer0101/tech-challenge:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -43,16 +43,16 @@ spec:
             allowPrivilegeEscalation: false
           resources:
             requests:
-              memory: $K8S_REQUEST_MEMORY
-              cpu: $K8S_REQUEST_CPU
+              memory: "64Mi"
+              cpu: "64m"
             limits:
-              memory: $K8S_LIMIT_MEMORY
-              cpu: $K8S_LIMIT_CPU
+              memory: "512Mi"
+              cpu: "256m"
           envFrom:
             - secretRef:
-                name: $K8S_APPLICATION_NAME-secrets
+                name: restaurante-acme-secrets
             - configMapRef:
-                name: $K8S_APPLICATION_NAME-vars
+                name: restaurante-acme-vars
           readinessProbe:
               httpGet:
                   path: /v1/api/healthcheck

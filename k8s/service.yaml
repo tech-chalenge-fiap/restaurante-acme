@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: $K8S_NAMESPACE
-  name: $K8S_APPLICATION_NAME-svc
+  namespace: fiap
+  name: restaurante-acme-svc
 spec:
   ports:
     - port: 80
       protocol: TCP
       targetPort: 4080
-      name: $K8S_APPLICATION_NAME-load-balancer
+      name: $restaurante-acme-load-balancer
   type: LoadBalancer
   selector:
-    app: $K8S_APPLICATION_NAME
+    app: restaurante-acme

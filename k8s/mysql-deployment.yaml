@@ -12,6 +12,11 @@ spec:
       labels:
         app: mysql
     spec:
+      tolerations:
+        - key: "special"
+          operator: "Equal"
+          value: "gpu"
+          effect: "NoSchedule"
       containers:
         - name: mysql
           image: mysql:latest

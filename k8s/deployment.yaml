@@ -8,6 +8,11 @@ metadata:
   name: restaurante-acme
 spec:
   replicas: 2
+  tolerations:
+    - key: "special"
+      operator: "Equal"
+      value: "gpu"
+      effect: "NoSchedule"
   selector:
     matchLabels:
       app: restaurante-acme

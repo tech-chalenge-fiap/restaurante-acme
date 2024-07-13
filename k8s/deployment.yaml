@@ -8,11 +8,6 @@ metadata:
   name: restaurante-acme
 spec:
   replicas: 2
-  tolerations:
-    - key: "special"
-      operator: "Equal"
-      value: "gpu"
-      effect: "NoSchedule"
   selector:
     matchLabels:
       app: restaurante-acme
@@ -26,15 +21,11 @@ spec:
       labels:
         app: restaurante-acme
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: product
-                operator: In
-                values:
-                - fiap
+      tolerations:
+        - key: "special"
+          operator: "Equal"
+          value: "gpu"
+          effect: "NoSchedule"
       containers:
         - name: restaurante-acme
           image: developer0101/tech-challenge:latest

@@ -5,6 +5,7 @@ services:
     restart: always
     build:
       context: ./
+    image: developer0101/tech-challenge:latest
     container_name: tech-challenge-restaurante_acme
     entrypoint: npm start
     networks:

@@ -9,20 +9,20 @@ spec:
     kind: Deployment
     name: restaurante-acme
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 2
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 30
     - type: Resource
       resource:
         name: memory
         target:
           type: AverageValue
-          averageValue: 200Mi
+          averageValue: 20Mi
     - type: Pods
       pods:
         metric:
@@ -40,10 +40,10 @@ spec:
           name: restaurante-acme-svc
         target:
           type: Value
-          value: "10"
+          value: "2"
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 10
       selectPolicy: Max
       policies:
         - type: Pods
@@ -53,7 +53,7 @@ spec:
           value: 100
           periodSeconds: 60
     scaleDown:
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 10
       selectPolicy: Min
       policies:
         - type: Pods

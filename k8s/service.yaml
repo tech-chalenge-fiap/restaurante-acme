@@ -8,7 +8,7 @@ spec:
   selector:
     app: restaurante-acme
   ports:
-    - port: 4080
+    - port: 80
       protocol: TCP
       targetPort: 4080
       name: restaurante-acme-load-balancer

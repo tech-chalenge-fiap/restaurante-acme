@@ -12,11 +12,6 @@ spec:
       labels:
         app: mysql
     spec:
-      tolerations:
-        - key: "special"
-          operator: "Equal"
-          value: "gpu"
-          effect: "NoSchedule"
       containers:
         - name: mysql
           image: mysql:latest
@@ -27,5 +22,17 @@ spec:
               value: developer0101
             - name: MYSQL_PASSWORD
               value: developer0101
+            - name: MYSQL_DATABASE
+              value: developer0101
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: "false"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "64m"
+            limits:
+              memory: "512Mi"
+              cpu: "256m"
           ports:
             - containerPort: 3306
+            

@@ -34,14 +34,12 @@ spec:
             allowPrivilegeEscalation: false
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "64m"
+              memory: "512Mi"
+              cpu: "512m"
             limits:
               memory: "512Mi"
-              cpu: "256m"
+              cpu: "512m"
           envFrom:
-            - secretRef:
-                name: restaurante-acme-secrets
             - configMapRef:
                 name: restaurante-acme-vars
           readinessProbe:
@@ -58,5 +56,3 @@ spec:
               initialDelaySeconds: 0
               timeoutSeconds: 1
               periodSeconds: 10
-      imagePullSecrets:
-        - name: default-secret

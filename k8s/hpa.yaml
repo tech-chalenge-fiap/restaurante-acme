@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: $K8S_APPLICATION_NAME-hpa
-  namespace: $K8S_NAMESPACE
+  name: restaurante-acme-hpa
+  namespace: fiap
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: $K8S_APPLICATION_NAME
+    name: restaurante-acme
   minReplicas: 1
   maxReplicas: 10
   metrics:
@@ -35,9 +35,9 @@ spec:
         metric:
           name: requests_per_second
         describedObject:
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          name: $K8S_APPLICATION_NAME-ingress
+          apiVersion: v1
+          kind: Service
+          name: restaurante-acme-svc
         target:
           type: Value
           value: "10"

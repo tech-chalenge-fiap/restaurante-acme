@@ -1,45 +1,58 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  annotations:
+    reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: fiap/restaurante-acme
   namespace: fiap
+  name: restaurante-acme
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: restaurante-acme
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: mysql
+        app: restaurante-acme
     spec:
       containers:
-        - name: mysql
-          image: mysql:latest
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: developer0101
-            - name: MYSQL_USER
-              value: developer0101
-            - name: MYSQL_PASSWORD
-              value: developer0101
-            - name: MYSQL_DATABASE
-              value: developer0101
-            - name: MYSQL_ALLOW_EMPTY_PASSWORD
-              value: "false"
+        - name: restaurante-acme
+          image: developer0101/tech-challenge:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4080
+              protocol: TCP
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "64m"
+              memory: "512Mi"
+              cpu: "512m"
             limits:
               memory: "512Mi"
-              cpu: "256m"
-          ports:
-            - containerPort: 3306
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: mysql-storage
-      volumes:
-        - name: mysql-storage
-          persistentVolumeClaim:
-            claimName: mysql-pvc
+              cpu: "512m"
+          envFrom:
+            - configMapRef:
+                name: restaurante-acme-vars
+          readinessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 4080
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10
+          livenessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 4080
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10

@@ -16,49 +16,31 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 30
+          averageUtilization: 6  # Meta de CPU em 6%
     - type: Resource
       resource:
         name: memory
         target:
           type: AverageValue
-          averageValue: 20Mi
-    - type: Pods
-      pods:
-        metric:
-          name: packets_per_second
-        target:
-          type: AverageValue
-          averageValue: "1000"
-    - type: Object
-      object:
-        metric:
-          name: requests_per_second
-        describedObject:
-          apiVersion: v1
-          kind: Service
-          name: restaurante-acme-svc
-        target:
-          type: Value
-          value: "2"
+          averageValue: 95Mi  # Meta de memória em 95Mi
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 10
       selectPolicy: Max
       policies:
         - type: Pods
-          value: 4
-          periodSeconds: 60
+          value: 1  # Permita aumentar o número de pods em até 1 a cada período
+          periodSeconds: 30  # Período de 30 segundos
         - type: Percent
-          value: 100
-          periodSeconds: 60
+          value: 100  # Permita aumentar o número de pods em até 100% a cada período
+          periodSeconds: 30  # Período de 30 segundos
     scaleDown:
       stabilizationWindowSeconds: 10
       selectPolicy: Min
       policies:
         - type: Pods
-          value: 1
-          periodSeconds: 60
+          value: 1  # Permita reduzir o número de pods em até 1 a cada período
+          periodSeconds: 30  # Período de 30 segundos
         - type: Percent
-          value: 10
-          periodSeconds: 60
+          value: 100  # Permita reduzir o número de pods em até 100% a cada período
+          periodSeconds: 30  # Período de 30 segundos

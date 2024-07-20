@@ -1,10 +1,10 @@
-import { 
+import {
   adaptExpressGetOrdersRoute as getOrders,
-  adaptExpressGetOrderRoute as getOrder, 
+  adaptExpressGetOrderRoute as getOrder,
   adaptExpressCreateOrderRoute as createOrder,
   adaptExpressDeleteOrderRoute as deleteOrder,
   adaptExpressUpdateOrderRoute as updateOrder,
-  adaptExpressUpdateOrderStatusRoute as updateOrderStatus 
+  adaptExpressUpdateOrderStatusRoute as updateOrderStatus
 } from '@/application/main/adapters';
 import { makeOrderController } from '@/application/main/factories/application/controllers';
 import { auth } from '@/application/main/middlewares'
@@ -19,3 +19,4 @@ export default (router: Router): void => {
   router.put('/order', auth, updateOrder(makeOrderController()));
   router.put('/order-status', auth, updateOrderStatus(makeOrderController()));
 };
+

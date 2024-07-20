@@ -29,8 +29,8 @@ spec:
               value: "false"
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "64m"
+              memory: "512Mi"
+              cpu: "256m"
             limits:
               memory: "512Mi"
               cpu: "256m"

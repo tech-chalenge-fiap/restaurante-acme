@@ -1,7 +1,7 @@
-import { MySQLRepository } from '@/infra/repos/mysql/repository'
+import { MySQLRepository, Not } from '@/infra/repos/mysql/repository'
 import { Order } from '@/domain/contracts/repos'
 import { EntityError } from '@/infra/errors'
-
+import { OrderStatus } from './entities'
 export class OrderRepository extends MySQLRepository implements Order {
 
   constructor(
@@ -29,6 +29,9 @@ export class OrderRepository extends MySQLRepository implements Order {
       const orderRepo = this.getRepository(this.orderEntity);
 
       const orders = await orderRepo.find({
+        where: {
+          status: Not(OrderStatus.FINALIZADO)
+        },
         relations: [
           'client', // Relacionamento com ClientEntity
           'payments', // Relacionamento com PaymentEntity
@@ -41,45 +44,51 @@ export class OrderRepository extends MySQLRepository implements Order {
       });
 
       if (orders !== null && orders.length > 0) {
-        return orders.map(order => ({
-          id: order.id,
-          orderId: order.orderId,
-          status: order.status,
-          createdAt: order.createdAt,
-          client: {
-            clientId: order.client?.clientId,
-            name: order.client?.name,
-            cpf: order.client?.cpf,
-            email: order.client?.email
-          },
-          orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
-            id: op.id,
-            productId: op.product?.productId,
-            name: op.product?.name,
-            description: op.product?.description,
-            count: parseInt(op.count),
-            category: {
-              categoryId: op.product?.category.categoryId,
-              name: op.product?.category.name
-            },
-            price: parseFloat(op.product?.price),
-            ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
-              id: ip.id,
-              ingredientId: ip.ingredient?.ingredientId,
-              name: ip.ingredient?.name,
-              description: ip.ingredient?.description,
-              count: parseInt(ip.count),
-              price: parseFloat(ip.ingredient?.price)
-            })),
-          })),
-          payments: order.payments?.map((pay: Order.GenericType) => ({
-            id: pay.id,
-            paymentId: pay.paymentId,
-            totalPrice: parseFloat(pay.totalPrice),
-            paymentMethod: pay.paymentMethod,
-            status: pay.status
-          }))
-        }))
+        // Set the priority of the orders to be displayed in the dashboard, and then sort them by createdAt
+        return [OrderStatus.PRONTO, OrderStatus.EM_PREPARACAO, OrderStatus.RECEBIDO].flatMap((status) => {
+          return orders
+            .filter(order => order.status === status)
+            .sort((a, b) => a.createdAt - b.createdAt)
+            .map(order => ({
+              id: order.id,
+              orderId: order.orderId,
+              status: order.status,
+              createdAt: order.createdAt,
+              client: {
+                clientId: order.client?.clientId,
+                name: order.client?.name,
+                cpf: order.client?.cpf,
+                email: order.client?.email
+              },
+              orderProducts: order.orderProducts.map((op: Order.GenericType) => ({
+                id: op.id,
+                productId: op.product?.productId,
+                name: op.product?.name,
+                description: op.product?.description,
+                count: parseInt(op.count),
+                category: {
+                  categoryId: op.product?.category.categoryId,
+                  name: op.product?.category.name
+                },
+                price: parseFloat(op.product?.price),
+                ingredientProducts: op.ingredientProducts?.map((ip: Order.GenericType) => ({
+                  id: ip.id,
+                  ingredientId: ip.ingredient?.ingredientId,
+                  name: ip.ingredient?.name,
+                  description: ip.ingredient?.description,
+                  count: parseInt(ip.count),
+                  price: parseFloat(ip.ingredient?.price)
+                })),
+              })),
+              payments: order.payments?.map((pay: Order.GenericType) => ({
+                id: pay.id,
+                paymentId: pay.paymentId,
+                totalPrice: parseFloat(pay.totalPrice),
+                paymentMethod: pay.paymentMethod,
+                status: pay.status
+              }))
+            }))
+        })
       }
     } catch (error: any) {
       throw new EntityError(error.message)
@@ -102,7 +111,7 @@ export class OrderRepository extends MySQLRepository implements Order {
           'orderProducts.ingredientProducts.ingredient' // Para obter os produtos associados através do pivot
         ],
       });
-      
+
       if (order !== null) {
         return {
           id: order.id,
@@ -196,7 +205,7 @@ export class OrderRepository extends MySQLRepository implements Order {
           'order', // Relacionamento com OrderEntit
         ],
       });
-      
+
       if (paymentOrder !== null) {
         return {
           id: paymentOrder.id,
@@ -297,7 +306,7 @@ export class OrderRepository extends MySQLRepository implements Order {
     try {
       const productRepo = this.getRepository(this.productEntity)
 
-      const product = await productRepo.findOne({ 
+      const product = await productRepo.findOne({
         where: { productId: productId ?? '' },
         relations: ['category']
       })

@@ -102,7 +102,7 @@ docker-compose up --build
 - [Docs](http://localhost:4080/api-docs/)
 
 
-![Descrição da Imagem](https://1drv.ms/u/c/98c5468271565141/EQoA5gZynzFKuV0H1U-Mb58Bgew53Y24TFnIMJbibxNMgw?e=A3noFT)
+![Descrição da Imagem](https://1drv.ms/u/c/98c5468271565141/EQoA5gZynzFKuV0H1U-Mb58Bgew53Y24TFnIMJbibxNMgw?e=nQojtx)
 
 
 

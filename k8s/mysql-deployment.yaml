@@ -29,17 +29,26 @@ spec:
               value: "false"
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "256m"
+              memory: "2Gi"
+              cpu: "1"
             limits:
-              memory: "512Mi"
-              cpu: "256m"
+              memory: "4Gi"
+              cpu: "2"
           ports:
             - containerPort: 3306
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-storage
+            - mountPath: /etc/mysql/conf.d/my.cnf
+              name: mysql-config
+              subPath: my.cnf
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
+        - name: mysql-config
+          configMap:
+            name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf

@@ -3,32 +3,32 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse, fetchMiddlewares } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { HealthCheckDoc } from '../../infra/docs/healthCheckDoc';
+import { HealthCheckDoc } from './../../infra/docs/healthCheckDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateOrderDoc } from '../../infra/docs/orderDoc';
+import { CreateOrderDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { FindOrderDoc } from '../../infra/docs/orderDoc';
+import { FindOrderDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UpdateOrderDoc } from '../../infra/docs/orderDoc';
+import { UpdateOrderDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { DeleteOrderDoc } from '../../infra/docs/orderDoc';
+import { DeleteOrderDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UpdateOrderStatusDoc } from '../../infra/docs/orderDoc';
+import { UpdateOrderStatusDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { FindAllOrdersDoc } from '../../infra/docs/orderDoc';
+import { FindAllOrdersDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateClientDoc } from '../../infra/docs/clientDoc';
+import { CreateClientDoc } from './../../infra/docs/clientDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { FindClientDoc } from '../../infra/docs/clientDoc';
+import { FindClientDoc } from './../../infra/docs/clientDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { FindProductDoc } from '../../infra/docs/productDoc';
+import { FindProductDoc } from './../../infra/docs/productDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { FindProductsCategoriesDoc } from '../../infra/docs/productDoc';
+import { FindProductsCategoriesDoc } from './../../infra/docs/productDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateCheckoutDoc } from '../../infra/docs/checkoutDoc';
+import { CreateCheckoutDoc } from './../../infra/docs/checkoutDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { GetCheckoutDoc } from '../../infra/docs/checkoutDoc';
-import { expressAuthentication } from '../middlewares/express-authentication';
+import { GetCheckoutDoc } from './../../infra/docs/checkoutDoc';
+import { expressAuthentication } from './../middlewares/express-authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
 import type { RequestHandler } from 'express';

@@ -4,14 +4,13 @@ import { Order } from '@/domain/contracts/repos'
 import { PaymentGateway, TokenHandler } from '@/infra/gateways'
 import { Validator } from '@/application/validation'
 import { EntityError, TransactionError } from '@/infra/errors'
-import { OrderService } from '@/domain/contracts/services/order-service'
+import { OrderService } from '@/domain/contracts/use-cases/order-use-case'
 import { OrderHttp } from '@/domain/contracts/gateways'
 import { OrderServiceError } from '@/domain/errors'
 
 export class OrderController {
   constructor(
     private readonly validator: Validator,
-    private readonly tokenHandler: TokenHandler,
     private readonly registerRepo: RegisterRepository,
     private readonly orderRepo: OrderRepository,
     private readonly orderService: OrderService,
@@ -92,7 +91,7 @@ export class OrderController {
 
     try {
 
-      const order = await this.saveOrder(orderEntity);
+      const order = await this.orderService.saveOrder(orderEntity);
       paymentEntity.order = order;
 
       // Processa os produtos associados ao pedido
@@ -112,7 +111,7 @@ export class OrderController {
           throw new TransactionError(new Error(`Product with ID ${productEntity.productId} could not count as ${orderProductEntity.count}`))
         }
 
-        const orderProduct = await this.saveOrderProduct(orderProductEntity)
+        const orderProduct = await this.orderService.saveOrderProduct(orderProductEntity)
 
         // Processa os ingredientes associados ao produto do pedido
         if (orderProductData.ingredientProducts) {
@@ -132,13 +131,13 @@ export class OrderController {
               throw new TransactionError(new Error(`Product with ID ${ingredientEntity.ingredientId} could not count as ${ingredientProductEntity.count}`))
             }
 
-            await this.saveIngredientProduct(ingredientProductEntity)
+            await this.orderService.saveIngredientProduct(ingredientProductEntity)
           }
         }
       }
       const orderInfo = this.orderService.calculateOrderValue(await this.orderRepo.findOrder({ orderId: order?.orderId ?? '' }))
       paymentEntity.totalPrice = orderInfo?.totalPrice
-      await this.savePayment(paymentEntity)
+      await this.orderService.savePayment(paymentEntity)
 
       await this.orderRepo.commit()
 
@@ -214,7 +213,7 @@ export class OrderController {
           continue;
         }
 
-        const orderProduct = await this.saveOrderProduct(orderProductEntity)
+        const orderProduct = await this.orderService.saveOrderProduct(orderProductEntity)
 
         // Processa os ingredientes associados ao produto do pedido
         if (orderProductData.ingredientProducts) {
@@ -236,14 +235,14 @@ export class OrderController {
               continue;
             }
 
-            await this.saveIngredientProduct(ingredientProductEntity)
+            await this.orderService.saveIngredientProduct(ingredientProductEntity)
           }
         }
       }
 
       const orderInfo = this.orderService.calculateOrderValue(await this.orderRepo.findOrder({ orderId: order?.orderId ?? '' }))
       paymentEntity.totalPrice = orderInfo?.totalPrice
-      await this.savePayment(paymentEntity)
+      await this.orderService.savePayment(paymentEntity)
 
       await this.orderRepo.commit()
 
@@ -302,7 +301,7 @@ export class OrderController {
       }
 
       // Altera a entidade de pedido
-      await this.saveOrder(Object.assign(order, orderEntity))
+      await this.orderService.saveOrder(Object.assign(order, orderEntity))
 
       await this.orderRepo.commit()
 
@@ -392,7 +391,7 @@ export class OrderController {
 
       paymentEntity.status = 'Processando';
 
-      const savedPayment = await this.savePayment(Object.assign(paymentEntity, pixGenerated));
+      const savedPayment = await this.orderService.savePayment(Object.assign(paymentEntity, pixGenerated));
 
       if (!savedPayment) {
         throw new TransactionError(new Error(`Payment with order ID ${order.orderId} not perform successfull transaction`))
@@ -406,7 +405,7 @@ export class OrderController {
       orderEntity.orderId = order.orderId;
       orderEntity.status  = 'Recebido';
       orderEntity.payments = [paymentEntity]
-      await this.saveOrder(orderEntity)
+      await this.orderService.saveOrder(orderEntity)
 
       await this.orderRepo.commit()
 
@@ -428,32 +427,5 @@ export class OrderController {
     } finally {
       await this.orderRepo.closeTransaction();
     }
-  }
-
-  // GLOBAL METHODS
-  async saveOrder(orderData: Order.InsertOrderInput): Promise<Order.InsertOrderOutput> {
-    if (!orderData.orderId) orderData.orderId = this.tokenHandler.generateUuid()
-    const order = await this.orderRepo.saveOrder(orderData)
-    if (order === undefined) throw new Error('Cant insert order')
-    return order
-  }
-
-  async savePayment(paymentData: Order.InsertPaymentInput): Promise<Order.InsertPaymentOutput> {
-    if (!paymentData.paymentId) paymentData.paymentId = this.tokenHandler.generateUuid()
-    const order = await this.orderRepo.savePayment(paymentData)
-    if (order === undefined) throw new Error('Cant insert payment')
-    return order
-  }
-
-  async saveOrderProduct(productOrderData: Order.InsertOrderProductInput): Promise<Order.InsertOrderProductOutput> {
-    const productOrder = await this.orderRepo.saveOrderProduct(productOrderData)
-    if (productOrder === undefined) throw new Error('Cant insert product order')
-    return productOrder
-  }
-
-  async saveIngredientProduct(ingredientProductData: Order.InsertIngredientProductInput): Promise<Order.InsertIngredientProductOutput> {
-    const ingredientProduct = await this.orderRepo.saveIngredientProduct(ingredientProductData)
-    if (ingredientProduct === undefined) throw new Error('Cant insert product order')
-    return ingredientProduct
   }
 }

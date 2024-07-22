@@ -1,5 +1,5 @@
 import winston, { format, transports } from 'winston';
-import { env } from '@/application/main/config/env'
+import { env } from '@/main/config/env'
 
 class Logger {
   private logger: winston.Logger;

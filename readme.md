@@ -63,16 +63,16 @@
 </div>
 <p>Essa estrutura permite uma clara separação de responsabilidades e facilita a manutenção, testes e evolução do sistema. Cada camada tem um propósito específico e deve ser desenvolvida e testada de forma independente das outras.</p>
 
-# Executar o Projeto Tech Challenge com Docker Compose
+# Executar o Projeto Tech Challenge Minikube
 
-Este guia fornece instruções passo a passo para configurar e executar o ambiente do projeto Node.js usando Docker Compose.
+Este guia fornece instruções passo a passo para configurar e executar o ambiente do projeto utilizando Kubermetes com Minikube.
 
 ## Pré-requisitos
 
 Certifique-se de ter os seguintes softwares instalados na sua máquina:
 
 - [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download)
 
 ## Passo a Passo
 
@@ -85,16 +85,34 @@ git clone https://github.com/mauriciocarvalho01/FIAP-Software-Architecture-Pos-T
 cd FIAP-Software-Architecture-Pos-Tech-7SOAT
 ```
 
-### 2. Crie o arquivo .env
+### 2. Instale o Minikube e Kubectl
 
-Na raiz do projeto renomeie o arquivo .env.sample para .env e coloque as variaveis fornecidas anteriormente na entrega do projeto.
+Certifique-se de ter o Minikube e o Kubectl instalados em sua máquina. Siga as instruções de instalação no site oficial do Minikube.
 
-### 3. Construa e Inicie o Contêiner
 
-No terminal, navegue até o diretório raiz do projeto e execute o seguinte comando para construir e iniciar os contêineres definidos no docker-compose.yml:
+### 3. Inicie o Minikube
+
+Inicie o Minikube com o seguinte comando:
 
 ```sh
-docker-compose up --build
+minikube start
+```
+
+### 7. Crie e Aplique os Arquivos Kubernetes
+
+Crie e aplique os arquivos Kubernetes necessários (ConfigMap, Deployment, Service, HPA, etc.):
+
+```sh
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/config-map.yaml
+kubectl apply -f k8s/mysql-config.yaml
+kubectl apply -f k8s/mysql-service.yaml
+kubectl apply -f k8s/mysql-volume.yaml
+kubectl apply -f k8s/mysql-deployment.yaml
+kubectl apply -f k8s/metrics.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
 ```
 
 ### 4. Teste a documentação Swagger

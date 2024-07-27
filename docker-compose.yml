@@ -1,68 +1,80 @@
 version: "3"
 
 services:
-  tech-challenge-restaurante_acme:
-    restart: always
-    build:
-      context: ./
-    image: developer0101/tech-challenge:latest
-    container_name: tech-challenge-restaurante_acme
-    entrypoint: npm start
-    networks:
-      - restaurante_acme_network
-    volumes:
-      - .:/usr/src/app
-    ports:
-      - "4080:4080"
-    env_file:
-      - .env
-    depends_on:
-      mysql:
-        condition: service_healthy
-    deploy:
-      resources:
-        reservations:
-          memory: 128M
-          cpus: "0.3"
-        limits:
-          memory: 512M
-          cpus: "1"
+  # tech-challenge-restaurante_acme:
+  #   restart: always
+  #   build:
+  #     context: ./
+  #   image: developer0101/tech-challenge:latest
+  #   container_name: tech-challenge-restaurante_acme
+  #   entrypoint: npm start
+  #   # networks:
+  #   #   - restaurante_acme_network
+  #   # volumes:
+  #   #   - .:/usr/src/app
+  #   ports:
+  #     - "4080:4080"
+  #   env_file:
+  #     - .env
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       memory: 128M
+    #       cpus: "0.3"
+    #     limits:
+    #       memory: 512M
+    #       cpus: "1"
 
-  mysql:
-    image: mysql:latest
-    container_name: mysql_db
-    hostname: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: developer0101
-      MYSQL_ALLOW_EMPTY_PASSWORD: false
-      MYSQL_USER: developer0101
-      MYSQL_PASSWORD: developer0101
-      MYSQL_DATABASE: restaurante_acme
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
-      - "3307:3306"
-    networks:
-      - restaurante_acme_network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    # networks:
+    #   - restaurante_acme_network
 
-  # Serviço PHPMyAdmin
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: mysql
-      PMA_USER: developer0101
-      PMA_PASSWORD: developer0101
-    ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-    networks:
-    - restaurante_acme_network
+  # mysql:
+  #   image: mysql:latest
+  #   container_name: mysql_db
+  #   hostname: mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: developer0101
+  #     MYSQL_ALLOW_EMPTY_PASSWORD: false
+  #     MYSQL_USER: developer0101
+  #     MYSQL_PASSWORD: developer0101
+  #     MYSQL_DATABASE: restaurante_acme
+  #   ports:
+  #     - "3307:3306"
+  #   networks:
+  #     - restaurante_acme_network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # # Serviço PHPMyAdmin
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin:latest
+  #   container_name: phpmyadmin
+  #   environment:
+  #     PMA_ARBITRARY: 1
+  #     PMA_HOST: mysql
+  #     PMA_USER: developer0101
+  #     PMA_PASSWORD: developer0101
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #   - restaurante_acme_network
 
 networks:
   restaurante_acme_network:

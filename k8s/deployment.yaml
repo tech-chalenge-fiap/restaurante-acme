@@ -21,6 +21,7 @@ spec:
       labels:
         app: restaurante-acme
     spec:
+      serviceAccountName: metrics-sa
       containers:
         - name: restaurante-acme
           image: developer0101/tech-challenge:latest
@@ -30,7 +31,7 @@ spec:
               protocol: TCP
           securityContext:
             runAsUser: 1000
-            runAsNonRoot: true
+            runAsNonRoot: false
             allowPrivilegeEscalation: false
           resources:
             requests:

@@ -17,6 +17,8 @@ import { UpdateOrderStatusDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { FindAllOrdersDoc } from './../../infra/docs/orderDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { UpdatePaymentStatusDoc } from './../../infra/docs/orderDoc';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CreateClientDoc } from './../../infra/docs/clientDoc';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { FindClientDoc } from './../../infra/docs/clientDoc';
@@ -125,6 +127,16 @@ const models: TsoaRoute.Models = {
     "OrderHttp.UpdateOrderStatusInput": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"string","required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.UpdatePaymentStatusOutput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"undefined"},{"dataType":"nestedObjectLiteral","nestedProperties":{"paymentId":{"dataType":"string","required":true},"status":{"dataType":"string","required":true}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderHttp.UpdatePaymentStatusInput": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"string","required":true},"paymentId":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Register.InsertClientOutput": {
@@ -385,6 +397,32 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.FindAllOrders.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/webhook',
+            authenticateMiddleware([{"apiKey":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(UpdatePaymentStatusDoc)),
+            ...(fetchMiddlewares<RequestHandler>(UpdatePaymentStatusDoc.prototype.UpdatePaymentStatus)),
+
+            function UpdatePaymentStatusDoc_UpdatePaymentStatus(request: any, response: any, next: any) {
+            const args = {
+                    _body: {"in":"body","name":"_body","required":true,"ref":"OrderHttp.UpdatePaymentStatusInput"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new UpdatePaymentStatusDoc();
+
+
+              const promise = controller.UpdatePaymentStatus.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

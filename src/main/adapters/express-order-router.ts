@@ -84,6 +84,13 @@ export const adaptExpressCreateCheckoutRoute: OrderAdapter = controller => async
   makeResponseHandler(data, statusCode, res)
 };
 
+export const adaptExpressUpdatePaymentStatusRoute: OrderAdapter = controller => async (req, res) => {
+  const { body } = req;
+  const { statusCode, data } = await controller.handleUpdatePaymentStatus(body);
+
+  makeResponseHandler(data, statusCode, res)
+};
+
 
 
 

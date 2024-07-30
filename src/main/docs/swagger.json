@@ -44,7 +44,7 @@
 							"$ref": "#/components/schemas/CreateIngredientProductInput"
 						},
 						"type": "array",
-						"description": "Não é possível escolher um produto com a quantidade zero\r\nNão é possível escolher um ingrediente com a quantidade zero"
+						"description": "Não é possível escolher um produto com a quantidade zero\nNão é possível escolher um ingrediente com a quantidade zero"
 					},
 					"count": {
 						"type": "number",
@@ -375,12 +375,42 @@
 					},
 					"orderId": {
 						"type": "string",
-						"description": "Não é permitido alterar para \"Recebido\" se o status atual não for \"Recebido\", status padrão. \r\nNão é permitido alterar para \"Em Preparação\" se o status atual não for \"Recebido\" e o status de pagamento for Pendente\r\nNão é permitido alterar para \"Pronto\" se o status atual não for \"Em Preparação\"\r\nNão é permitido alterar para \"Finalizado\" se o status atual não for \"Pronto\""
+						"description": "Não é permitido alterar para \"Recebido\" se o status atual não for \"Recebido\", status padrão.\nNão é permitido alterar para \"Em Preparação\" se o status atual não for \"Recebido\" e o status de pagamento for Pendente\nNão é permitido alterar para \"Pronto\" se o status atual não for \"Em Preparação\"\nNão é permitido alterar para \"Finalizado\" se o status atual não for \"Pronto\""
 					}
 				},
 				"required": [
 					"status",
 					"orderId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.UpdatePaymentStatusOutput": {
+				"properties": {
+					"paymentId": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"paymentId",
+					"status"
+				],
+				"type": "object"
+			},
+			"OrderHttp.UpdatePaymentStatusInput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"paymentId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"paymentId"
 				],
 				"type": "object"
 			},
@@ -939,6 +969,46 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/webhook": {
+			"post": {
+				"operationId": "UpdatePaymentStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.UpdatePaymentStatusOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para atualizar o status do pagamento",
+				"tags": [
+					"Payment"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.UpdatePaymentStatusInput"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/client": {

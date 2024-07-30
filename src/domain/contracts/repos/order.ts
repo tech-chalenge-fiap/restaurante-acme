@@ -204,5 +204,15 @@ export namespace Order {
     orderId: string
     paymentMethod: string
   }
+
+  export type UpdatePaymentStatusInput = {
+    paymentId: string
+    status: string
+  }
+
+  export type UpdatePaymentStatusOutput = undefined | {
+    status: string
+    paymentId: string
+  }
 }
 

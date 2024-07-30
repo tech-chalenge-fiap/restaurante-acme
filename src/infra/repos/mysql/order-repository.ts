@@ -1,7 +1,7 @@
 import { MySQLRepository, Not } from '@/infra/repos/mysql/repository'
 import { Order } from '@/domain/contracts/repos'
 import { EntityError } from '@/infra/errors'
-import { OrderStatus } from './entities'
+import { OrderStatus, PaymentStatus } from './entities'
 export class OrderRepository extends MySQLRepository implements Order {
 
   constructor(
@@ -190,6 +190,48 @@ export class OrderRepository extends MySQLRepository implements Order {
           totalPrice: paymentData.totalPrice
         }
       }
+    } catch (error: any) {
+      throw new EntityError(error.message)
+    }
+  }
+
+  async updatePaymentStatus(paymentData: Order.UpdatePaymentStatusInput): Promise<Order.UpdatePaymentStatusOutput> {
+    try {
+      const paymentRepo = this.getRepository(this.paymentEntity)
+      const orderRepo = this.getRepository(this.orderEntity)
+
+      const payment = await paymentRepo.findOne({
+        where: { paymentId: paymentData.paymentId },
+        relations: ['order']
+      })
+
+      if (!payment) throw new EntityError('Payment not found')
+
+      const { order } = payment ?? {}
+      let orderStatus
+
+      switch (paymentData.status) {
+        case PaymentStatus.CONCLUIDO:
+          orderStatus = OrderStatus.RECEBIDO
+          break
+        case PaymentStatus.CANCELADO:
+          orderStatus = OrderStatus.FINALIZADO
+          break
+        default:
+          orderStatus = ''
+          break
+      }
+
+      payment.status = paymentData.status
+      order.status = orderStatus
+      await paymentRepo.save(payment)
+      await orderRepo.save(order)
+
+      return {
+        paymentId: payment.paymentId,
+        status: payment.status
+      }
+
     } catch (error: any) {
       throw new EntityError(error.message)
     }

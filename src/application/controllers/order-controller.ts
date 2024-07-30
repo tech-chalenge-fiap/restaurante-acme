@@ -428,4 +428,41 @@ export class OrderController {
       await this.orderRepo.closeTransaction();
     }
   }
+
+  // POST /webhook
+  async handleUpdatePaymentStatus(paymentData: OrderHttp.UpdatePaymentStatusInput): Promise<HttpResponse<OrderHttp.UpdatePaymentStatusOutput | Error>> {
+    await this.orderRepo.prepareTransaction()
+
+    if (!paymentData.paymentId) {
+      return badRequest(new Error('Cannot update payment status: paymentId not found'));
+    }
+
+    if (!paymentData.status) {
+      return badRequest(new Error('Cannot update payment status: status not found'));
+    }
+
+    await this.orderRepo.openTransaction()
+
+    try {
+      const payment = await this.orderRepo.updatePaymentStatus(paymentData)
+      await this.orderRepo.commit()
+      return created(payment)
+    } catch (error) {
+
+      if (error instanceof TransactionError) {
+        await this.orderRepo.rollback()
+      }
+
+      if (
+        error instanceof OrderServiceError ||
+        error instanceof EntityError ||
+        error instanceof TransactionError) {
+        return badRequest(new Error(error.message));
+      }
+
+      return serverError(error);
+    } finally {
+      await this.orderRepo.closeTransaction();
+    }
+  }
 }

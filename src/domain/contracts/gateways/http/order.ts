@@ -43,7 +43,7 @@ export namespace OrderHttp {
     orderId: string
     orderProducts: UpdateOrderProductInput[]
   }
-  
+
   export type UpdateOrderProductInput = {
     productId: string
     count: number
@@ -57,7 +57,7 @@ export namespace OrderHttp {
 
   export type UpdateOrderStatusInput = {
       /**
-     * Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão. 
+     * Não é permitido alterar para "Recebido" se o status atual não for "Recebido", status padrão.
      * Não é permitido alterar para "Em Preparação" se o status atual não for "Recebido" e o status de pagamento for Pendente
      * Não é permitido alterar para "Pronto" se o status atual não for "Em Preparação"
      * Não é permitido alterar para "Finalizado" se o status atual não for "Pronto"
@@ -98,5 +98,15 @@ export namespace OrderHttp {
   }
 
   export type CreateCheckoutOutput = { orderId: string, paymentId: string, status: string }
+
+  export type UpdatePaymentStatusInput = {
+    paymentId: string
+    status: string
+  }
+
+  export type UpdatePaymentStatusOutput = undefined | {
+    status: string
+    paymentId: string
+  }
 }
 

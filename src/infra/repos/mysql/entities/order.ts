@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { OrderProductEntity, ClientEntity, PaymentEntity } from '@/infra/repos/mysql/entities'
 import { IsEnum, MaxLength } from 'class-validator';
 
-enum OrderStatus {
+export enum OrderStatus {
   INICIAL = '',
   RECEBIDO = 'Recebido',
   EM_PREPARACAO = 'Em Preparação',
@@ -27,7 +27,7 @@ export class OrderEntity {
 
   @Column({ name: 'pedido_id', unique: true, default: uuidv4() })
   orderId!: string;
-  
+
   @Column({ name: 'status', default: OrderStatus.INICIAL })
   @IsEnum(OrderStatus, { message: "O status do pedido deve ser 'Recebido', 'Em Preparação', 'Pronto' ou 'Finalizado'" })
   @MaxLength(255, { message: 'O status ter  no máximo 255 caracteres' })

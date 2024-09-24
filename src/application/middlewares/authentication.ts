@@ -1,6 +1,6 @@
 import { forbidden, HttpResponse, ok } from '@/application/helpers'
 import { Middleware } from '@/application/middlewares'
-import { env } from '@/application/main/config/env'
+import { env } from '@/main/config/env'
 import { logger } from '@/infra/helpers'
 import { Validator } from '@/application/validation'
 import { TokenHandler } from '@/infra/gateways'

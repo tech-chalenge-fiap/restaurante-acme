@@ -1,0 +1,53 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: restaurante-acme-hpa
+  namespace: fiap
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: restaurante-acme
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60  # Meta de CPU em 6%
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: 150Mi  # Meta de memória em 95Mi
+    - type: External
+      external:
+        metric:
+          name: rabbitmq_queue_messages
+        target:
+          type: Value
+          value: 10
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 10
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 1  # Permita aumentar o número de pods em até 1 a cada período
+          periodSeconds: 30  # Período de 30 segundos
+        - type: Percent
+          value: 100  # Permita aumentar o número de pods em até 100% a cada período
+          periodSeconds: 30  # Período de 30 segundos
+    scaleDown:
+      stabilizationWindowSeconds: 10
+      selectPolicy: Min
+      policies:
+        - type: Pods
+          value: 1  # Permita reduzir o número de pods em até 1 a cada período
+          periodSeconds: 30  # Período de 30 segundos
+        - type: Percent
+          value: 100  # Permita reduzir o número de pods em até 100% a cada período
+          periodSeconds: 30  # Período de 30 segundos

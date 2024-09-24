@@ -1,0 +1,1243 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"OrderHttp.CreateOrderOutput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"CreateIngredientProductInput": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"ingredientId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"count",
+					"ingredientId"
+				],
+				"type": "object"
+			},
+			"CreateOrderProductInput": {
+				"properties": {
+					"ingredientProducts": {
+						"items": {
+							"$ref": "#/components/schemas/CreateIngredientProductInput"
+						},
+						"type": "array",
+						"description": "Não é possível escolher um produto com a quantidade zero\nNão é possível escolher um ingrediente com a quantidade zero"
+					},
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"productId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"count",
+					"productId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.CreateOrderInput": {
+				"properties": {
+					"orderProducts": {
+						"items": {
+							"$ref": "#/components/schemas/CreateOrderProductInput"
+						},
+						"type": "array"
+					},
+					"clientId": {
+						"type": "string",
+						"description": "clientId é opcional"
+					}
+				},
+				"required": [
+					"orderProducts"
+				],
+				"type": "object"
+			},
+			"GenericType": {},
+			"FindPaymentOutput": {
+				"properties": {
+					"order": {
+						"$ref": "#/components/schemas/GenericType"
+					},
+					"expirationDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"pixCode": {
+						"type": "string"
+					},
+					"pixUrl": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"paymentMethod": {
+						"type": "string"
+					},
+					"totalPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"paymentId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"order",
+					"expirationDate",
+					"pixCode",
+					"pixUrl",
+					"status",
+					"paymentMethod",
+					"totalPrice",
+					"paymentId",
+					"id"
+				],
+				"type": "object"
+			},
+			"Register.FindClientOutput": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"clientId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"email",
+					"cpf",
+					"name",
+					"clientId"
+				],
+				"type": "object"
+			},
+			"OrderProductCategoryOutput": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"categoryId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"categoryId"
+				],
+				"type": "object"
+			},
+			"OrderProductIngredientOutput": {
+				"properties": {
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"ingredientId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"price",
+					"count",
+					"description",
+					"name",
+					"ingredientId",
+					"id"
+				],
+				"type": "object"
+			},
+			"OrderProductOutput": {
+				"properties": {
+					"ingredientProducts": {
+						"items": {
+							"$ref": "#/components/schemas/OrderProductIngredientOutput"
+						},
+						"type": "array"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"category": {
+						"$ref": "#/components/schemas/OrderProductCategoryOutput"
+					},
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"productId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"ingredientProducts",
+					"price",
+					"category",
+					"count",
+					"description",
+					"name",
+					"productId",
+					"id"
+				],
+				"type": "object"
+			},
+			"Order.FindOrderOutput": {
+				"properties": {
+					"totalPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"orderProducts": {
+						"items": {
+							"$ref": "#/components/schemas/OrderProductOutput"
+						},
+						"type": "array"
+					},
+					"client": {
+						"$ref": "#/components/schemas/Register.FindClientOutput"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"payments": {
+						"items": {
+							"$ref": "#/components/schemas/FindPaymentOutput"
+						},
+						"type": "array"
+					},
+					"status": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"orderProducts",
+					"createdAt",
+					"payments",
+					"status",
+					"orderId",
+					"id"
+				],
+				"type": "object"
+			},
+			"OrderHttp.GetOrderOutput": {
+				"$ref": "#/components/schemas/Order.FindOrderOutput"
+			},
+			"OrderHttp.UpdateOrderOutput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"UpdateOrderProductInput": {
+				"properties": {
+					"ingredientProducts": {
+						"items": {
+							"$ref": "#/components/schemas/CreateIngredientProductInput"
+						},
+						"type": "array"
+					},
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"productId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"count",
+					"productId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.UpdateOrderInput": {
+				"properties": {
+					"orderProducts": {
+						"items": {
+							"$ref": "#/components/schemas/UpdateOrderProductInput"
+						},
+						"type": "array"
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"orderProducts",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"Order.DeleteOrderOutput": {
+				"properties": {
+					"affected": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"orderId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.DeleteOrderOutput": {
+				"$ref": "#/components/schemas/Order.DeleteOrderOutput"
+			},
+			"OrderHttp.UpdateOrderStatusInput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string",
+						"description": "Não é permitido alterar para \"Recebido\" se o status atual não for \"Recebido\", status padrão.\nNão é permitido alterar para \"Em Preparação\" se o status atual não for \"Recebido\" e o status de pagamento for Pendente\nNão é permitido alterar para \"Pronto\" se o status atual não for \"Em Preparação\"\nNão é permitido alterar para \"Finalizado\" se o status atual não for \"Pronto\""
+					}
+				},
+				"required": [
+					"status",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.UpdatePaymentStatusOutput": {
+				"properties": {
+					"paymentId": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"paymentId",
+					"status"
+				],
+				"type": "object"
+			},
+			"OrderHttp.UpdatePaymentStatusInput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"paymentId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"paymentId"
+				],
+				"type": "object"
+			},
+			"Register.InsertClientOutput": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"clientId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"clientId"
+				],
+				"type": "object"
+			},
+			"ClientHttp.CreateClientOutput": {
+				"$ref": "#/components/schemas/Register.InsertClientOutput"
+			},
+			"ClientHttp.CreateClientInput": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"cpf",
+					"email"
+				],
+				"type": "object"
+			},
+			"ClientHttp.GetClientOutput": {
+				"$ref": "#/components/schemas/Register.FindClientOutput"
+			},
+			"ProductOutput": {
+				"properties": {
+					"updatedAt": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"productId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"updatedAt",
+					"createdAt",
+					"price",
+					"description",
+					"name",
+					"productId",
+					"id"
+				],
+				"type": "object"
+			},
+			"Order.FindProductOutput": {
+				"properties": {
+					"category": {
+						"$ref": "#/components/schemas/ProductOutput"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"productId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"category",
+					"price",
+					"description",
+					"name",
+					"productId",
+					"id"
+				],
+				"type": "object"
+			},
+			"OrderHttp.GetProductOutput": {
+				"$ref": "#/components/schemas/Order.FindProductOutput"
+			},
+			"IngredientsOutput": {
+				"properties": {
+					"updatedAt": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"ingredientId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"updatedAt",
+					"createdAt",
+					"description",
+					"name",
+					"ingredientId",
+					"id"
+				],
+				"type": "object"
+			},
+			"FindCategoryOutput": {
+				"properties": {
+					"ingredients": {
+						"items": {
+							"$ref": "#/components/schemas/IngredientsOutput"
+						},
+						"type": "array"
+					},
+					"products": {
+						"items": {
+							"$ref": "#/components/schemas/ProductOutput"
+						},
+						"type": "array"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"ingredients",
+					"products",
+					"name",
+					"id"
+				],
+				"type": "object"
+			},
+			"Order.FindCategoriesOutput": {
+				"items": {
+					"$ref": "#/components/schemas/FindCategoryOutput"
+				},
+				"type": "array"
+			},
+			"OrderHttp.GetCategoriesOutput": {
+				"$ref": "#/components/schemas/Order.FindCategoriesOutput"
+			},
+			"OrderHttp.CreateCheckoutOutput": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"paymentId": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"paymentId",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"OrderHttp.CreateCheckoutInput": {
+				"properties": {
+					"paymentMethod": {
+						"type": "string"
+					},
+					"orderId": {
+						"type": "string",
+						"description": "paymentMethod aceita somente 'PIX'"
+					}
+				},
+				"required": [
+					"paymentMethod",
+					"orderId"
+				],
+				"type": "object"
+			},
+			"Order.FindPaymentOutput": {
+				"properties": {
+					"order": {
+						"$ref": "#/components/schemas/GenericType"
+					},
+					"expirationDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"pixCode": {
+						"type": "string"
+					},
+					"pixUrl": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"paymentMethod": {
+						"type": "string"
+					},
+					"totalPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"paymentId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"order",
+					"expirationDate",
+					"pixCode",
+					"pixUrl",
+					"status",
+					"paymentMethod",
+					"totalPrice",
+					"paymentId",
+					"id"
+				],
+				"type": "object"
+			},
+			"OrderHttp.GetPaymentOutput": {
+				"$ref": "#/components/schemas/Order.FindPaymentOutput"
+			}
+		},
+		"securitySchemes": {
+			"apiKey": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "header"
+			}
+		}
+	},
+	"info": {
+		"title": "Restaurante ACME API",
+		"version": "1.0.0",
+		"description": "Documentação da API do restaurante ACME",
+		"license": {
+			"name": "GPL-3.0-or-later"
+		},
+		"contact": {
+			"name": "any",
+			"email": "any@any.com"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/healthcheck": {
+			"get": {
+				"operationId": "GetHealthCheck",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string",
+											"enum": [
+												"OK"
+											],
+											"nullable": false
+										},
+										"uptime": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"message",
+										"uptime"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para verificação da saúde do servidor",
+				"tags": [
+					"Health Check"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/order": {
+			"post": {
+				"operationId": "CreateOrder",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.CreateOrderOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para criação de um pedido",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.CreateOrderInput"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "FindOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.GetOrderOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para buscar um pedido",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.UpdateOrderOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para atualizar o pedido",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.UpdateOrderInput"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.DeleteOrderOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para deletar um pedido",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/order-status": {
+			"put": {
+				"operationId": "UpdateOrderStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.UpdateOrderStatusInput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para atualizar o status do pedido",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.UpdateOrderStatusInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders": {
+			"get": {
+				"operationId": "FindAllOrders",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderHttp.GetOrderOutput"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para buscar todos os pedidos",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/webhook": {
+			"post": {
+				"operationId": "UpdatePaymentStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.UpdatePaymentStatusOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para atualizar o status do pagamento",
+				"tags": [
+					"Payment"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.UpdatePaymentStatusInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/client": {
+			"post": {
+				"operationId": "CreateClient",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ClientHttp.CreateClientOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para criação de um cliente",
+				"tags": [
+					"Client"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ClientHttp.CreateClientInput"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "FindClient",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ClientHttp.GetClientOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para buscar um cliente",
+				"tags": [
+					"Client"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/product": {
+			"get": {
+				"operationId": "FindProduct",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.GetProductOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para procurar um produto",
+				"tags": [
+					"Product"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "productId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/categories": {
+			"get": {
+				"operationId": "FindProductsCategories",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.GetCategoriesOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para buscar categorias de produto",
+				"tags": [
+					"Product categories"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/checkout": {
+			"post": {
+				"operationId": "CreateOrder",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.CreateCheckoutOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para criação do checkout",
+				"tags": [
+					"Checkout"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderHttp.CreateCheckoutInput"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "FindOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderHttp.GetPaymentOutput"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"summary": "Rota para obter um checkout",
+				"tags": [
+					"Checkout"
+				],
+				"security": [
+					{
+						"apiKey": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "paymentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/v1/api"
+		}
+	]
+}

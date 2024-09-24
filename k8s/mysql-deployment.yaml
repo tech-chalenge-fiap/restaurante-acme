@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: fiap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: developer0101
+            - name: MYSQL_USER
+              value: developer0101
+            - name: MYSQL_PASSWORD
+              value: developer0101
+            - name: MYSQL_DATABASE
+              value: developer0101
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: "false"
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "4Gi"
+              cpu: "2"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-storage
+            - mountPath: /etc/mysql/conf.d/my.cnf
+              name: mysql-config
+              subPath: my.cnf
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-config
+          configMap:
+            name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf

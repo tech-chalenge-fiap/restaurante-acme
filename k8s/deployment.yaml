@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: fiap/restaurante-acme
+  namespace: fiap
+  name: restaurante-acme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurante-acme
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: restaurante-acme
+    spec:
+      serviceAccountName: metrics-sa
+      containers:
+        - name: restaurante-acme
+          image: developer0101/tech-challenge:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4080
+              protocol: TCP
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "512m"
+            limits:
+              memory: "512Mi"
+              cpu: "512m"
+          envFrom:
+            - configMapRef:
+                name: restaurante-acme-vars
+          readinessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 4080
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10
+          livenessProbe:
+              httpGet:
+                  path: /v1/api/healthcheck
+                  port: 4080
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 10

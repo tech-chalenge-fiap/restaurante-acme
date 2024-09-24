@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany
 import { OrderEntity } from '@/infra/repos/mysql/entities';
 import { IsEnum, IsNumber, IsPositive, Min } from 'class-validator';
 
-enum PaymentStatus {
+export enum PaymentStatus {
     PENDENTE = 'Pendente',
     PROCESSANDO = 'Processando',
     CONCLUIDO = 'Concluido',

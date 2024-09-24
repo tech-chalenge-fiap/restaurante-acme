@@ -19,8 +19,8 @@
     "email": "any@any.com"
   },
   "scripts": {
-    "start": "node -r dotenv/config dist/application/main",
-    "dev": "npm run docs && ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/application/main",
+    "start": "node -r dotenv/config dist/main",
+    "dev": "npm run docs && ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/main",
     "clean": "rimraf dist",
     "build": "npm run clean && npm run docs && tsc -p tsconfig-build.json",
     "prepare": "husky install",

@@ -135,3 +135,17 @@ export class FindAllOrdersDoc extends TsoaController {
     /* Documentation - Rout to find all orders */
   }
 }
+
+@Route('/webhook')
+export class UpdatePaymentStatusDoc extends TsoaController {
+  /**
+   * @summary Rota para atualizar o status do pagamento
+   */
+  @Post()
+  @Tags('Payment')
+  @Security('apiKey')
+  @Response<OrderHttp.UpdatePaymentStatusOutput>(200, 'Ok')
+  UpdatePaymentStatus(@Body() _body: OrderHttp.UpdatePaymentStatusInput): void {
+    /* Documentation - Rout to update payment status */
+  }
+}

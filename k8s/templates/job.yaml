@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: $K8S_APPLICATION_NAME-job
+  namespace: $K8S_NAMESPACE
+spec:
+  template:
+    metadata:
+      name: $K8S_APPLICATION_NAME-job
+    spec:
+      containers:
+      - name: $K8S_APPLICATION_NAME-job-conatiner
+        image: busybox
+        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 30"]
+      restartPolicy: Never
+  backoffLimit: 4

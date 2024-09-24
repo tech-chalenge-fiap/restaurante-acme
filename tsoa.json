@@ -1,5 +1,5 @@
 {
-  "entryFile": "src/application/main/index.ts",
+  "entryFile": "src/main/index.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": [
     "src/infra/docs/*.ts"
@@ -7,7 +7,7 @@
   "spec": {
     "name": "Restaurante ACME API",
     "description": "Documentação da API do restaurante ACME",
-    "outputDirectory": "src/application/main/docs",
+    "outputDirectory": "src/main/docs",
     "specVersion": 3,
     "version": "1.0.0",
     "basePath": "/v1/api",
@@ -20,8 +20,8 @@
     }
   },
   "routes": {
-    "routesDir": "src/application/main/docs",
-    "authenticationModule": "src/application/main/middlewares/express-authentication.ts"
+    "routesDir": "src/main/docs",
+    "authenticationModule": "src/main/middlewares/express-authentication.ts"
   },
   "compilerOptions": {
     "baseUrl": "src",

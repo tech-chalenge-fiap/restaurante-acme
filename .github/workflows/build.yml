@@ -1,15 +1,16 @@
-name: Build and Publish Docker Image
+name: Build and Publish
 
 on:
-  push:
-    branches:
-      - main
+   workflow_run:
+    workflows: ["Run Tests"]
+    types:
+      - completed
 
 jobs:
   build-and-publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build and Publish Docker Image to ECR
     runs-on: ubuntu-latest
-    needs: tests
 
     steps:
       - name: Checkout Code

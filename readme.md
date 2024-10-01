@@ -73,8 +73,8 @@ Certifique-se de ter os seguintes softwares instalados na sua máquina:
 Clone este repositório para sua máquina local:
 
 ```sh
-git clone https://github.com/mauriciocarvalho01/FIAP-Software-Architecture-Pos-Tech-7SOAT.git
-cd FIAP-Software-Architecture-Pos-Tech-7SOAT
+https://github.com/tech-chalenge-fiap/restaurante-acme.git
+cd restaurante-acme
 ```
 
 ### 2. Instale o Minikube e Kubectl

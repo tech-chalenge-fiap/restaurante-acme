@@ -78,8 +78,7 @@ jobs:
           RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
+
           args: |
             apply -f k8s/deployment.yaml
             set image deployment.apps/restaurante-acme restaurante-acme=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/tech-chalenge-fiap/restaurante-acme:${{ env.IMAGE_TAG }}
-            rollout status deployment.apps/restaurante-acme
-

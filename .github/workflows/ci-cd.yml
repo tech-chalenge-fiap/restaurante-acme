@@ -43,6 +43,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
         with:
           aws-region: ${{ secrets.AWS_REGION }}
 
@@ -69,9 +70,19 @@ jobs:
           cluster-name: ${{ secrets.EKS_CLUSTER_NAME }}
           region: ${{ secrets.AWS_REGION }}
 
-      - run: |
-          kubectl apply -f k8s/deployment.yaml
+      - name: Deploy to Kubernetes cluster
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
+        with:
+          args: |
+            kubectl apply -f k8s/deployment.yaml
+            set image deployment/restaurante-acme app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
+            kubectl rollout status deployment/restaurante-acme
 
-      - run: |
-          kubectl set image deployment/restaurante-acme restaurante-acme=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/restaurante-acme:${{ env.IMAGE_TAG }}
-          kubectl rollout status deployment/restaurante-acme
+      # - run: |
+      #     kubectl apply -f k8s/deployment.yaml
+
+      # - run: |
+      #     kubectl set image deployment/restaurante-acme restaurante-acme=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/restaurante-acme:${{ env.IMAGE_TAG }}
+      #     kubectl rollout status deployment/restaurante-acme

@@ -69,6 +69,7 @@ jobs:
         uses: kodermax/kubectl-aws-eks@master
         env:
           RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: |
             kubectl apply -f k8s/deployment.yaml

@@ -78,10 +78,7 @@ jobs:
           RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: |
-            kubectl apply -f k8s/deployment.yaml
-            set image deployment/restaurante-acme app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
-            kubectl rollout status deployment/restaurante-acme
+          args: set image deployment/${{ github.repository }} $ECR_REPOSITORY=${{ secrets.AWS_ACCOUNT_ID }}/${{ github.repository }}:{{ github.sha }}
 
       # - run: |
       #     kubectl apply -f k8s/deployment.yaml
